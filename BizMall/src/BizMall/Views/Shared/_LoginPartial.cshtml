@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using BizMall.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="divider"></li>
+            <li>                
+                <div style="padding-top:4px;padding-left:15px;">
+                    <span style="color: #9d9d9d; font-size:12px;"> Здравствуйте, @UserManager.GetUserName(User)</span>
+                    <br />
+                    <span ><a style="color: #9d9d9d;text-decoration:underline;" asp-controller="AdminCompanyProfile" asp-action="EditProfile" title="Войти в Панель Управления">Личный кабинет</a></span>
+                </div>
+            </li>
+            <li>
+                <div style="padding-right:20px;">
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link">Выйти</button>
+                </div>
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @*<li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>*@
+        <li><a  class="open_window">Регистрация</a></li>
+        <li><a asp-area="" asp-controller="Account" asp-action="Login">Вход</a></li>
+    </ul>
+}

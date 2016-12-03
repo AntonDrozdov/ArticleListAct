@@ -1,0 +1,297 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+
+
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@using BizMall.ViewModels.AccountViewModels
+
+@model BizMall.ViewModels.AccountViewModels.CreateEditCompanyViewModel
+@{
+    ViewData["Title"] = "Профиль";
+}
+
+<h2>@ViewData["Title"]</h2>
+@*<script type="text/javascript" >
+        function ShowPrivatePersonDataBlock() {
+            $("#CompanyDataBlock").hide();
+            $("#PrivatePersonDataBlock").show();
+        }
+
+        function ShowCompanyDataBlock() {
+            $("#CompanyDataBlock").show();
+            $("#PrivatePersonDataBlock").hide();
+        }
+    </script>*@
+
+<form asp-controller="AdminCompanyProfile" asp-action="EditProfile" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+    <hr />
+    <!--ПЕРЕКЛЮЧАТЕЛЬ КОМПАНИЯ/КЛИЕНТ-->
+    <!--<br />
+    <div class="form-group">
+        <label class="col-md-2 control-label">Я ПРЕДСТАВЛЯЮ:</label>
+        <div class="col-md-10">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-success active" onclick="ShowPrivatePersonDataBlock();">
+                    <input type="radio" name="options" id="PrivatePerson" autocomplete="off"  checked>
+                    Частное лицо
+                </label>
+                <label class="btn btn-success" onclick="ShowCompanyDataBlock();">
+                    <input type="radio" name="options" id="Company" autocomplete="off" >
+                    Компания
+                </label>
+            </div>
+        </div>
+    </div>
+    <br />-->
+    <!--Id добавляемого/редактируемого товара-->
+    @if (Model.Id != 0)
+    {
+        <input asp-for="Id" type="hidden" class="form-control" id="Id" readonly="readonly" Value="@Model.Id" />
+    }
+
+    <!--НАЗВАНИЕ-->
+    <div class="form-group">
+        <label class="col-md-2 control-label">Название:</label>
+        <div class="col-md-10">
+            <input asp-for="Name" class="form-control" placeholder="Название" />
+            @*<span asp-validation-for="Name" class="text-danger"></span>*@
+        </div>
+    </div>
+
+    <!--ОПИСАНИЕ ДЕЯТЕЛЬНОСТТ-->
+    <div class="form-group">
+        <label class="col-md-2 control-label">Описание деятельности:</label>
+        <div class="col-md-10">
+            <textarea asp-for="ActivityDescription" class="form-control" id="Description" style="resize: vertical;" placeholder="Описание"></textarea>
+            @*<span asp-validation-for="ActivityDescription" class="text-danger"></span>*@
+        </div>
+    </div>
+
+    <!--ЛОГО-->
+    <div class="form-group">
+        <label class="col-md-2 control-label">Логотип компании:</label>
+        @*Ids изображений добавляемого/редактируемого товара*@
+        @if (Model.LogoImageInBase64 == null)
+        {
+            <div class="form-group">
+                <div class="col-md-10">
+                    <div class="imageTable">
+                        <table style="margin-left:25px;">
+                            <tr id="images">
+                                <td style="text-align:center;padding:3px;"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <div class="col-md-8">
+                    <div class="imageTable">
+                        <table style="margin-left:25px;">
+                            <tr id="images">
+                                @foreach (var imageViewModel in Model.ImageViewModels)
+                                {
+                                    <td id="imgthumb_@imageViewModel.Id" class="imagethumbcell">
+                                        <img class="thumb" src='@imageViewModel.ImageInBase64' />
+                                    </td>
+                                    <td id="delbtn_@imageViewModel.Id" class="imagedeletebuttoncell">
+                                        <a class='btn btn-default' onclick="deleteCompanyImage('@imageViewModel.goodImageIds');"><span class="imagedeletebutton">x</span></a>
+                                    </td>
+                                }
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @*<input asp-for="CompanyLogoId" type="hidden" id="goodImagesIds" readonly="readonly" value="@Model.CompanyLogo" />*@
+        <div class="col-md-2"></div>
+        <div class="form-group">
+                <div class="col-md-8">
+                    <a class='btn btn-default col-md-3' style="height:35px; margin-bottom:5px;margin-left:25px;">
+                        Загрузить логотип ...
+                        <input type="file"
+                               id="loadfile"
+                               name="newimages"
+                               style="position: absolute;z-index: 2; top: 0; left: 0; opacity: 0; background-color: transparent;color: transparent;"
+                               onchange='saveImage();'>
+                    </a>
+                </div>
+                <input asp-for="companyImagesIds" type="hidden" id="companyImagesIds" readonly="readonly" value="@Model.companyImagesIds" />
+            </div>
+    </div>
+
+    <!--ТЕЛЕФОН-->
+    @*TODO: Дополнить нужными хелперами для модели и валидацией*@
+    <div class="form-group">
+        <label class="col-md-2 control-label">Телефон:</label>
+        <div class="col-md-10">
+            <input asp-for="Telephone" class="form-control" placeholder="Телефон" />
+            @*<span asp-validation-for="Telephone" class="text-danger"></span>*@
+        </div>
+    </div>
+
+    <!--EMAIL-->
+    <div class="form-group">
+        <label asp-for="Email" class="col-md-2 control-label">Email:</label>
+        <div class="col-md-10">
+            <input asp-for="Email" class="form-control" placeholder="Email" />
+            @*<span asp-validation-for="Email" class="text-danger"></span>*@
+        </div>
+    </div>
+
+    <!--ПАРОЛЬ-->
+    <!--<div class="form-group">
+        <label asp-for="Password" class="col-md-2 control-label">Пароль:</label>
+        <div class="col-md-10">
+            <input asp-for="Password" class="form-control" placeholder="Пароль" />
+            @*<span asp-validation-for="Password" class="text-danger"></span>*@
+        </div>
+    </div>
+    -->
+    <!--ПОДТВЕРЖДЕНИЕ ПАРОЛЯ-->
+    <!--<div class="form-group">
+        <label asp-for="ConfirmPassword" class="col-md-2 control-label">Подтвердите пароль:</label>
+        <div class="col-md-10">
+            <input asp-for="ConfirmPassword" class="form-control" placeholder="Подтвердите пароль" />
+            @*<span asp-validation-for="ConfirmPassword" class="text-danger"></span>*@
+        </div>
+    </div>
+        -->
+    <!--СООБЩЕНИЯ ВАЛИДАЦИИ-->
+    <div class="form-group">
+        <br />
+        <label class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10 text-right">
+            <button type="submit" class="btn btn-primary col-md-2" style="margin-top: 5px;">Сохранить</button>
+        </div>
+    </div>
+
+</form>
+
+<script type="text/javascript">
+    //по сути дублирует метод  deleteCompanyImage так как лого у компании может быть только одно
+    function deleteCompanyLogoAndBack() {
+        var formData = new FormData();
+        formData.append('companyImagesIds', $("#companyImagesIds").val());
+        $.ajax({
+            url: "/Account/DeleteCompanyImages/",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                //ничего не надо делать кроме как вернуться назад,
+                history.back();
+            }
+        });
+    };
+
+    function deleteCompanyImage(companyImagesIds) {
+            var formData = new FormData();
+            formData.append('companyImagesIds', companyImagesIds);
+            $.ajax({
+                url: "/Account/DeleteCompanyImage/",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (idOfDeletedIm) {
+                    //РЕДАКТИРУЕМ СПИСОК ТЕКЦЩИХ ИЗОБРАЖЕНИЙ ТОВАРА
+                    //берем исходный список изображений в виде строки
+                    var companyImagesIds = $("#companyImagesIds").val();
+                    //получаем из этого массив
+                    var tmpIdsArr = companyImagesIds.split('_');
+                    //удаляем последний элемент из массива так как он пустой
+                    tmpIdsArr.splice(tmpIdsArr.length-1, 1);
+                    //получаем индекс удаляемого изображения в массиве и удаляем его из массива
+                    var idxOfDeletedIm = tmpIdsArr.indexOf(idOfDeletedIm);
+                    if (idxOfDeletedIm == -1) return;
+                    tmpIdsArr.splice(idxOfDeletedIm, 1);
+                    //новый список id изображений  товара
+                    companyImagesIds = tmpIdsArr.join('_') + "_";
+                    $("#companyImagesIds").val(companyImagesIds);
+                    //удаляем из DOM
+                    $("#imgthumb_" + idOfDeletedIm).remove();
+                    $("#delbtn_" + idOfDeletedIm).remove();
+                }
+            });
+
+        };
+
+        function saveImage() {
+            //берем изображение
+            var image = $('#loadfile')[0].files[0];
+                //ПРОВЕРКИ
+                //если оно есть
+                if (image == undefined) return;
+                //если оно подходящего размера (не более 300Кб)
+                if (image.size > 300000) return;
+                //если расширение подходит
+                var ext = image.name.substring(image.name.lastIndexOf('.') + 1).toLowerCase();
+                if (ext != "gif" && ext != "png" && ext != "jpeg" && ext != "jpg") return;
+                //если оно подходящего типа - mimetype
+                var imageType = /^image\//;
+                if (imageType.test(image.type.match)) return;
+
+            //записываем в БД
+            var goodId = $("#Id").val();
+            var formData = new FormData();
+            formData.append('newimages', image);
+            formData.append('Id', goodId);
+            $.ajax({
+                url: "/Account/AddCompanyImage/",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (image) {
+                    $.ajax({
+                        url: "/Account/GetImageForThumb/" + image.id, //здесь просто достается изображение из БД
+                        type: 'GET',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            //добавление в скрытое поле id изображений нового id изображения
+                            var newImagesIds = $("#companyImagesIds").val() + data.id + "_";
+                            $("#companyImagesIds").val(newImagesIds);
+                            //отображение thumb только что добавленного изображения
+                            var image = "<td id='imgthumb_" + data.id + "' class = 'imagethumbcell'> \
+                                                    <img class='thumb' src='" + data.imageInBase64 + "' /> \
+                                                </td>";
+                            $("#images").append(image);
+                            var closeButton = "<td id='delbtn_" + data.id + "' class ='imagedeletebuttoncell'> \
+                                                    <a class='btn btn-default' href = '#' onclick = \"deleteCompanyImage('" + data.goodImageIds + "');\"> \
+                                                        <span class='imagedeletebutton'>x</span> \
+                                                    </a> \
+                                                </td>";
+                            $("#images").append(closeButton);
+                        }
+                    });
+                }
+            });
+        }
+</script>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+
+
+

@@ -1,0 +1,148 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+<br />
+
+<!--Закладки Активные/НеАктивные-->
+@if (ViewBag.ActiveGoodsStatusMenu == 1)
+{
+    <div class="btn-group" style="margin-bottom:10px;" data-toggle="buttons">
+        <label class="NotActiveStatusGoods btn btn-success active" onclick="document.location='@Url.Action("Goods", new { goodsStatus = "1" })';"><input type="radio" name="options"/>Активные</label>
+        <label class="NotActiveStatusGoods btn btn-success" onclick="document.location='@Url.Action("Goods", new { goodsStatus = "0" })';"><input type="radio" name="options">НеАктивные</label>
+    </div>
+}
+else
+{
+    <div  class="btn-group" style="margin-bottom:10px;" data-toggle="buttons">
+        <label class="NotActiveStatusGoods btn btn-success" onclick="document.location='@Url.Action("Goods", new { goodsStatus = "1" })';"><input type="radio" name="options" />Активные</label>
+        <label class="NotActiveStatusGoods btn btn-success active" onclick="document.location='~@Url.Action("Goods", new { goodsStatus = "0" })';"><input type="radio" name="options">НеАктивные</label>
+    </div>
+}
+
+<!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
+<div>
+    <div style="float:left;margin-right:10px;margin-bottom:5px;">
+        <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminCompanyGoods" asp-action="EditGood">Новая позиция</a>
+    </div>
+
+    <div style="float:left;margin-bottom:5px;">
+        @if (ViewBag.ActiveGoodsStatusMenu == 1)
+        {
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle menuForChecked btn-newpos" data-toggle="dropdown"><img class="chekpic" src="~/images/images.png" /> Для выбранных <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" onclick="Archieve();">В Архив</a></li>
+                </ul>
+            </div>
+        }
+        else
+        {
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle menuForChecked btn-newpos" data-toggle="dropdown"><img class="chekpic" src="~/images/images.png" /> Для выбранных <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" onclick="Activate();">Активировать</a></li>
+                </ul>
+            </div>
+        }
+    </div>
+</div>
+
+
+<br />
+<br />
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Изображение</th>
+            <th>Название</th>
+            <th>Категория</th>
+            @if (ViewBag.ActiveGoodsStatusMenu == 1)
+            {
+                <th>Дней до окончания размещения</th>
+            }
+            <th>Опции</th>
+        </tr>
+        </thead>
+        @foreach (var gvm in ViewBag.GoodsVM)
+        {
+            <tr>
+                <td><input type="checkbox" name="checkedToDoSmth" value="@gvm.Id"/></td>
+                <td>
+                    <img  width="50" src='@gvm.MainImageInBase64'/>
+                    @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
+                </td>
+                <td><a asp-controller="AdminCompanyGoods" asp-action="EditGood" asp-route-id="@gvm.Id">@gvm.Title</a></td>
+                @if (@gvm.Category.ParentCategory != null)
+                {
+                    <td>@gvm.Category.ParentCategory.Title/@gvm.Category.Title</td>
+                }
+                else
+                {
+                    <td>@gvm.Category.Title</td>
+                }
+                @if (ViewBag.ActiveGoodsStatusMenu == 1)
+                {
+                    <td>@gvm.DaysToSetInActiveStatus дн.</td>
+                }
+                
+                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminCompanyGoods" asp-action="DeleteGood" asp-route-goodId="@gvm.Id" asp-route-goodsStatus="@ViewBag.ActiveGoodsStatusMenu" >Удалить</a></td>
+            </tr>
+        }
+    </table>
+</div>
+
+
+<script type="text/javascript">
+    function Archieve() {
+        //перебрать все checkbox(checkedToDoSmth) на странице
+        var checkedGoods = "";
+        $("input[name='checkedToDoSmth']").each(function () {
+            if ($(this)[0].checked == true) {
+                checkedGoods += $(this).val() + "_";
+            }
+        });
+
+        //отправить запрос на обновление статусов
+        var formData = new FormData();
+        formData.append('checkedGoods', checkedGoods);
+        $.ajax({
+            url: "/AdminCompanyGoods/ArchieveGoods",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=1");
+            }
+        });
+    }
+
+    function Activate() {
+        //перебрать все checkbox(checkedToDoSmth) на странице
+        var checkedGoods = "";
+        $("input[name='checkedToDoSmth']").each(function () {
+            if ($(this)[0].checked == true) {
+                checkedGoods += $(this).val() + "_";
+            }
+        });
+
+        //отправить запрос на обновление статусов
+        var formData = new FormData();
+        formData.append('checkedGoods', checkedGoods);
+        $.ajax({
+            url: "/AdminCompanyGoods/ActivateGoods",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=0");
+            }
+        });
+    }
+
+</script>
+
