@@ -49,7 +49,7 @@ namespace BizMall.Data.Repositories.Concrete
         }
 
         public void DeleteAllGoodImages(int goodId) {
-            Good dbEntry = _ctx.Goods.Where(g => g.Id == goodId)
+            Article dbEntry = _ctx.Goods.Where(g => g.Id == goodId)
                        .Include(g => g.Category)
                        .Include(g => g.Category.ParentCategory)
                        .Include(g => g.Images)

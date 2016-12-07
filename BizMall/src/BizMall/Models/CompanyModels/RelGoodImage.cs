@@ -8,6 +8,6 @@ namespace BizMall.Models.CompanyModels
         public Image Image { get; set; }
 
         public int GoodId { get; set; }
-        public Good Good { get; set; }
+        public Article Good { get; set; }
     }
 }

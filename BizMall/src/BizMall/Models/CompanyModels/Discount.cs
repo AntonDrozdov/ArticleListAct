@@ -25,13 +25,13 @@ namespace BizMall.Models.CompanyModels
         [Range(0, 100)]
         public int DiscountRate { get; set; }
 
-        public ICollection<Good> Goods { get; set; }
+        public ICollection<Article> Goods { get; set; }
         public Discount()
         {
             BeginDate = DateTime.Now;
             EndDate = DateTime.Now;
             DiscountRate = 0;
-            Goods = new List<Good>();
+            Goods = new List<Article>();
         }
 
     }

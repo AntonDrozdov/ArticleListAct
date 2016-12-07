@@ -9,11 +9,11 @@ namespace BizMall.Data.Repositories.Abstract
 {
     public interface IRepositoryGood
     {
-        Good GetGood(int goodId);
+        Article GetGood(int goodId);
         void DeleteGood(int goodId);
-        IQueryable<Good> ShopGoodsFullInformation(int ShopId, GoodStatus goodsStatus);
-        IQueryable<Good> ShopGoods(int ShopId);
-        Good SaveGood(Good good, Company company);
+        IQueryable<Article> ShopGoodsFullInformation(int ShopId);
+        IQueryable<Article> ShopGoods(int ShopId);
+        Article SaveGood(Article good, Company company);
         void ArchieveGoods(List<int> ids);
         void ActivateGoods(List<int> ids);
     }

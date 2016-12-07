@@ -25,7 +25,7 @@ namespace BizMall.ViewComponents
         //    return View(cegvm);
         //}
 
-        public async Task<IViewComponentResult> InvokeAsync(CreateEditGoodViewModel cegvm)
+        public async Task<IViewComponentResult> InvokeAsync(CreateEditArticleViewModel cegvm)
 
         {
             ViewBag.Categories = _repositoryCategory.Categories().ToList();

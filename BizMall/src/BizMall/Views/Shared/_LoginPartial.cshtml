@@ -11,11 +11,11 @@
     <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li class="divider"></li>
-            <li>                
+            <li style="padding-top: 10px;">                
                 <div style="padding-top:4px;padding-left:15px;">
-                    <span style="color: #9d9d9d; font-size:12px;"> Здравствуйте, @UserManager.GetUserName(User)</span>
-                    <br />
-                    <span ><a style="color: #9d9d9d;text-decoration:underline;" asp-controller="AdminCompanyProfile" asp-action="EditProfile" title="Войти в Панель Управления">Личный кабинет</a></span>
+                    <span style="color: #9d9d9d; font-size:12px;">@UserManager.GetUserName(User)</span>
+                    @*<br />
+    <span ><a style="color: #9d9d9d;text-decoration:underline;" asp-controller="AdminCompanyProfile" asp-action="EditProfile" title="Войти в Панель Управления">Личный кабинет</a></span>*@
                 </div>
             </li>
             <li>

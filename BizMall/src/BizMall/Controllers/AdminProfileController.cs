@@ -15,13 +15,13 @@ using BizMall.Models;
 
 namespace BizMall.Controllers
 {
-    public class AdminCompanyProfileController : Controller
+    public class AdminProfileController : Controller
     {
         private readonly IRepositoryUser _repositoryUser;
         private readonly IRepositoryCompany _repositoryCompany;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public AdminCompanyProfileController(   IRepositoryUser repositoryUser, 
+        public AdminProfileController(   IRepositoryUser repositoryUser, 
                                                 IRepositoryCompany repositoryCompany, 
                                                 UserManager<ApplicationUser> userManager, 
                                                 SignInManager<ApplicationUser> signInManager) {

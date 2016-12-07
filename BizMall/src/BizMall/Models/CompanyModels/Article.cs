@@ -5,8 +5,7 @@ using System;
 
 namespace BizMall.Models.CompanyModels
 {
-    public enum GoodStatus { InActive, Active };
-    public class Good
+    public class Article
     {
         public int Id { get; set; }
 
@@ -17,21 +16,14 @@ namespace BizMall.Models.CompanyModels
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
-
-        public int? Amount { get; set; }
-
         public DateTime UpdateTime { get; set; }
-
-        public GoodStatus? Status { get; set; }
 
         public List<RelCompanyGood> Companies { get; set; }
 
         public List<RelGoodImage> Images { get; set; }
-        //public ICollection<RelDiscountGood> Discounts { get; set; }
-
-        public Good()
+        
+        public Article()
         {
-            Amount = 0;
             Images = new List<RelGoodImage>();
             //Discounts = new List<RelDiscountGood>();
             Companies = new List<RelCompanyGood>();

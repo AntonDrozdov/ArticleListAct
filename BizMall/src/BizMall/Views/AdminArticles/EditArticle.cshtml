@@ -3,14 +3,14 @@
 @using Microsoft.AspNetCore.Http.Authentication
 @using BizMall.ViewModels.AccountViewModels
 
-@model BizMall.ViewModels.AdminCompanyGoods.CreateEditGoodViewModel
+@model BizMall.ViewModels.AdminCompanyGoods.CreateEditArticleViewModel
 @{
-    ViewData["Title"] = "Новая позиция";
+    ViewData["Title"] = "Новая статья  ";
     Layout = "_AdminLayout";
 }
 
 <h3>@ViewData["Title"]</h3>
-<form asp-controller="AdminCompanyGoods" asp-action="EditGood" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+<form asp-controller="AdminCompanyGoods" asp-action="EditArticle" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
     <hr />
     <!--Id добавляемого/редактируемого товара-->
     @if (Model.Id != 0)

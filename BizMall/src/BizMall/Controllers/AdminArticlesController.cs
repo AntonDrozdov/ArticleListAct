@@ -16,14 +16,14 @@ namespace BizMall.Controllers
     /// <summary>
     /// ctor
     /// </summary>
-    public class AdminCompanyGoodsController : Controller
+    public class AdminArticlesController : Controller
     {
         private readonly IRepositoryUser _repositoryUser;
         private readonly IRepositoryCompany _repositoryCompany;
         private readonly IRepositoryGood _repositoryGood;
         private readonly IRepositoryImage _repositoryImage;
 
-        public AdminCompanyGoodsController(IRepositoryUser repositoryUser,
+        public AdminArticlesController(IRepositoryUser repositoryUser,
                                             IRepositoryCompany repositoryCompany,
                                             IRepositoryGood repositoryGood,
                                             IRepositoryImage repositoryImage)
@@ -49,24 +49,21 @@ namespace BizMall.Controllers
         /// <summary>
         /// вывод товаров в личный кабинет компании
         /// </summary>
-        /// <param name="goodsStatus"></param>
-        /// <returns></returns>
-        public IActionResult Goods(GoodStatus goodsStatus = GoodStatus.Active)
+        public IActionResult Articles()
         {
             var currentUser = _repositoryUser.GetCurrentUser(User.Identity.Name);
 
             if (currentUser != null)
             {
                 var Company = _repositoryCompany.GetUserCompany(currentUser);
-                var Goods = _repositoryGood.ShopGoodsFullInformation(Company.Id, goodsStatus).ToList();
+                var Goods = _repositoryGood.ShopGoodsFullInformation(Company.Id).ToList();
 
-                List<GoodViewModel> GoodsVM = new List<GoodViewModel>();
+                List<ArticleViewModel> GoodsVM = new List<ArticleViewModel>();
                 foreach (var good in Goods)
                 {
                     var iDaysToSetInActiveStatus = 31 - (DateTime.Now - good.UpdateTime).Days;
-                    GoodViewModel gvm = new GoodViewModel
+                    ArticleViewModel gvm = new ArticleViewModel
                     {
-                        Amount = good.Amount,
                         Category = good.Category,
                         CategoryId = good.CategoryId,
                         Companies = good.Companies,
@@ -87,11 +84,6 @@ namespace BizMall.Controllers
                 Redirect("/");
             }
 
-            ViewBag.ActiveSubMenu = "Товары/Услуги";
-            if (goodsStatus == GoodStatus.Active)
-                ViewBag.ActiveGoodsStatusMenu = 1;
-            if (goodsStatus == GoodStatus.InActive)
-                ViewBag.ActiveGoodsStatusMenu = 0;
             return View();
         }
 
@@ -101,14 +93,14 @@ namespace BizMall.Controllers
         /// <param name="id"> id товара</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult EditGood(int id)
+        public IActionResult EditArticle(int id)
         {
-            CreateEditGoodViewModel cegvm = null;
+            CreateEditArticleViewModel cegvm = null;
             if (id != 0)
             {
-                Good good = _repositoryGood.GetGood(id);
+                Article good = _repositoryGood.GetGood(id);
 
-                cegvm = new CreateEditGoodViewModel
+                cegvm = new CreateEditArticleViewModel
                 {
                     Category = good.Category.Title,
                     CategoryId = good.CategoryId,
@@ -138,12 +130,12 @@ namespace BizMall.Controllers
                 }
             }
             else
-                cegvm = new CreateEditGoodViewModel();
+                cegvm = new CreateEditArticleViewModel();
 
             return View(cegvm);
         }
         [HttpPost]
-        public IActionResult EditGood(CreateEditGoodViewModel model)
+        public IActionResult EditArticle(CreateEditArticleViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -174,7 +166,7 @@ namespace BizMall.Controllers
                     }
                 }
 
-                _repositoryGood.SaveGood(new Good
+                _repositoryGood.SaveGood(new Article
                 {
                     Id = model.Id,
                     Title = model.Title,
@@ -199,13 +191,13 @@ namespace BizMall.Controllers
         /// <param name="goodId"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult DeleteGood(int goodId, GoodStatus goodsStatus)
+        public IActionResult DeleteArticle(int itemId)
         {
-            if (goodId != 0)
+            if (itemId != 0)
             {
-                _repositoryGood.DeleteGood(goodId);
+                _repositoryGood.DeleteGood(itemId);
             }
-            return RedirectToAction("Goods", new { goodsStatus = goodsStatus });
+            return RedirectToAction("Articles");
         }
 
         //ДЛЯ ajax
@@ -215,26 +207,26 @@ namespace BizMall.Controllers
         /// </summary>
         /// <param name="checkedGoods"></param>
         /// <returns></returns>
-        public bool ArchieveGoods(string checkedGoods)
-        {
-            _repositoryGood.ArchieveGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
+        //public bool ArchieveGoods(string checkedGoods)
+        //{
+        //    _repositoryGood.ArchieveGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
 
-            //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.Active });
-            return true;
-        }
+        //    //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.Active });
+        //    return true;
+        //}
 
         /// <summary>
         /// ajax:активация товаров
         /// </summary>
         /// <param name="checkedGoods"></param>
         /// <returns></returns>
-        public bool ActivateGoods(string checkedGoods)
-        {
-            _repositoryGood.ActivateGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
+        //public bool ActivateGoods(string checkedGoods)
+        //{
+        //    _repositoryGood.ActivateGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
 
-            return true;
-            //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.InActive});
-        }
+        //    return true;
+        //    //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.InActive});
+        //}
 
         /// <summary>
         /// ajax:добавление на лету изображения к товару
@@ -243,7 +235,7 @@ namespace BizMall.Controllers
         /// <param name="newimages"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult AddGoodImage(int Id, ICollection<IFormFile> newimages)
+        public JsonResult AddArticleImage(int Id, ICollection<IFormFile> newimages)
         {
             //просто пишем изображение в бд
             Image image = new Image
@@ -303,7 +295,7 @@ namespace BizMall.Controllers
         /// <param name="goodImageIds"></param>
         /// <returns></returns>
         [HttpPost]
-        public string DeleteGoodImage(string goodImageIds)
+        public string DeleteArticleImage(string goodImageIds)
         {
             if (goodImageIds != null)
             {
@@ -339,15 +331,13 @@ namespace BizMall.Controllers
             return "success";//для того чтобы front переделал строку id зиображений товара в актуальную
         }
 
-
-
         /// <summary>
         /// ajax:удаление добавленных на лету изображений товара в случае если пользователь нажал "Назад"
         /// </summary>
         /// <param name="goodImageIds"></param>
         /// <returns></returns>
         [HttpPost]
-        public bool DeleteGoodImages(string goodImageIds)
+        public bool DeleteArticleImages(string goodImageIds)
         {
             if (goodImageIds != null)
             {

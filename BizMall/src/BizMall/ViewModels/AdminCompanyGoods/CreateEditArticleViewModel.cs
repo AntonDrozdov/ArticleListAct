@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BizMall.ViewModels.AdminCompanyGoods
 {
-    public class CreateEditGoodViewModel
+    public class CreateEditArticleViewModel
     {
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
@@ -36,7 +36,7 @@ namespace BizMall.ViewModels.AdminCompanyGoods
         public string addedImagesIds { get; set; } //в формате id_id_id_id_...
         public string deletedImagesIds { get; set; } //в формате id_id_id_id_...
 
-        public CreateEditGoodViewModel() {
+        public CreateEditArticleViewModel() {
             ImageViewModels = new List<ImageViewModel>();
         }
     }

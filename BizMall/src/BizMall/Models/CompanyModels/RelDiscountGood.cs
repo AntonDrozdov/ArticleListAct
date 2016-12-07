@@ -11,6 +11,6 @@ namespace BizMall.Models.CompanyModels
         public Discount Discount { get; set; }
 
         public int GoodId { get; set; }
-        public Good Good { get; set; }
+        public Article Good { get; set; }
     }
 }

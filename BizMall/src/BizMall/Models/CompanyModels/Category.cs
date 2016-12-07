@@ -20,11 +20,11 @@ namespace BizMall.Models.CompanyModels
         public int? CategoryId { get; set; }
         public Category ParentCategory { get; set; }
 
-        public ICollection<Good> Goods { get; set; }
+        public ICollection<Article> Goods { get; set; }
 
         public Category()
         {
-            Goods = new List<Good>();
+            Goods = new List<Article>();
         }
 
     }

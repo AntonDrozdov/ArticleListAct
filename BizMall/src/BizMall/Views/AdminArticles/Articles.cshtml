@@ -5,8 +5,8 @@
 <br />
 
 <!--Закладки Активные/НеАктивные-->
-@if (ViewBag.ActiveGoodsStatusMenu == 1)
-{
+<!--@if (ViewBag.ActiveGoodsStatusMenu == 1)
+    {
     <div class="btn-group" style="margin-bottom:10px;" data-toggle="buttons">
         <label class="NotActiveStatusGoods btn btn-success active" onclick="document.location='@Url.Action("Goods", new { goodsStatus = "1" })';"><input type="radio" name="options"/>Активные</label>
         <label class="NotActiveStatusGoods btn btn-success" onclick="document.location='@Url.Action("Goods", new { goodsStatus = "0" })';"><input type="radio" name="options">НеАктивные</label>
@@ -19,13 +19,14 @@ else
         <label class="NotActiveStatusGoods btn btn-success active" onclick="document.location='~@Url.Action("Goods", new { goodsStatus = "0" })';"><input type="radio" name="options">НеАктивные</label>
     </div>
 }
+-->
 
 <!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
 <div>
     <div style="float:left;margin-right:10px;margin-bottom:5px;">
-        <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminCompanyGoods" asp-action="EditGood">Новая позиция</a>
+        <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminArticles" asp-action="EditArticle">Новая статья</a>
     </div>
-
+    <!--
     <div style="float:left;margin-bottom:5px;">
         @if (ViewBag.ActiveGoodsStatusMenu == 1)
         {
@@ -46,6 +47,7 @@ else
             </div>
         }
     </div>
+    -->
 </div>
 
 
@@ -74,7 +76,7 @@ else
                     <img  width="50" src='@gvm.MainImageInBase64'/>
                     @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
                 </td>
-                <td><a asp-controller="AdminCompanyGoods" asp-action="EditGood" asp-route-id="@gvm.Id">@gvm.Title</a></td>
+                <td><a asp-controller="AdminArticles" asp-action="EditArticle" asp-route-id="@gvm.Id">@gvm.Title</a></td>
                 @if (@gvm.Category.ParentCategory != null)
                 {
                     <td>@gvm.Category.ParentCategory.Title/@gvm.Category.Title</td>
@@ -88,7 +90,7 @@ else
                     <td>@gvm.DaysToSetInActiveStatus дн.</td>
                 }
                 
-                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminCompanyGoods" asp-action="DeleteGood" asp-route-goodId="@gvm.Id" asp-route-goodsStatus="@ViewBag.ActiveGoodsStatusMenu" >Удалить</a></td>
+                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminArticles" asp-action="DeleteArticle" asp-route-goodId="@gvm.Id" asp-route-goodsStatus="@ViewBag.ActiveGoodsStatusMenu" >Удалить</a></td>
             </tr>
         }
     </table>
@@ -96,53 +98,52 @@ else
 
 
 <script type="text/javascript">
-    function Archieve() {
-        //перебрать все checkbox(checkedToDoSmth) на странице
-        var checkedGoods = "";
-        $("input[name='checkedToDoSmth']").each(function () {
-            if ($(this)[0].checked == true) {
-                checkedGoods += $(this).val() + "_";
-            }
-        });
+    //function Archieve() {
+    //    //перебрать все checkbox(checkedToDoSmth) на странице
+    //    var checkedGoods = "";
+    //    $("input[name='checkedToDoSmth']").each(function () {
+    //        if ($(this)[0].checked == true) {
+    //            checkedGoods += $(this).val() + "_";
+    //        }
+    //    });
 
-        //отправить запрос на обновление статусов
-        var formData = new FormData();
-        formData.append('checkedGoods', checkedGoods);
-        $.ajax({
-            url: "/AdminCompanyGoods/ArchieveGoods",
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function () {
-                window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=1");
-            }
-        });
-    }
+    //    //отправить запрос на обновление статусов
+    //    var formData = new FormData();
+    //    formData.append('checkedGoods', checkedGoods);
+    //    $.ajax({
+    //        url: "/AdminCompanyGoods/ArchieveGoods",
+    //        type: 'POST',
+    //        data: formData,
+    //        processData: false,
+    //        contentType: false,
+    //        success: function () {
+    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=1");
+    //        }
+    //    });
+    //}
 
-    function Activate() {
-        //перебрать все checkbox(checkedToDoSmth) на странице
-        var checkedGoods = "";
-        $("input[name='checkedToDoSmth']").each(function () {
-            if ($(this)[0].checked == true) {
-                checkedGoods += $(this).val() + "_";
-            }
-        });
+    //function Activate() {
+    //    //перебрать все checkbox(checkedToDoSmth) на странице
+    //    var checkedGoods = "";
+    //    $("input[name='checkedToDoSmth']").each(function () {
+    //        if ($(this)[0].checked == true) {
+    //            checkedGoods += $(this).val() + "_";
+    //        }
+    //    });
 
-        //отправить запрос на обновление статусов
-        var formData = new FormData();
-        formData.append('checkedGoods', checkedGoods);
-        $.ajax({
-            url: "/AdminCompanyGoods/ActivateGoods",
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function () {
-                window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=0");
-            }
-        });
-    }
-
+    //    //отправить запрос на обновление статусов
+    //    var formData = new FormData();
+    //    formData.append('checkedGoods', checkedGoods);
+    //    $.ajax({
+    //        url: "/AdminCompanyGoods/ActivateGoods",
+    //        type: 'POST',
+    //        data: formData,
+    //        processData: false,
+    //        contentType: false,
+    //        success: function () {
+    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=0");
+    //        }
+    //    });
+    //}
 </script>
 

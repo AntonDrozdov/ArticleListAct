@@ -25,7 +25,7 @@ namespace BizMall.Models.CompanyModels
         public double SalePricePerItem { get; set; }
 
         public int? GoodId { get; set; }
-        public Good Good { get; set; }
+        public Article Good { get; set; }
 
         public Sale()
         {

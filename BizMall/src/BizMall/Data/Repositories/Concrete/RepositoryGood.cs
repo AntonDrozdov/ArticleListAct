@@ -21,7 +21,7 @@ namespace BizMall.Data.Repositories.Concrete
             _repositoryImage = repositoryImage;
         }
 
-        public Good GetGood(int goodId) {
+        public Article GetGood(int goodId) {
             return _ctx.Goods
                 .Where(g => g.Id == goodId)
                 .Include(g => g.Category)
@@ -30,7 +30,7 @@ namespace BizMall.Data.Repositories.Concrete
                 .FirstOrDefault();
         }
 
-        public IQueryable<Good> ShopGoods(int ShopId)
+        public IQueryable<Article> ShopGoods(int ShopId)
         {
             //получаем список ид товаров магазина из объектов RelShopGood поля Goods, что есть связующие объекты между таблицей магазинов и таблицей товаров
             List<int> ShopGoodsIds = new List<int>();
@@ -41,7 +41,7 @@ namespace BizMall.Data.Repositories.Concrete
             return _ctx.Goods.Where(g => ShopGoodsIds.Contains(g.Id));
         }
 
-        public IQueryable<Good> ShopGoodsFullInformation(int ShopId, GoodStatus goodsStatus)
+        public IQueryable<Article> ShopGoodsFullInformation(int ShopId)
         {
 
             //получаем список ид товаров магазина из объектов RelShopGood поля Goods, что есть связующие объекты между таблицей магазинов и таблицей товаров
@@ -51,29 +51,18 @@ namespace BizMall.Data.Repositories.Concrete
                 ShopGoodsIds.Add(rsg.GoodId);
 
             //выбираем из таблицы товаров все, ид которых, содержаться в вышеопределенной коллекции необходимых ид
-            List<Good> Goods = new List<Good>();
-            if (goodsStatus == GoodStatus.Active)
-            {
-                 Goods = _ctx.Goods
-                                        .Where(g => ShopGoodsIds.Contains(g.Id) && ((DateTime.Now - g.UpdateTime).Days) <= 31)
-                                        .Include(g => g.Category)
-                                        .Include(g => g.Category.ParentCategory)
-                                        .Include(g => g.Images).ThenInclude(g => g.Image)
-                                        .ToList();
-            }
-            else {
-                 Goods = _ctx.Goods
-                        .Where(g => ShopGoodsIds.Contains(g.Id) && ((DateTime.Now - g.UpdateTime).Days) > 31)
-                        .Include(g => g.Category)
-                        .Include(g => g.Category.ParentCategory)
-                        .Include(g => g.Images).ThenInclude(g => g.Image)
-                        .ToList();
-            }
+            List<Article> Items = new List<Article>();
+            Items = _ctx.Goods
+                            .Where(g => ShopGoodsIds.Contains(g.Id))
+                            .Include(g => g.Category)
+                            .Include(g => g.Category.ParentCategory)
+                            .Include(g => g.Images).ThenInclude(g => g.Image)
+                            .ToList();
 
-            return Goods.AsQueryable();
+            return Items.AsQueryable();
         }
          
-        public Good SaveGood(Good good, Company company)
+        public Article SaveGood(Article good, Company company)
         {
             //Редактирование СУЩЕСТВУЮЩЕЙ позиции (дата UpdateStatus не меняется - она меняется только из списка неактивных товаров)
             if (good.Id != 0)
@@ -133,7 +122,7 @@ namespace BizMall.Data.Repositories.Concrete
 
         private void DeleteAllGoodImages(int goodId)
         {
-            Good dbEntry = _ctx.Goods.Where(g => g.Id == goodId)
+            Article dbEntry = _ctx.Goods.Where(g => g.Id == goodId)
                                    .Include(g => g.Category)
                                    .Include(g => g.Category.ParentCategory)
                                    .Include(g => g.Images)
@@ -149,7 +138,7 @@ namespace BizMall.Data.Repositories.Concrete
         {
             DeleteAllGoodImages(goodId);
 
-            Good good = _ctx.Goods.Where(g => g.Id == goodId).Include(g => g.Category).Include(g => g.Category.ParentCategory).Include(g => g.Images).FirstOrDefault();
+            Article good = _ctx.Goods.Where(g => g.Id == goodId).Include(g => g.Category).Include(g => g.Category.ParentCategory).Include(g => g.Images).FirstOrDefault();
             _ctx.Goods.Remove(good);
             _ctx.SaveChanges();
         }
