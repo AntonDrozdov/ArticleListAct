@@ -59,7 +59,7 @@ namespace BizMall
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.AddTransient<IRepositoryGood, RepositoryGood>();
+            services.AddTransient<IRepositoryArticle, RepositoryArticle>();
             services.AddTransient<IRepositoryCompany, RepositoryCompany>();
             services.AddTransient<IRepositoryUser, RepositoryUser>();
             services.AddTransient<IRepositoryImage, RepositoryImage>();

@@ -10,27 +10,29 @@ using BizMall.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BizMall.Controllers
 {
     /// <summary>
     /// ctor
     /// </summary>
+    [Authorize]
     public class AdminArticlesController : Controller
     {
         private readonly IRepositoryUser _repositoryUser;
         private readonly IRepositoryCompany _repositoryCompany;
-        private readonly IRepositoryGood _repositoryGood;
+        private readonly IRepositoryArticle _repositoryArticle;
         private readonly IRepositoryImage _repositoryImage;
 
         public AdminArticlesController(IRepositoryUser repositoryUser,
                                             IRepositoryCompany repositoryCompany,
-                                            IRepositoryGood repositoryGood,
+                                            IRepositoryArticle repositoryArticle,
                                             IRepositoryImage repositoryImage)
         {
             _repositoryUser = repositoryUser;
             _repositoryCompany = repositoryCompany;
-            _repositoryGood = repositoryGood;
+            _repositoryArticle = repositoryArticle;
             _repositoryImage = repositoryImage;
         }
 
@@ -56,28 +58,28 @@ namespace BizMall.Controllers
             if (currentUser != null)
             {
                 var Company = _repositoryCompany.GetUserCompany(currentUser);
-                var Goods = _repositoryGood.ShopGoodsFullInformation(Company.Id).ToList();
+                var Items = _repositoryArticle.CompanyArticlesFullInformation(Company.Id).ToList();
 
-                List<ArticleViewModel> GoodsVM = new List<ArticleViewModel>();
-                foreach (var good in Goods)
+                List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
+                foreach (var item in Items)
                 {
-                    var iDaysToSetInActiveStatus = 31 - (DateTime.Now - good.UpdateTime).Days;
-                    ArticleViewModel gvm = new ArticleViewModel
+                    ArticleViewModel avm = new ArticleViewModel
                     {
-                        Category = good.Category,
-                        CategoryId = good.CategoryId,
-                        Companies = good.Companies,
-                        Description = good.Description,
-                        Id = good.Id,
-                        Title = good.Title,
-                        DaysToSetInActiveStatus = iDaysToSetInActiveStatus
+                        Title = item.Title,
+                        Description = item.Description.Substring(0,100) + "...",
+                        UpdateTime = item.UpdateTime,
+                        Category = item.Category,
+                        CategoryId = item.CategoryId,
+                        Link = item.Link,
+                        HashTags = item.HashTags,
+                        Companies = item.Companies,
+                        Id = item.Id
                     };
-                    if (good.Images.Count != 0)
-                        gvm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(good.Images[0].Image);
-
-                    GoodsVM.Add(gvm);
+                    if (item.Images.Count != 0)
+                        avm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(item.Images[0].Image);
+                    ArticlesVM.Add(avm);
                 }
-                ViewBag.GoodsVM = GoodsVM;
+                ViewBag.ArticlesVM = ArticlesVM;
             }
             else
             {
@@ -98,20 +100,22 @@ namespace BizMall.Controllers
             CreateEditArticleViewModel cegvm = null;
             if (id != 0)
             {
-                Article good = _repositoryGood.GetGood(id);
+                Article item = _repositoryArticle.GetArticle(id);
 
                 cegvm = new CreateEditArticleViewModel
                 {
-                    Category = good.Category.Title,
-                    CategoryId = good.CategoryId,
-                    Description = good.Description,
-                    Id = good.Id,
-                    Title = good.Title
+                    Title = item.Title,
+                    Description = item.Description,
+                    Link = item.Link,
+                    HashTags = item.HashTags,
+                    Category = item.Category.Title,
+                    CategoryId = item.CategoryId,
+                    Id = item.Id
                 };
-                if (good.Images.Count != 0)
+                if (item.Images.Count != 0)
                 {
-                    cegvm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(good.Images.ToList()[0].Image);
-                    foreach (var rgi in good.Images)
+                    cegvm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(item.Images.ToList()[0].Image);
+                    foreach (var rgi in item.Images)
                     {
                         //для каждого изображения составляем соответствующую модель отображения
                         cegvm.ImageViewModels.Add(
@@ -166,7 +170,7 @@ namespace BizMall.Controllers
                     }
                 }
 
-                _repositoryGood.SaveGood(new Article
+                _repositoryArticle.SaveArticle(new Article
                 {
                     Id = model.Id,
                     Title = model.Title,
@@ -195,7 +199,7 @@ namespace BizMall.Controllers
         {
             if (itemId != 0)
             {
-                _repositoryGood.DeleteGood(itemId);
+                _repositoryArticle.DeleteArticle(itemId);
             }
             return RedirectToAction("Articles");
         }

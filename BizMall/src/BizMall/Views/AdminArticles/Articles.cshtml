@@ -58,39 +58,54 @@ else
         <thead>
         <tr>
             <th></th>
-            <th>Изображение</th>
             <th>Название</th>
+            <th>Описание</th>
             <th>Категория</th>
-            @if (ViewBag.ActiveGoodsStatusMenu == 1)
-            {
-                <th>Дней до окончания размещения</th>
-            }
+            <th>Время публикации</th>
             <th>Опции</th>
         </tr>
         </thead>
-        @foreach (var gvm in ViewBag.GoodsVM)
+        @foreach (var avm in ViewBag.ArticlesVM)
         {
             <tr>
-                <td><input type="checkbox" name="checkedToDoSmth" value="@gvm.Id"/></td>
+                <td><input type="checkbox" name="checkedToDoSmth" value="@avm.Id"/></td>
+
+                <!--TITLE-->
                 <td>
-                    <img  width="50" src='@gvm.MainImageInBase64'/>
-                    @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
+                    <a asp-controller="AdminArticles" asp-action="EditArticle" asp-route-id="@avm.Id">@avm.Title</a>
                 </td>
-                <td><a asp-controller="AdminArticles" asp-action="EditArticle" asp-route-id="@gvm.Id">@gvm.Title</a></td>
-                @if (@gvm.Category.ParentCategory != null)
+                <!--DESCRIPTION-->
+                <td>
+                    @avm.Description
+                </td>
+                
+                <!--CATEGORY-->
+                @if (@avm.Category.ParentCategory != null)
                 {
-                    <td>@gvm.Category.ParentCategory.Title/@gvm.Category.Title</td>
+                    <td>@avm.Category.ParentCategory.Title/@avm.Category.Title</td>
                 }
                 else
                 {
-                    <td>@gvm.Category.Title</td>
+                    <td>@avm.Category.Title</td>
                 }
+
                 @if (ViewBag.ActiveGoodsStatusMenu == 1)
                 {
-                    <td>@gvm.DaysToSetInActiveStatus дн.</td>
+                    <td>@avm.DaysToSetInActiveStatus дн.</td>
                 }
                 
-                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminArticles" asp-action="DeleteArticle" asp-route-goodId="@gvm.Id" asp-route-goodsStatus="@ViewBag.ActiveGoodsStatusMenu" >Удалить</a></td>
+                <!--UPDATETIME-->
+                <td>
+                    @avm.UpdateTime
+                </td>
+
+                <!--
+                    <td>
+                    <img width="50" src='@avm.MainImageInBase64' />
+                    @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
+                </td>
+                -->
+                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminArticles" asp-action="DeleteArticle" asp-route-goodId="@avm.Id" asp-route-goodsStatus="@ViewBag.ActiveGoodsStatusMenu" >Удалить</a></td>
             </tr>
         }
     </table>

@@ -12,17 +12,17 @@ using Microsoft.AspNetCore.Http;
 
 namespace BizMall.Data.Repositories.Concrete
 {
-    public class RepositoryGood : RepositoryBase, IRepository, IRepositoryGood
+    public class RepositoryArticle : RepositoryBase, IRepository, IRepositoryArticle
     {
         private readonly IRepositoryImage _repositoryImage;
 
-        public RepositoryGood(ApplicationDbContext ctx, IRepositoryImage repositoryImage) : base(ctx)
+        public RepositoryArticle(ApplicationDbContext ctx, IRepositoryImage repositoryImage) : base(ctx)
         {
             _repositoryImage = repositoryImage;
         }
 
-        public Article GetGood(int goodId) {
-            return _ctx.Goods
+        public Article GetArticle(int goodId) {
+            return _ctx.Articles
                 .Where(g => g.Id == goodId)
                 .Include(g => g.Category)
                 .Include(g => g.Category.ParentCategory)
@@ -30,7 +30,7 @@ namespace BizMall.Data.Repositories.Concrete
                 .FirstOrDefault();
         }
 
-        public IQueryable<Article> ShopGoods(int ShopId)
+        public IQueryable<Article> CompanyArticles(int ShopId)
         {
             //получаем список ид товаров магазина из объектов RelShopGood поля Goods, что есть связующие объекты между таблицей магазинов и таблицей товаров
             List<int> ShopGoodsIds = new List<int>();
@@ -38,10 +38,10 @@ namespace BizMall.Data.Repositories.Concrete
                 ShopGoodsIds.Add(rsg.GoodId);
 
             //выбираем из таблицы товаров все, ид которых, содержаться в вышеопределенной коллекции необходимых ид
-            return _ctx.Goods.Where(g => ShopGoodsIds.Contains(g.Id));
+            return _ctx.Articles.Where(g => ShopGoodsIds.Contains(g.Id));
         }
 
-        public IQueryable<Article> ShopGoodsFullInformation(int ShopId)
+        public IQueryable<Article> CompanyArticlesFullInformation(int ShopId)
         {
 
             //получаем список ид товаров магазина из объектов RelShopGood поля Goods, что есть связующие объекты между таблицей магазинов и таблицей товаров
@@ -52,7 +52,7 @@ namespace BizMall.Data.Repositories.Concrete
 
             //выбираем из таблицы товаров все, ид которых, содержаться в вышеопределенной коллекции необходимых ид
             List<Article> Items = new List<Article>();
-            Items = _ctx.Goods
+            Items = _ctx.Articles
                             .Where(g => ShopGoodsIds.Contains(g.Id))
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
@@ -62,12 +62,12 @@ namespace BizMall.Data.Repositories.Concrete
             return Items.AsQueryable();
         }
          
-        public Article SaveGood(Article good, Company company)
+        public Article SaveArticle(Article good, Company company)
         {
             //Редактирование СУЩЕСТВУЮЩЕЙ позиции (дата UpdateStatus не меняется - она меняется только из списка неактивных товаров)
             if (good.Id != 0)
             {
-                var dbEntry = _ctx.Goods.Where(g => g.Id == good.Id)
+                var dbEntry = _ctx.Articles.Where(g => g.Id == good.Id)
                                     .Include(g => g.Category)
                                     .Include(g => g.Category.ParentCategory)
                                     .Include(g => g.Images)
@@ -86,7 +86,7 @@ namespace BizMall.Data.Repositories.Concrete
             //Добавление НОВОЙ позиции (в т.ч. дата UpdateStatus выставляется на текущий день - берется из параметра - good)
             else
             {         
-                _ctx.Goods.Add(good);
+                _ctx.Articles.Add(good);
                 _ctx.SaveChanges();
 
                 //теперь создаем обхъкт связку товар - магазин
@@ -100,29 +100,9 @@ namespace BizMall.Data.Repositories.Concrete
             return good;
         }
 
-        public void ArchieveGoods(List<int> ids) {
-            var goods = _ctx.Goods.Where(g => ids.Contains(g.Id)).ToList();
-            foreach (var good in goods) {
-                good.UpdateTime = good.UpdateTime.AddYears(-1);
-            }
-            _ctx.Goods.UpdateRange(goods);
-            _ctx.SaveChanges();
-        }
-
-        public void ActivateGoods(List<int> ids)
+        private void DeleteAllArtileImages(int goodId)
         {
-            var goods = _ctx.Goods.Where(g => ids.Contains(g.Id)).ToList();
-            foreach (var good in goods)
-            {
-                good.UpdateTime = DateTime.Now;
-            }
-            _ctx.Goods.UpdateRange(goods);
-            _ctx.SaveChanges();
-        }
-
-        private void DeleteAllGoodImages(int goodId)
-        {
-            Article dbEntry = _ctx.Goods.Where(g => g.Id == goodId)
+            Article dbEntry = _ctx.Articles.Where(g => g.Id == goodId)
                                    .Include(g => g.Category)
                                    .Include(g => g.Category.ParentCategory)
                                    .Include(g => g.Images)
@@ -134,12 +114,12 @@ namespace BizMall.Data.Repositories.Concrete
             foreach (var item in imIds) _repositoryImage.DeleteImage(item);
         }
 
-        public void DeleteGood(int goodId)
+        public void DeleteArticle(int goodId)
         {
-            DeleteAllGoodImages(goodId);
+            DeleteAllArtileImages(goodId);
 
-            Article good = _ctx.Goods.Where(g => g.Id == goodId).Include(g => g.Category).Include(g => g.Category.ParentCategory).Include(g => g.Images).FirstOrDefault();
-            _ctx.Goods.Remove(good);
+            Article good = _ctx.Articles.Where(g => g.Id == goodId).Include(g => g.Category).Include(g => g.Category.ParentCategory).Include(g => g.Images).FirstOrDefault();
+            _ctx.Articles.Remove(good);
             _ctx.SaveChanges();
         }
     }

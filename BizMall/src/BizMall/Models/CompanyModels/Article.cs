@@ -13,19 +13,21 @@ namespace BizMall.Models.CompanyModels
 
         public string Description { get; set; }
 
+        public string HashTags { get; set; }
+
+        public string Link { get; set; }
+
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
         public DateTime UpdateTime { get; set; }
 
-        public List<RelCompanyGood> Companies { get; set; }
-
         public List<RelGoodImage> Images { get; set; }
+        public List<RelCompanyGood> Companies { get; set; }
         
         public Article()
         {
             Images = new List<RelGoodImage>();
-            //Discounts = new List<RelDiscountGood>();
             Companies = new List<RelCompanyGood>();
         }
     }

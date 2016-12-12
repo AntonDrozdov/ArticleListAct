@@ -2,6 +2,7 @@
 using BizMall.Models.CommonModels;
 using System.Collections.Generic;
 using BizMall.Models.CompanyModels;
+using System;
 
 namespace BizMall.ViewModels.AdminCompanyGoods
 {
@@ -13,10 +14,14 @@ namespace BizMall.ViewModels.AdminCompanyGoods
 
         public string Description { get; set; }
 
+        public string HashTags { get; set; }
+
+        public string Link { get; set; }
+
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
-        public int DaysToSetInActiveStatus { get; set; }
+        public DateTime UpdateTime { get; set; }
 
         public ICollection<Image> Images { get; set; }
         public List<RelCompanyGood> Companies { get; set; }
@@ -24,7 +29,6 @@ namespace BizMall.ViewModels.AdminCompanyGoods
         public ArticleViewModel()
         {
             Images = new List<Image>();
-
             Companies = new List<RelCompanyGood>();
         }
 

@@ -8,8 +8,8 @@ using BizMall.Data.DBContexts;
 namespace BizMall.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161001085718_DeleteCascaderemoving")]
-    partial class DeleteCascaderemoving
+    [Migration("20161208150040_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,9 +81,35 @@ namespace BizMall.Migrations
 
                     b.Property<bool>("IsMain");
 
+                    b.Property<bool>("ToDelete");
+
                     b.HasKey("Id");
 
                     b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("BizMall.Models.CompanyModels.Article", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CategoryId");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("HashTags");
+
+                    b.Property<string>("Link");
+
+                    b.Property<string>("Title");
+
+                    b.Property<DateTime>("UpdateTime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.Category", b =>
@@ -109,9 +135,15 @@ namespace BizMall.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("AccountType");
+
                     b.Property<string>("ApplicationUserId");
 
+                    b.Property<string>("ContactEmail");
+
                     b.Property<string>("Description");
+
+                    b.Property<string>("Telephone");
 
                     b.Property<string>("Title");
 
@@ -121,28 +153,6 @@ namespace BizMall.Migrations
                         .IsUnique();
 
                     b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("BizMall.Models.CompanyModels.Good", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("Amount");
-
-                    b.Property<int?>("CategoryId");
-
-                    b.Property<string>("Description");
-
-                    b.Property<int?>("Status");
-
-                    b.Property<string>("Title");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("Goods");
                 });
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyGood", b =>
@@ -158,6 +168,21 @@ namespace BizMall.Migrations
                     b.HasIndex("GoodId");
 
                     b.ToTable("RelCompanyGood");
+                });
+
+            modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyImage", b =>
+                {
+                    b.Property<int>("CompanyId");
+
+                    b.Property<int>("ImageId");
+
+                    b.HasKey("CompanyId", "ImageId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("ImageId");
+
+                    b.ToTable("RelCompanyImage");
                 });
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelGoodImage", b =>
@@ -282,6 +307,13 @@ namespace BizMall.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("BizMall.Models.CompanyModels.Article", b =>
+                {
+                    b.HasOne("BizMall.Models.CompanyModels.Category", "Category")
+                        .WithMany("Goods")
+                        .HasForeignKey("CategoryId");
+                });
+
             modelBuilder.Entity("BizMall.Models.CompanyModels.Category", b =>
                 {
                     b.HasOne("BizMall.Models.CompanyModels.Category", "ParentCategory")
@@ -296,65 +328,80 @@ namespace BizMall.Migrations
                         .HasForeignKey("BizMall.Models.CompanyModels.Company", "ApplicationUserId");
                 });
 
-            modelBuilder.Entity("BizMall.Models.CompanyModels.Good", b =>
-                {
-                    b.HasOne("BizMall.Models.CompanyModels.Category", "Category")
-                        .WithMany("Goods")
-                        .HasForeignKey("CategoryId");
-                });
-
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyGood", b =>
                 {
                     b.HasOne("BizMall.Models.CompanyModels.Company", "Company")
                         .WithMany("Goods")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("BizMall.Models.CompanyModels.Good", "Good")
+                    b.HasOne("BizMall.Models.CompanyModels.Article", "Good")
                         .WithMany("Companies")
-                        .HasForeignKey("GoodId");
+                        .HasForeignKey("GoodId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyImage", b =>
+                {
+                    b.HasOne("BizMall.Models.CompanyModels.Company", "Company")
+                        .WithMany("Images")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BizMall.Models.CommonModels.Image", "Image")
+                        .WithMany("Companies")
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelGoodImage", b =>
                 {
-                    b.HasOne("BizMall.Models.CompanyModels.Good", "Good")
+                    b.HasOne("BizMall.Models.CompanyModels.Article", "Good")
                         .WithMany("Images")
-                        .HasForeignKey("GoodId");
+                        .HasForeignKey("GoodId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BizMall.Models.CommonModels.Image", "Image")
                         .WithMany("Goods")
-                        .HasForeignKey("ImageId");
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
                         .WithMany("Claims")
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("BizMall.Models.ApplicationUser")
                         .WithMany("Claims")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("BizMall.Models.ApplicationUser")
                         .WithMany("Logins")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BizMall.Models.ApplicationUser")
                         .WithMany("Roles")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }

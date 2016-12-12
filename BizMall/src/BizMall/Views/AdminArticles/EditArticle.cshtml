@@ -38,11 +38,27 @@
     <!--КАТЕГОРИИ-->
     @await Component.InvokeAsync("AllCategories", new{ cegvm = Model } )
    
+    <!--ССЫЛКА-->
+    <div class="form-group">
+        <label asp-for="Link" class="col-md-2 control-label">Ссылка</label>
+        <div class="col-md-10">
+            <textarea asp-for="Link" class="form-control" id="Link" style="resize: vertical;" placeholder="Ссылка" Value="@Model.Link"></textarea>
+            @*<span asp-validation-for="Description" class="text-danger"></span>*@
+        </div>
+    </div>
+    
+    <!--HASHTAGS-->
+    <div class="form-group">
+        <label asp-for="HashTags" class="col-md-2 control-label">Хэш-теги</label>
+        <div class="col-md-10">
+            <textarea asp-for="HashTags" class="form-control" id="Description" style="resize: vertical;" placeholder="Хэш-теги" Value="@Model.HashTags"></textarea>
+            @*<span asp-validation-for="Description" class="text-danger"></span>*@
+        </div>
+    </div>
+
      <!--ИЗОБРАЖЕНИЯ-->
     <div class="form-group">
         <label class="col-md-2 control-label">Изображения</label>
-        @*Ids изображений добавляемого/редактируемого товара*@
-
         @if (Model.MainImageInBase64 == null)
         {
             <div class="form-group">
@@ -51,18 +67,6 @@
                     </div>
                 </div>
             </div>
-
-            @*<div class="form-group">
-                <div class="col-md-8">
-                    <div class="table-responsive">
-                        <table class="table" style="margin-left:25px;">
-                            <tr id="images">
-                                <td style="text-align:center;padding:3px;"></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>*@
         }
         else
         {
@@ -81,28 +85,7 @@
                     </div>
                 </div>
             </div>
-
-            @*<div class="form-group">
-                    <div class="col-md-8">
-                        <div class="table-responsive">
-                            <table class="table" style="margin-left:25px;">
-                                <tr id="images">
-                                    @foreach (var imageViewModel in Model.ImageViewModels)
-                                    {
-                                        <td id="imgthumb_@imageViewModel.Id" class="imagethumbcell">
-                                            <img class="thumb" src='@imageViewModel.ImageInBase64' />
-                                        </td>
-                                        <td id="delbtn_@imageViewModel.Id" class="imagedeletebuttoncell">
-                                            <a class='btn btn-default' onclick="deleteGoodImage('@imageViewModel.goodImageIds');"><span class="imagedeletebutton">x</span></a>
-                                        </td>
-                                    }
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>*@
         }
-
         <div class="col-md-2"></div>
         <div class="form-group">
             <div class="col-md-3">
@@ -120,8 +103,6 @@
             <input asp-for="deletedImagesIds" type="hidden" id="deletedImagesIds" readonly="readonly" value="@Model.deletedImagesIds" />
         </div>
     </div>
-
-
     
     <!--СООБЩЕНИЯ ВАЛИДАЦИИ-->
     <div class="form-group">
@@ -147,7 +128,7 @@
         formData.append('addedImagesIds', $("#addedImagesIds").val());
         formData.append('deletedImagesIds', $("#deletedImagesIds").val());
         $.ajax({
-            url: "/AdminCompanyGoods/RestoreImages/",
+            url: "/AdminArticles/RestoreImages/",
             type: 'POST',
             data: formData,
             processData: false,
@@ -163,7 +144,7 @@
         var formData = new FormData();
         formData.append('goodImageIds', goodImageIds);
         $.ajax({
-            url: "/AdminCompanyGoods/DeleteGoodImage/",
+            url: "/AdminArticles/DeleteArticleImage/",
             type: 'POST',
             data: formData,
             processData: false,
@@ -217,14 +198,14 @@
         formData.append('newimages', image);
         formData.append('Id', goodId);
         $.ajax({
-            url: "/AdminCompanyGoods/AddGoodImage/",
+            url: "/AdminArticles/AddArticleImage/",
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             success: function (image) {
                 $.ajax({
-                    url: "/AdminCompanyGoods/GetImageForThumb/" + image.id,
+                    url: "/AdminArticles/GetImageForThumb/" + image.id,
                     type: 'GET',
                     data: formData,
                     processData: false,

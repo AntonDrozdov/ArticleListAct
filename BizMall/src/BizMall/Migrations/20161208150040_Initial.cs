@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BizMall.Migrations
 {
-    public partial class _9162016Initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -33,6 +33,23 @@ namespace BizMall.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(nullable: true),
+                    ImageContent = table.Column<byte[]>(nullable: true),
+                    ImageMimeType = table.Column<string>(nullable: true),
+                    IsMain = table.Column<bool>(nullable: false),
+                    ToDelete = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,8 +106,11 @@ namespace BizMall.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AccountType = table.Column<int>(nullable: false),
                     ApplicationUserId = table.Column<string>(nullable: true),
+                    ContactEmail = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
+                    Telephone = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -146,22 +166,23 @@ namespace BizMall.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Goods",
+                name: "Articles",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Amount = table.Column<int>(nullable: true),
                     CategoryId = table.Column<int>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    Status = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: true)
+                    HashTags = table.Column<string>(nullable: true),
+                    Link = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: true),
+                    UpdateTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Goods", x => x.Id);
+                    table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Goods_Categories_CategoryId",
+                        name: "FK_Articles_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
@@ -214,24 +235,25 @@ namespace BizMall.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Images",
+                name: "RelCompanyImage",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(nullable: true),
-                    GoodId = table.Column<int>(nullable: false),
-                    ImageContent = table.Column<byte[]>(nullable: true),
-                    ImageMimeType = table.Column<string>(nullable: true),
-                    IsMain = table.Column<bool>(nullable: false)
+                    CompanyId = table.Column<int>(nullable: false),
+                    ImageId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.PrimaryKey("PK_RelCompanyImage", x => new { x.CompanyId, x.ImageId });
                     table.ForeignKey(
-                        name: "FK_Images_Goods_GoodId",
-                        column: x => x.GoodId,
-                        principalTable: "Goods",
+                        name: "FK_RelCompanyImage_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RelCompanyImage_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -253,9 +275,33 @@ namespace BizMall.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RelCompanyGood_Goods_GoodId",
+                        name: "FK_RelCompanyGood_Articles_GoodId",
                         column: x => x.GoodId,
-                        principalTable: "Goods",
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RelGoodImage",
+                columns: table => new
+                {
+                    ImageId = table.Column<int>(nullable: false),
+                    GoodId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RelGoodImage", x => new { x.ImageId, x.GoodId });
+                    table.ForeignKey(
+                        name: "FK_RelGoodImage_Articles_GoodId",
+                        column: x => x.GoodId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RelGoodImage_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -272,9 +318,9 @@ namespace BizMall.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_GoodId",
-                table: "Images",
-                column: "GoodId");
+                name: "IX_Articles_CategoryId",
+                table: "Articles",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_CategoryId",
@@ -288,11 +334,6 @@ namespace BizMall.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Goods_CategoryId",
-                table: "Goods",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RelCompanyGood_CompanyId",
                 table: "RelCompanyGood",
                 column: "CompanyId");
@@ -301,6 +342,26 @@ namespace BizMall.Migrations
                 name: "IX_RelCompanyGood_GoodId",
                 table: "RelCompanyGood",
                 column: "GoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RelCompanyImage_CompanyId",
+                table: "RelCompanyImage",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RelCompanyImage_ImageId",
+                table: "RelCompanyImage",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RelGoodImage_GoodId",
+                table: "RelGoodImage",
+                column: "GoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RelGoodImage_ImageId",
+                table: "RelGoodImage",
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -336,10 +397,13 @@ namespace BizMall.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "RelCompanyGood");
 
             migrationBuilder.DropTable(
-                name: "RelCompanyGood");
+                name: "RelCompanyImage");
+
+            migrationBuilder.DropTable(
+                name: "RelGoodImage");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -360,7 +424,10 @@ namespace BizMall.Migrations
                 name: "Companies");
 
             migrationBuilder.DropTable(
-                name: "Goods");
+                name: "Articles");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

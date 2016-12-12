@@ -87,6 +87,30 @@ namespace BizMall.Migrations
                     b.ToTable("Images");
                 });
 
+            modelBuilder.Entity("BizMall.Models.CompanyModels.Article", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CategoryId");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("HashTags");
+
+                    b.Property<string>("Link");
+
+                    b.Property<string>("Title");
+
+                    b.Property<DateTime>("UpdateTime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Articles");
+                });
+
             modelBuilder.Entity("BizMall.Models.CompanyModels.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -128,30 +152,6 @@ namespace BizMall.Migrations
                         .IsUnique();
 
                     b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("BizMall.Models.CompanyModels.Good", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("Amount");
-
-                    b.Property<int?>("CategoryId");
-
-                    b.Property<string>("Description");
-
-                    b.Property<int?>("Status");
-
-                    b.Property<string>("Title");
-
-                    b.Property<DateTime>("UpdateTime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("Goods");
                 });
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyGood", b =>
@@ -306,6 +306,13 @@ namespace BizMall.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("BizMall.Models.CompanyModels.Article", b =>
+                {
+                    b.HasOne("BizMall.Models.CompanyModels.Category", "Category")
+                        .WithMany("Goods")
+                        .HasForeignKey("CategoryId");
+                });
+
             modelBuilder.Entity("BizMall.Models.CompanyModels.Category", b =>
                 {
                     b.HasOne("BizMall.Models.CompanyModels.Category", "ParentCategory")
@@ -320,13 +327,6 @@ namespace BizMall.Migrations
                         .HasForeignKey("BizMall.Models.CompanyModels.Company", "ApplicationUserId");
                 });
 
-            modelBuilder.Entity("BizMall.Models.CompanyModels.Good", b =>
-                {
-                    b.HasOne("BizMall.Models.CompanyModels.Category", "Category")
-                        .WithMany("Goods")
-                        .HasForeignKey("CategoryId");
-                });
-
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyGood", b =>
                 {
                     b.HasOne("BizMall.Models.CompanyModels.Company", "Company")
@@ -334,7 +334,7 @@ namespace BizMall.Migrations
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("BizMall.Models.CompanyModels.Good", "Good")
+                    b.HasOne("BizMall.Models.CompanyModels.Article", "Good")
                         .WithMany("Companies")
                         .HasForeignKey("GoodId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -355,7 +355,7 @@ namespace BizMall.Migrations
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelGoodImage", b =>
                 {
-                    b.HasOne("BizMall.Models.CompanyModels.Good", "Good")
+                    b.HasOne("BizMall.Models.CompanyModels.Article", "Good")
                         .WithMany("Images")
                         .HasForeignKey("GoodId")
                         .OnDelete(DeleteBehavior.Cascade);
