@@ -18,13 +18,13 @@ namespace BizMall.Models.CommonModels
         [HiddenInput(DisplayValue = false)]
         public string ImageMimeType { get; set; }
 
-        public List<RelGoodImage> Goods { get; set; }
+        public List<RelGoodImage> Articles { get; set; }
         public List<RelCompanyImage> Companies { get; set; }
 
         public bool ToDelete { get; set; }
 
         public Image() {
-            Goods = new List<RelGoodImage>();
+            Articles = new List<RelGoodImage>();
             Companies = new List<RelCompanyImage>();
         } 
              

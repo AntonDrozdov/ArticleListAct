@@ -43,7 +43,7 @@ namespace BizMall.Data.DBContexts
             builder.Entity<RelGoodImage>().HasKey(r => new { r.ImageId, r.GoodId });
             builder.Entity<RelGoodImage>()
                 .HasOne(r => r.Image)
-                .WithMany(l => l.Goods)
+                .WithMany(l => l.Articles)
                 .HasForeignKey(r => r.ImageId);
             builder.Entity<RelGoodImage>()
                 .HasOne(r => r.Good)

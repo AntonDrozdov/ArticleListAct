@@ -3,14 +3,14 @@
 @using Microsoft.AspNetCore.Http.Authentication
 @using BizMall.ViewModels.AccountViewModels
 
-@model BizMall.ViewModels.AdminCompanyGoods.CreateEditArticleViewModel
+@model BizMall.ViewModels.AdminCompanyArticles.CreateEditArticleViewModel
 @{
     ViewData["Title"] = "Новая статья  ";
     Layout = "_AdminLayout";
 }
 
 <h3>@ViewData["Title"]</h3>
-<form asp-controller="AdminCompanyGoods" asp-action="EditArticle" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+<form asp-controller="AdminArticles" asp-action="EditArticle" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
     <hr />
     <!--Id добавляемого/редактируемого товара-->
     @if (Model.Id != 0)
@@ -36,7 +36,7 @@
     </div>
     
     <!--КАТЕГОРИИ-->
-    @await Component.InvokeAsync("AllCategories", new{ cegvm = Model } )
+    @await Component.InvokeAsync("AllCategoriesForEditing", new{ cegvm = Model } )
    
     <!--ССЫЛКА-->
     <div class="form-group">

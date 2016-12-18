@@ -105,7 +105,7 @@ else
                     @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
                 </td>
                 -->
-                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminArticles" asp-action="DeleteArticle" asp-route-goodId="@avm.Id" asp-route-goodsStatus="@ViewBag.ActiveGoodsStatusMenu" >Удалить</a></td>
+                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminArticles" asp-action="DeleteArticle" asp-route-itemId="@avm.Id">Удалить</a></td>
             </tr>
         }
     </table>

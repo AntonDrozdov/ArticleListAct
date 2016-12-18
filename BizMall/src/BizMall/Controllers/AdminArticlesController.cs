@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizMall.Data.Repositories.Abstract;
-using BizMall.ViewModels.AdminCompanyGoods;
+using BizMall.ViewModels.AdminCompanyArticles;
 using BizMall.Models.CompanyModels;
 using BizMall.Models.CommonModels;
 using BizMall.Utils;
@@ -63,10 +63,11 @@ namespace BizMall.Controllers
                 List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
                 foreach (var item in Items)
                 {
+                    var DescriptionLenght = (item.Description.Length > 100) ? 100 : item.Description.Length;
                     ArticleViewModel avm = new ArticleViewModel
                     {
                         Title = item.Title,
-                        Description = item.Description.Substring(0,100) + "...",
+                        Description = item.Description.Substring(0, DescriptionLenght) + "...",
                         UpdateTime = item.UpdateTime,
                         Category = item.Category,
                         CategoryId = item.CategoryId,
@@ -151,7 +152,7 @@ namespace BizMall.Controllers
                 if (currentUser != null)
                     company = _repositoryCompany.GetUserCompany(currentUser);
                 else
-                    return RedirectToAction("Goods");
+                    return RedirectToAction("Articles");
 
                 //ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ
                 List<RelGoodImage> relImages = new List<RelGoodImage>();
@@ -175,6 +176,8 @@ namespace BizMall.Controllers
                     Id = model.Id,
                     Title = model.Title,
                     Description = model.Description,
+                    Link = model.Link,
+                    HashTags = model.HashTags,
                     CategoryId = Convert.ToInt32(model.CategoryId),
                     Images = relImages,
                     UpdateTime = DateTime.Now
@@ -186,7 +189,7 @@ namespace BizMall.Controllers
                     _repositoryImage.DeleteImages(ids);
                 }
             }
-            return RedirectToAction("Goods");
+            return RedirectToAction("Articles");
         }
 
         /// <summary>
@@ -259,7 +262,7 @@ namespace BizMall.Controllers
                 image.ImageContent = inArray;
                 if (Id != 0)
                 {
-                    image.Goods.Add(new RelGoodImage
+                    image.Articles.Add(new RelGoodImage
                     {
                         ImageId = image.Id,
                         GoodId = Id

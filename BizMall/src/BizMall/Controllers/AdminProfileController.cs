@@ -7,7 +7,7 @@ using BizMall.Models.CompanyModels;
 using Microsoft.AspNetCore.Mvc;
 using BizMall.ViewModels.AccountViewModels;
 using BizMall.Utils;
-using BizMall.ViewModels.AdminCompanyGoods;
+using BizMall.ViewModels.AdminCompanyArticles;
 using Microsoft.AspNetCore.Identity;
 using BizMall.Models;
 

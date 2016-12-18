@@ -36,7 +36,6 @@ float: left;
 /*отображение таблицы изображении в диалоге добавления/редактирования товара*/
 .imagetable {
     margin:5px;
-    //margin-left:50px;
     padding:5px;
 }
 .thumb {
@@ -230,7 +229,7 @@ float: left;
     }
 
         #navbar-sub-header div {
-            margin-top: 10px;
+            margin-top: 3px;
         }
 
         #navbar-sub-header button {

@@ -15,7 +15,7 @@ using BizMall.Data.Repositories.Abstract;
 using Microsoft.AspNetCore.Http;
 using BizMall.Models.CommonModels;
 using System.IO;
-using BizMall.ViewModels.AdminCompanyGoods;
+using BizMall.ViewModels.AdminCompanyArticles;
 using BizMall.Utils;
 using BizMall.Models.CompanyModels;
 

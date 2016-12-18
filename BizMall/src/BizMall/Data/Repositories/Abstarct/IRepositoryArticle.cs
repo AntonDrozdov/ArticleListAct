@@ -12,6 +12,7 @@ namespace BizMall.Data.Repositories.Abstract
         Article GetArticle(int goodId);
         void DeleteArticle(int goodId);
         IQueryable<Article> CompanyArticlesFullInformation(int ShopId);
+        IQueryable<Article> TopArticlesFullInformation();
         IQueryable<Article> CompanyArticles(int ShopId);
         Article SaveArticle(Article item, Company company);
     }

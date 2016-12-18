@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using BizMall.Models.CompanyModels;
 using System;
 
-namespace BizMall.ViewModels.AdminCompanyGoods
+namespace BizMall.ViewModels.AdminCompanyArticles
 {
     public class ArticleViewModel
     {

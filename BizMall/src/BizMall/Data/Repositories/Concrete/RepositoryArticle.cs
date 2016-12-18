@@ -61,7 +61,23 @@ namespace BizMall.Data.Repositories.Concrete
 
             return Items.AsQueryable();
         }
-         
+
+        public IQueryable<Article> TopArticlesFullInformation()
+        {
+            //выбираем из таблицы товаров все, ид которых, содержаться в вышеопределенной коллекции необходимых ид
+            List<Article> Items = new List<Article>();
+            Items = _ctx.Articles
+                            .Include(g => g.Category)
+                            .Include(g => g.Category.ParentCategory)
+                            .Include(g => g.Images).ThenInclude(g => g.Image)
+                            .OrderByDescending(g => g.UpdateTime)
+                            .Take(10)
+                            .ToList();
+
+            return Items.AsQueryable();
+        }
+
+
         public Article SaveArticle(Article good, Company company)
         {
             //Редактирование СУЩЕСТВУЮЩЕЙ позиции (дата UpdateStatus не меняется - она меняется только из списка неактивных товаров)

@@ -1,4 +1,4 @@
-﻿using BizMall.ViewModels.AdminCompanyGoods;
+﻿using BizMall.ViewModels.AdminCompanyArticles;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
