@@ -29,14 +29,14 @@
 </script>
 -->
 
-<div class="col-md-2">
+
     <nav id="navbar-sub-header" role="navigation" class="navbar navbar-default" style="margin-top:5px;">
         <div class="navbar-header">
             <button type="button" data-target="#navbarCollapseCat" data-toggle="collapse" class="navbar-toggle">
                 <span>Категории</span>
             </button>
         </div>
-        <div id="navbarCollapseCat" class="navbar-collapse collapse">
+        <div id="navbarCollapseCat" class="navbar-collapse collapse" style="padding-top: 10px;">
             <ul class="nav navbar-nav">
 
                 @foreach (var topcat in ViewBag.Categories)
@@ -54,14 +54,14 @@
                         }
                         if (IsParent == true)
                         {
-                            <li class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">@topcat.Title<b class="caret"></b></a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop">
+                            <li class="dropdown" style="text-align: center;">
+                                <a data-toggle="dropdown" class="dropdown-toggle" href="#" style="border-radius: 4px;padding-top: 5px;width: 240px; margin: auto;">@topcat.Title<b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop"     style="border-radius: 4px;">
                                     @foreach (var chcat in ViewBag.Categories)
                                     {
                                         @if (chcat.CategoryId == topcat.Id)
                                         {
-                                            <li><a href="#">@chcat.Title</a></li>
+                                            <li><a href="#" style="text-align: center;margin: auto;"><b>@chcat.Title</b></a></li>
                                         }
                                     }
                                 </ul>
@@ -69,46 +69,19 @@
                         }
                         if (IsParent == false)
                         {
-                            <li><a href="#">@topcat.Title</a></li>
+                            <li ><a href="#" style="width:240px;text-align: center;margin: auto;">@topcat.Title</a></li>
                         }
                     }
                 }
             </ul>
         </div>
     </nav>
-</div>
 
 
 
 
 
-<!--
-<div class="col-md-2">
-    <nav id="navbar-sub-header" role="navigation" class="navbar navbar-default" style="margin-top:5px;">
-        <div class="navbar-header">
-            <button type="button" data-target="#navbarCollapseCat" data-toggle="collapse" class="navbar-toggle">
-                <span>Категории</span>
-            </button>
-        </div>
-        <div id="navbarCollapseCat" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="#">Главная</a></li>
-                <li><a href="#">Статьи</a></li>
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Новости<b class="caret"></b></a>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="#">Windows</a></li>
-                        <li><a href="#">Mac OS</a></li>
-                        <li><a href="#">Linux</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Другие системы</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</div>
--->
+
 
 
 

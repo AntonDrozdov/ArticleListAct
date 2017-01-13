@@ -1,0 +1,45 @@
+﻿@model BizMall.ViewModels.AdminCompanyArticles.ArticleViewModel
+
+<div class="">
+    <p style="font-weight:bold;font-size:15px;">@Model.Title</p>
+    <p>
+    @if (@Model.Category.ParentCategory != null)
+        {
+            <span>[</span>
+                @Model.Category.ParentCategory.Title
+            <span>][</span>
+            @Model.Category.Title;
+            <span>]</span>}
+    else
+        {<span>[</span>@Model.Category.Title;<span>]</span>}
+    </p>
+    <p>@Model.UpdateTime</p>
+    <p align="justify">@Model.Description</p>
+    <p><a href="@Model.Link">Перейти...</a></p>
+    <p style="margin-bottom:15px;"><img width="100" src='@Model.MainImageInBase64' /></p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

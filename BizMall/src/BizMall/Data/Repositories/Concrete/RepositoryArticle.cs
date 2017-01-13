@@ -94,6 +94,8 @@ namespace BizMall.Data.Repositories.Concrete
                     dbEntry.Title = good.Title;
                     dbEntry.Description = good.Description;
                     dbEntry.CategoryId = good.CategoryId;
+                    dbEntry.Link = good.Link;
+                    dbEntry.HashTags = good.HashTags;
                 }
 
                 _ctx.Entry(dbEntry).State = EntityState.Modified;

@@ -47,6 +47,7 @@ namespace BizMall
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
+            var tmp = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 

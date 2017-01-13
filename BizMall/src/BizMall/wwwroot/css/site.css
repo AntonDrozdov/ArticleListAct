@@ -14,7 +14,7 @@
 input,
 select,
 textarea {
-    max-width: 900px;
+    max-width: 1000px;
 }
 
 .menu 
@@ -196,6 +196,15 @@ float: left;
     width: 100%;
 }
 
+@media (min-width: 768px) {
+    .navbar-nav > li > a 
+    {
+        padding-top: 0px;
+        padding-bottom:5px;
+    }
+}
+
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
   /* Hide captions */
@@ -243,4 +252,6 @@ float: left;
     #navbarCollapseCat {
         border-top: none;
     }
+
+
 }

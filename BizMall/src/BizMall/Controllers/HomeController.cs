@@ -26,10 +26,11 @@ namespace BizMall.Controllers
             foreach (var item in Items)
             {
                 var DescriptionLenght = (item.Description.Length > 100) ? 100 : item.Description.Length;
+
                 ArticleViewModel avm = new ArticleViewModel
                 {
                     Title = item.Title,
-                    Description = item.Description.Substring(0, DescriptionLenght) + "...",
+                    Description = item.Description,
                     UpdateTime = item.UpdateTime,
                     Category = item.Category,
                     CategoryId = item.CategoryId,
@@ -38,6 +39,7 @@ namespace BizMall.Controllers
                     Companies = item.Companies,
                     Id = item.Id
                 };
+
                 if (item.Images.Count != 0)
                     avm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(item.Images[0].Image);
                 ArticlesVM.Add(avm);
