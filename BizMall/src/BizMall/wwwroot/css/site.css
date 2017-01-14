@@ -204,6 +204,17 @@ float: left;
     }
 }
 
+#TileCategory 
+{   
+     font: menu;
+    font-size: initial;
+    font-weight: normal;
+    color: lightgray;
+}
+#TileDate 
+{
+    font-size: x-small;font-family: sans-serif;font-style: normal;font-weight: 800;color: darkgray;
+}
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {

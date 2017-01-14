@@ -1,22 +1,72 @@
 ﻿@model BizMall.ViewModels.AdminCompanyArticles.ArticleViewModel
 
+<style>
+    .thumb img {
+        filter: none; /* IE6-9 */
+        -webkit-filter: grayscale(0);
+        border-radius: 5px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 5px;
+    }
+
+        .thumb img:hover {
+            filter: gray; /* IE6-9 */
+            -webkit-filter: grayscale(1);
+        }
+
+    .thumb {
+        padding: 5px;
+    }
+</style> 
+
+
 <div class="">
     <p style="font-weight:bold;font-size:15px;">@Model.Title</p>
     <p>
-    @if (@Model.Category.ParentCategory != null)
-        {
-            <span>[</span>
-                @Model.Category.ParentCategory.Title
-            <span>][</span>
-            @Model.Category.Title;
-            <span>]</span>}
-    else
-        {<span>[</span>@Model.Category.Title;<span>]</span>}
+        <span id="TileCategory">
+            @if (@Model.Category.ParentCategory != null)
+            {
+                @Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title;
+            }
+            else
+            {
+                @Model.Category.Title;
+            }
+        </span>
+        <span id="TileDate">
+            @Model.UpdateTime.Day<span>.</span>@Model.UpdateTime.Month<span>.</span>@Model.UpdateTime.Year
+        </span>
+    
     </p>
-    <p>@Model.UpdateTime</p>
     <p align="justify">@Model.Description</p>
-    <p><a href="@Model.Link">Перейти...</a></p>
-    <p style="margin-bottom:15px;"><img width="100" src='@Model.MainImageInBase64' /></p>
+    <p><a class="btn btn-info" target="_blank" href="@Model.Link">Читать полностью...</a></p>
+    <div class="container">
+        @{
+            int imnum = 0;
+            int imcount = @Model.ImagesInBase64.Count;
+
+            int lines = (imcount%3==0)?(imcount / 3):(imcount / 3 + 1);//по три картинки в ряд
+            } 
+        @for (int i = 0; i < lines; i++)
+        {
+            <div class="row">
+                @{
+                    int iminrow = ((imcount - imnum) >= 3) ? 3 : (imcount - imnum);
+                }
+                @for (int j = 0; j < iminrow; j++, imnum++)
+                {
+                    <div class="col-md-4 col-sm-4 col-xs-4 thumb">
+                        <a class="fancyimage"  href='@Model.ImagesInBase64[imnum]'> 
+                            <img style="height:60px;margin:auto; " class="img-responsive" src='@Model.ImagesInBase64[imnum]' />
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+
 </div>
 
 

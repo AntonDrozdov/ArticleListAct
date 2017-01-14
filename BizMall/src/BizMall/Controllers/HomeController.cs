@@ -40,8 +40,16 @@ namespace BizMall.Controllers
                     Id = item.Id
                 };
 
+                //формируем base64 главного изображения
                 if (item.Images.Count != 0)
                     avm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(item.Images[0].Image);
+
+                //формируем список изображений
+                foreach (var im in item.Images)
+                {
+                    avm.ImagesInBase64.Add(FromByteToBase64Converter.GetImageBase64Src(im.Image));
+                }
+
                 ArticlesVM.Add(avm);
             }
 

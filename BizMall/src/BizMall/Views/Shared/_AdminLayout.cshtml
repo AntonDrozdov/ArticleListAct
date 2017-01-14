@@ -52,7 +52,7 @@
                     @if (ViewBag.ActiveSubMenu == "Товары/Услуги")
                     {
                         <li style="color: white;"><a asp-controller="AdminCompanyProfile" asp-action="EditProfile">Профиль</a></li>*@
-                        <li><a style ="color: white;" asp-controller="AdminArticles" asp-action="Articles">Статьи</a></li>
+                        <li><a style ="color: white;padding-top: 15px;" asp-controller="AdminArticles" asp-action="Articles" >Статьи</a></li>
                     @*}*@
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")

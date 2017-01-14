@@ -23,6 +23,8 @@ namespace BizMall.ViewModels.AdminCompanyArticles
 
         public DateTime UpdateTime { get; set; }
 
+        public List<string> ImagesInBase64 { get; set; }
+
         public ICollection<Image> Images { get; set; }
         public List<RelCompanyGood> Companies { get; set; }
 
@@ -30,8 +32,11 @@ namespace BizMall.ViewModels.AdminCompanyArticles
         {
             Images = new List<Image>();
             Companies = new List<RelCompanyGood>();
+            ImagesInBase64 = new List<string>();
         }
 
         public string MainImageInBase64 { get; set; }
+
+        
     }
 }
