@@ -118,6 +118,8 @@ namespace BizMall.Migrations
 
                     b.Property<int?>("CategoryId");
 
+                    b.Property<string>("EnTitle");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasAnnotation("MaxLength", 100);
@@ -361,7 +363,7 @@ namespace BizMall.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BizMall.Models.CommonModels.Image", "Image")
-                        .WithMany("Goods")
+                        .WithMany("Articles")
                         .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -10,5 +10,6 @@ namespace BizMall.Data.Repositories.Abstract
     public interface IRepositoryCategory
     {
         IQueryable<Category> Categories();
+        List<string> SitemapCategories();
     }
 }

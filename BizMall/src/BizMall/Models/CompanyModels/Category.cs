@@ -17,6 +17,8 @@ namespace BizMall.Models.CompanyModels
         [StringLength(100)]
         public string Title { get; set; }
 
+        public string EnTitle { get; set; }
+
         public int? CategoryId { get; set; }
         public Category ParentCategory { get; set; }
 

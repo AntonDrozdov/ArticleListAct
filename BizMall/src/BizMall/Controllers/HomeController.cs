@@ -6,22 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using BizMall.Data.Repositories.Abstract;
 using BizMall.ViewModels.AdminCompanyArticles;
 using BizMall.Utils;
+using SimpleMvcSitemap;
 
 namespace BizMall.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IRepositoryArticle _repositoryArticle;
+        private readonly IRepositoryCategory _repositoryCategory;
 
-        public HomeController(IRepositoryArticle repositoryArticle)
+        public HomeController(IRepositoryArticle repositoryArticle,
+                              IRepositoryCategory repositoryCategory)
         {
             _repositoryArticle = repositoryArticle;
+            _repositoryCategory = repositoryCategory;
         }
 
-        public IActionResult Index(string SearchString = "*")
-        {                
-            var Items = _repositoryArticle.TopArticlesFullInformation().ToList();
-
+        public IActionResult IndexCat(string Category)
+        {
+            var Items = _repositoryArticle.CategoryArticlesFullInformation(Category).ToList();
             List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
             foreach (var item in Items)
             {
@@ -53,9 +56,19 @@ namespace BizMall.Controllers
                 ArticlesVM.Add(avm);
             }
 
-            ViewBag.ArticlesVM = ArticlesVM;
+            List<SitemapIndexNode> sitemapIndexNodes = new List<SitemapIndexNode>
+            {
+                new SitemapIndexNode(Url.Action("Categories","Sitemap")),
+                new SitemapIndexNode(Url.Action("Products","Sitemap"))
+            };
 
-            return View();            
+            var sm = new SitemapProvider(). CreateSitemapIndex(new SitemapIndexModel(sitemapIndexNodes));
+
+
+            ViewBag.ArticlesVM = ArticlesVM;
+            ViewBag.Category = Category;
+
+            return View();
         }
 
         public IActionResult About()
@@ -75,6 +88,19 @@ namespace BizMall.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        public IActionResult Sitemap()
+        {
+            List<string> SitemapCategories = _repositoryCategory.SitemapCategories();
+
+            List<SitemapNode> nodes = new List<SitemapNode>();
+            foreach (var sitemapcat in SitemapCategories)
+            {
+                nodes.Add(new SitemapNode(Url.Action(sitemapcat, "Categories")));
+            }
+
+            return new SitemapProvider().CreateSitemap(new SitemapModel(nodes));
         }
     }
 }

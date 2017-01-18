@@ -96,9 +96,44 @@ namespace BizMall
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(null,
+                    "",
+                    new
+                    {
+                        controller = "Home",
+                        action = "IndexCat",
+                        category = (string)null,
+                        page = 1
+                    }
+                );
+
+                //routes.MapRoute(
+                //    name: null,
+                //    url: "Page{page}",
+                //    defaults: new { controller = "Game", action = "List", category = (string)null },
+                //    constraints: new { page = @"\d+" }
+                //);
+
+                routes.MapRoute(null,
+                    "Categories/{Category}",
+                    new { controller = "Home", action = "IndexCat"}
+                    //new { controller = "Home", action = "CategoryArticles", page = 1 }
+                );
+
+                routes.MapRoute(null,
+                    "Shops/{Shop}",
+                    new { controller = "Home", action = "IndexShop" }
+                    //new { controller = "Home", action = "CategoryArticles", page = 1 }
+                    );
+                //routes.MapRoute(null,
+                //    "{category}/Page{page}",
+                //    new { controller = "Game", action = "List" },
+                //    new { page = @"\d+" }
+                //);
+
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=IndexCat}/{id?}");
             });
         }
     }

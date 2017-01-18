@@ -38,12 +38,16 @@
         </div>
         <div id="navbarCollapseCat" class="navbar-collapse collapse" style="padding-top: 10px;">
             <ul class="nav navbar-nav">
-
+                <li style="text-align: center;">
+                    <a asp-controller="Home" asp-action="IndexCat"  style="width:240px;text-align: center;margin: auto;">ВСЕ</a>
+                </li>
                 @foreach (var topcat in ViewBag.Categories)
                 {
+
                     if (topcat.CategoryId == null)
                     {
                         bool IsParent = false;
+
                         @foreach (var cat in ViewBag.Categories)
                         {
                             @if (cat.CategoryId == topcat.Id)
@@ -55,13 +59,13 @@
                         if (IsParent == true)
                         {
                             <li class="dropdown" style="text-align: center;">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#" style="border-radius: 4px;padding-top: 5px;width: 240px; margin: auto;">@topcat.Title<b class="caret"></b></a>
+                                <a data-toggle="dropdown" class="dropdown-toggle" href="@topcat.EnTitle" style="border-radius: 4px;padding-top: 5px;width: 240px; margin: auto;">@topcat.Title<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop"     style="border-radius: 4px;">
                                     @foreach (var chcat in ViewBag.Categories)
                                     {
                                         @if (chcat.CategoryId == topcat.Id)
                                         {
-                                            <li><a href="#" style="text-align: center;margin: auto;"><b>@chcat.Title</b></a></li>
+                                            <li><a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@chcat.EnTitle" style="text-align: center;margin: auto;"><b>@chcat.Title</b></a></li>
                                         }
                                     }
                                 </ul>
@@ -69,7 +73,10 @@
                         }
                         if (IsParent == false)
                         {
-                            <li ><a href="#" style="width:240px;text-align: center;margin: auto;">@topcat.Title</a></li>
+                            <li >
+                                @*<a href="@Url.Action("CategoryArticles", "Home", new { Category = @topcat.Title })" style="width:240px;text-align: center;margin: auto;">@topcat.Title</a>*@
+                                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@topcat.EnTitle" style="width:240px;text-align: center;margin: auto;">@topcat.Title</a>
+                            </li>
                         }
                     }
                 }

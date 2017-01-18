@@ -161,7 +161,7 @@ namespace BizMall.Controllers
                         Images = relImages
                     });
                     #endregion
-                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                    return RedirectToAction(nameof(HomeController.IndexCat), "Home");
                 }
                 AddErrors(result);
             }
@@ -243,7 +243,7 @@ namespace BizMall.Controllers
                         Images = relImages
                     });
                     #endregion
-                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                    return RedirectToAction(nameof(HomeController.IndexCat), "Home");
                 }
                 AddErrors(result);
             }
@@ -257,7 +257,7 @@ namespace BizMall.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(HomeController.IndexCat), "Home");
         }
 
         [HttpPost]
@@ -562,7 +562,7 @@ namespace BizMall.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.IndexCat), "Home");
             }
         }
 

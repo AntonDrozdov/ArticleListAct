@@ -77,7 +77,6 @@ namespace BizMall.Data.Repositories.Concrete
             return Items.AsQueryable();
         }
 
-
         public Article SaveArticle(Article good, Company company)
         {
             //Редактирование СУЩЕСТВУЮЩЕЙ позиции (дата UpdateStatus не меняется - она меняется только из списка неактивных товаров)
@@ -139,6 +138,21 @@ namespace BizMall.Data.Repositories.Concrete
             Article good = _ctx.Articles.Where(g => g.Id == goodId).Include(g => g.Category).Include(g => g.Category.ParentCategory).Include(g => g.Images).FirstOrDefault();
             _ctx.Articles.Remove(good);
             _ctx.SaveChanges();
+        }
+
+        public IQueryable<Article> CategoryArticlesFullInformation(string Category)
+        {
+            List<Article> Items = new List<Article>();
+            Items = _ctx.Articles
+                            .Include(g => g.Category)
+                            .Include(g => g.Category.ParentCategory)
+                            .Where(g => Category == null||g.Category.EnTitle== Category)
+                            .Include(g => g.Images).ThenInclude(g => g.Image)
+                            .OrderByDescending(g => g.UpdateTime)
+                            .Take(10)
+                            .ToList();
+
+            return Items.AsQueryable();
         }
     }
 }
