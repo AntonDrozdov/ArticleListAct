@@ -11,6 +11,8 @@ namespace BizMall.Models.CompanyModels
 
         public string Title { get; set; }
 
+        public string EnTitle { get; set; }
+
         public string Description { get; set; }
 
         public string HashTags { get; set; }

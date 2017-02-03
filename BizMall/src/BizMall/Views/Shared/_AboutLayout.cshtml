@@ -1,0 +1,119 @@
+﻿@model ArticleList.Models.CommonModels.SearchArticleModel
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="yandex-verification" content="5ba78b1a8e408c0f" />
+        <title>
+            @ViewData["Title"]
+        </title>
+
+        @*<environment names="Development">            
+            <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+            <link href="~/lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
+            <link href="~/lib/fancybox/jquery.fancybox.css" rel="stylesheet" />
+            <link rel="stylesheet" href="~/css/site.css" />
+            <link href="~/lib/fancybox/jquery.fancybox.css" rel="stylesheet" />
+        </environment>*@
+        <environment names="Staging,Production">
+            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link href="~/lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+            <link href="~/lib/fancybox/jquery.fancybox.css" rel="stylesheet" />
+        </environment>
+
+        @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
+
+    </head>
+    <body>
+<!--МЕНЮ ВЕРХНЕЕ-->
+        <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" data-target="#navbarcollapseMain" data-toggle="collapse" class="navbar-toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-controller="Home" asp-action="IndexCat" class="navbar-brand mainAppIcon">BuisnessFace.ru</a>
+                </div>
+                <div id="navbarcollapseMain" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-controller="Home" asp-action="About" style="padding-top: 15px;">О проекте</a></li>
+                    </ul>
+                    @*@await Html.PartialAsync("_LoginPartial")*@
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            <div class="row row-offcanvas row-offcanvas-right">
+<!--МЕНЮ КАТЕГОРИЙ-->
+                <div class="col-md-12">
+                    
+                
+<!--СТРОКА ПОИСКА-->
+
+<!--ВЫВОД СТАТЕЙ-->
+                    @RenderBody()
+                </div>
+            </div>
+            
+            <hr />
+            <footer>
+                <p>&copy; 2017 - BuisnessFace.ru</p>
+            </footer>
+        </div>
+
+        @*<environment names="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+            <script type="text/javascript">
+              $(document).ready(function() {
+                $("a.fancyimage").fancybox();
+              });
+            </script>
+            <script src="~/lib/fancybox/jquery.fancybox.pack.js"></script>
+        </environment>*@
+        <environment names="Staging,Production">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery">
+            </script>
+            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+            <script src="~/lib/fancybox/jquery.fancybox.pack.js"></script>
+            <script type="text/javascript">
+              $(document).ready(function() {
+                $("a.fancyimage").fancybox();
+              });
+
+              function SearchArticle() {
+                  var formData = new FormData();
+                  formData.append('searchstring', $("#searchstring").val());
+                  $.ajax({
+                      url: "/Home/Search/",
+                      type: 'POST',
+                      data: formData,
+                      processData: false,
+                      contentType: false,
+                      success: function () {
+                      }
+                  });
+              };
+
+            </script>
+        </environment>
+
+        @RenderSection("scripts", required: false)
+
+    </body>
+</html>

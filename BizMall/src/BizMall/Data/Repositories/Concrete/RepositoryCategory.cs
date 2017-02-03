@@ -15,6 +15,13 @@ namespace BizMall.Data.Repositories.Concrete
         {
         }
 
+        public Category GetCategoryByName(string entitlecategory)
+        {
+            return _ctx.Categories
+                        .Where(c => c.EnTitle == entitlecategory)
+                        .FirstOrDefault();
+        }
+
         public IQueryable<Category> Categories()
         {
             return _ctx.Categories;

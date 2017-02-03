@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizMall.Models.CompanyModels;
 using Microsoft.AspNetCore.Http;
+using ArticleList.Models.CommonModels;
 
 namespace BizMall.Data.Repositories.Abstract
 {
@@ -12,8 +13,12 @@ namespace BizMall.Data.Repositories.Abstract
         Article GetArticle(int goodId);
         void DeleteArticle(int goodId);
         IQueryable<Article> CompanyArticlesFullInformation(int ShopId);
+        IQueryable<Article> CompanyArticlesFullInformation(int ShopId, int page, out PagingInfo pagingInfo);
         IQueryable<Article> TopArticlesFullInformation();
-        IQueryable<Article> CategoryArticlesFullInformation(string Category);
+        IQueryable<Article> CategoryArticlesFullInformation(string Category, int page, out PagingInfo pagingInfo);
+        IQueryable<Article> SearchStringArticlesFullInformation(string searchstring, int page, out PagingInfo pagingInfo);
+        IQueryable<Article> SearchHashTagArticlesFullInformation(string hashtag, int page, out PagingInfo pagingInfo);
+
         IQueryable<Article> CompanyArticles(int ShopId);
         Article SaveArticle(Article item, Company company);
     }

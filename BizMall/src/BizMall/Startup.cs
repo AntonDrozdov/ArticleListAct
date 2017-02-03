@@ -17,6 +17,13 @@ using BizMall.Data.Repositories.Concrete;
 
 namespace BizMall
 {
+    public class AppSettings
+    {
+        public string ApplicationTitle { get; set; }
+        public int TopItemsOnStart { get; set; }
+        public bool ShowEditLink { get; set; }
+    }
+
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -58,6 +65,7 @@ namespace BizMall
             services.AddMvc();
 
             // Add application services.
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddTransient<IRepositoryArticle, RepositoryArticle>();
@@ -107,29 +115,35 @@ namespace BizMall
                     }
                 );
 
-                //routes.MapRoute(
-                //    name: null,
-                //    url: "Page{page}",
-                //    defaults: new { controller = "Game", action = "List", category = (string)null },
-                //    constraints: new { page = @"\d+" }
-                //);
+                routes.MapRoute(
+                    null,
+                    "Page{Page}",
+                    defaults: new { controller = "Home", action = "IndexCat", Category = (string)null },
+                    constraints: new { Page = @"\d+" }
+                );
 
-                routes.MapRoute(null,
+                routes.MapRoute(
+                    null,
+                    "ArticleDetails/{articleId}",
+                    new { controller = "Home", action = "ArticleDetails" }
+                );
+
+                routes.MapRoute(
+                    null,
                     "Categories/{Category}",
-                    new { controller = "Home", action = "IndexCat"}
-                    //new { controller = "Home", action = "CategoryArticles", page = 1 }
+                    new { controller = "Home", action = "IndexCat", page = 1 }
                 );
 
                 routes.MapRoute(null,
                     "Shops/{Shop}",
                     new { controller = "Home", action = "IndexShop" }
-                    //new { controller = "Home", action = "CategoryArticles", page = 1 }
-                    );
-                //routes.MapRoute(null,
-                //    "{category}/Page{page}",
-                //    new { controller = "Game", action = "List" },
-                //    new { page = @"\d+" }
-                //);
+                );
+
+                routes.MapRoute(null,
+                    "Categories/{Category}/Page{Page}",
+                    new { controller = "Home", action = "IndexCat"},
+                    constraints: new { page = @"\d+" }
+                );
 
                 routes.MapRoute(
                     name: "default",

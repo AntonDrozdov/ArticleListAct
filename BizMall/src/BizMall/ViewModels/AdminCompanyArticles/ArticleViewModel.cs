@@ -2,6 +2,7 @@
 using BizMall.Models.CommonModels;
 using System.Collections.Generic;
 using BizMall.Models.CompanyModels;
+using ArticleList.Models.CommonModels;
 using System;
 
 namespace BizMall.ViewModels.AdminCompanyArticles
@@ -12,9 +13,11 @@ namespace BizMall.ViewModels.AdminCompanyArticles
 
         public string Title { get; set; }
 
+        public string EnTitle { get; set; }
+
         public string Description { get; set; }
 
-        public string HashTags { get; set; }
+        public List<string> HashTags { get; set; }
 
         public string Link { get; set; }
 
@@ -33,6 +36,7 @@ namespace BizMall.ViewModels.AdminCompanyArticles
             Images = new List<Image>();
             Companies = new List<RelCompanyGood>();
             ImagesInBase64 = new List<string>();
+            HashTags = new List<string>();
         }
 
         public string MainImageInBase64 { get; set; }

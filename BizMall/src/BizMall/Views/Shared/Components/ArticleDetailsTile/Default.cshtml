@@ -1,0 +1,95 @@
+﻿@model BizMall.ViewModels.AdminCompanyArticles.ArticleViewModel
+<div class="">
+    <!--НАЗВАНИЕ-->
+    @*<p style="font-weight:bold;font-size:15px;">@Model.Title</p>*@
+    <p>
+        <h1>@Model.Title</h1>
+    </p>
+    <!--КАТЕГРИЯ И ДАТА-->
+    <p>
+        <span id="TileCategory">
+            @if (@Model.Category.ParentCategory != null)
+            {
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title</a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle" >@Model.Category.Title</a>
+            }
+        </span>
+        <span id="TileDate">
+            @Model.UpdateTime.Day<span>.</span>@Model.UpdateTime.Month<span>.</span>@Model.UpdateTime.Year
+        </span>
+    </p>
+    <!--ОПИСАНИЕ-->
+    <p align="justify">@Model.Description</p>
+    <!--КНОПКА ЧИТАТЬ-->
+    <p><a class="btn btn-info" target="_blank" href="@Model.Link">Перейти к источнику... </a></p>
+    <!--ФОТКИ-->
+    <div class="container">
+        @{
+            int lines=0;
+            int imnum = 0;
+            int imcount = @Model.ImagesInBase64.Count;
+            if(imcount > 0)
+            {
+                double tmp = imcount / 3;
+                int tmp2 = (int)Math.Floor(tmp);
+                lines = (imcount % 3 == 0) ? (imcount / 3) : (tmp2 + 1);//по три картинки в ряд
+            }
+        } 
+        @if (imcount>0)
+        {
+            @for (int i = 0; i < lines; i++)
+            {
+                <div class="row">
+                    @{
+                        int iminrow = ((imcount - imnum) >= 3) ? 3 : (imcount - imnum);
+                    }
+                    @for (int j = 0; j < iminrow; j++, imnum++)
+                    {
+                        <div class="col-md-4 col-sm-4 col-xs-4 thumb">
+                            <a class="fancyimage" data-fancybox-group='@Model.Title' href='@Model.ImagesInBase64[imnum]'> 
+                                <img style="height:60px;margin:auto; " class="img-responsive" src='@Model.ImagesInBase64[imnum]' />
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        }
+        
+    </div>
+    <!--ХЭШТЕГИ -->
+    <p class="hashtags" align="justify">
+        @foreach (var hashtag in Model.HashTags)
+        {
+            <a asp-controller="Home" asp-action="SearchHashTag" asp-route-hashtag="@hashtag">@hashtag</a>
+        }
+    </p>
+    <hr />
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

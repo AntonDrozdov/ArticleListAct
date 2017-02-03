@@ -96,6 +96,8 @@ namespace BizMall.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<string>("EnTitle");
+
                     b.Property<string>("HashTags");
 
                     b.Property<string>("Link");

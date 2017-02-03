@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BizMall.Data.Repositories.Abstract;
 using BizMall.ViewModels.AdminCompanyArticles;
 using BizMall.Utils;
 using SimpleMvcSitemap;
+using BizMall.Models.CompanyModels;
+using ArticleList.Models.CommonModels;
+using ArticleList.ViewModels.AdminCompanyArticles;
+using Microsoft.Extensions.Options;
 
 namespace BizMall.Controllers
 {
@@ -14,73 +19,134 @@ namespace BizMall.Controllers
     {
         private readonly IRepositoryArticle _repositoryArticle;
         private readonly IRepositoryCategory _repositoryCategory;
+        private readonly AppSettings _settings;
 
         public HomeController(IRepositoryArticle repositoryArticle,
-                              IRepositoryCategory repositoryCategory)
+                              IRepositoryCategory repositoryCategory,
+                              IOptions<AppSettings> settings)
         {
             _repositoryArticle = repositoryArticle;
             _repositoryCategory = repositoryCategory;
+            _settings = settings.Value;
         }
 
-        public IActionResult IndexCat(string Category)
+        private ArticleViewModel ConstructAVM(Article item, bool shortDescription)
         {
-            var Items = _repositoryArticle.CategoryArticlesFullInformation(Category).ToList();
+            ArticleViewModel avm = new ArticleViewModel
+            {
+                Title = item.Title,
+                EnTitle = item.EnTitle,
+                Description = (shortDescription && item.Description.Length > 300) ? item.Description.Substring(0, 300) + " . . ." : item.Description,
+                UpdateTime = item.UpdateTime,
+                Category = item.Category,
+                CategoryId = item.CategoryId,
+                Link = item.Link,
+                Companies = item.Companies,
+                Id = item.Id
+            };
+            string[] hashtags = item.HashTags.Split(' ');
+            foreach (var hashtag in hashtags) avm.HashTags.Add(hashtag);
+
+            //формируем список изображений
+            foreach (var im in item.Images)
+            {
+                avm.ImagesInBase64.Add(FromByteToBase64Converter.GetImageBase64Src(im.Image));
+            }
+
+            return avm;
+        }
+
+        public IActionResult IndexCat(string Category, int Page = 1)
+        {
+            PagingInfo pagingInfo;
+            var Items = _repositoryArticle.CategoryArticlesFullInformation(Category, Page, out pagingInfo).ToList();
+            
             List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
             foreach (var item in Items)
             {
-                var DescriptionLenght = (item.Description.Length > 100) ? 100 : item.Description.Length;
-
-                ArticleViewModel avm = new ArticleViewModel
-                {
-                    Title = item.Title,
-                    Description = item.Description,
-                    UpdateTime = item.UpdateTime,
-                    Category = item.Category,
-                    CategoryId = item.CategoryId,
-                    Link = item.Link,
-                    HashTags = item.HashTags,
-                    Companies = item.Companies,
-                    Id = item.Id
-                };
-
-                //формируем base64 главного изображения
-                if (item.Images.Count != 0)
-                    avm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(item.Images[0].Image);
-
-                //формируем список изображений
-                foreach (var im in item.Images)
-                {
-                    avm.ImagesInBase64.Add(FromByteToBase64Converter.GetImageBase64Src(im.Image));
-                }
-
+                var avm = ConstructAVM(item, true); 
                 ArticlesVM.Add(avm);
             }
 
-            List<SitemapIndexNode> sitemapIndexNodes = new List<SitemapIndexNode>
+            if (Category != null)
             {
-                new SitemapIndexNode(Url.Action("Categories","Sitemap")),
-                new SitemapIndexNode(Url.Action("Products","Sitemap"))
-            };
-
-            var sm = new SitemapProvider(). CreateSitemapIndex(new SitemapIndexModel(sitemapIndexNodes));
-
+                if (Items.Count > 0)
+                {
+                    ViewData["Title"] = _settings.ApplicationTitle + Items[0].Category.Title;
+                    ViewBag.Category = Items[0].Category.Title;
+                }
+                else
+                {
+                    ViewData["Title"] = _settings.ApplicationTitle + _repositoryCategory.GetCategoryByName(Category).Title; 
+                }
+                
+            }
+            else
+                ViewData["Title"] = _settings.ApplicationTitle + "Главная";
 
             ViewBag.ArticlesVM = ArticlesVM;
-            ViewBag.Category = Category;
+            ViewBag.PagingInfo = pagingInfo;
 
+            return View();
+        }
+
+        public IActionResult Search(string searchstring, int Page = 1)
+        {
+            if (searchstring == null)
+                return RedirectToAction("IndexCat");
+
+            PagingInfo pagingInfo;
+            var Items = _repositoryArticle.SearchStringArticlesFullInformation(searchstring, Page, out pagingInfo).ToList();
+        
+            List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
+            foreach (var item in Items)
+            {
+                var avm = ConstructAVM(item, true);
+                ArticlesVM.Add(avm);                
+            }
+
+            ViewData["Title"] = _settings.ApplicationTitle + "Поиск: " + searchstring;
+            ViewBag.ArticlesVM = ArticlesVM;
+            ViewBag.PagingInfo = pagingInfo;
+
+            return View();
+        }
+
+        public IActionResult SearchHashTag(string hashtag, int Page = 1)
+        {
+            PagingInfo pagingInfo;
+            var Items = _repositoryArticle.SearchHashTagArticlesFullInformation(hashtag, Page, out pagingInfo).ToList();
+
+            List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
+            foreach (var item in Items)
+            {
+                var avm = ConstructAVM(item, true);
+                ArticlesVM.Add(avm);
+            }
+
+            ViewData["Title"] = _settings.ApplicationTitle + "Хэштег: " + hashtag;
+            ViewBag.ArticlesVM = ArticlesVM;
+            ViewBag.PagingInfo = pagingInfo;
+
+            return View();
+        }
+
+        public IActionResult ArticleDetails(string articleId)
+        {
+            int Id = Convert.ToInt32(articleId.Substring(0, articleId.IndexOf('_')));
+            var item = _repositoryArticle.GetArticle(Id);            
+
+            var avm = ConstructAVM(item, false);
+
+            ViewData["Title"] = _settings.ApplicationTitle + avm.Title;
+            ViewBag.ArticleVM = avm;
+            
             return View();
         }
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
+            ViewData["Title"] = _settings.ApplicationTitle + "О проекте";
 
             return View();
         }
@@ -97,10 +163,12 @@ namespace BizMall.Controllers
             List<SitemapNode> nodes = new List<SitemapNode>();
             foreach (var sitemapcat in SitemapCategories)
             {
-                nodes.Add(new SitemapNode(Url.Action(sitemapcat, "Categories")));
+                nodes.Add(new SitemapNode("/Categories/" + sitemapcat));
             }
 
             return new SitemapProvider().CreateSitemap(new SitemapModel(nodes));
         }
+
+
     }
 }

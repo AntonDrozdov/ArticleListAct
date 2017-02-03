@@ -23,7 +23,7 @@ else
 
 <!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
 <div>
-    <div style="float:left;margin-right:10px;margin-bottom:5px;">
+    <div style="margin-right:10px;margin-bottom:5px;">
         <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminArticles" asp-action="EditArticle">Новая статья</a>
     </div>
     <!--
@@ -50,16 +50,13 @@ else
     -->
 </div>
 
-
-<br />
-<br />
 <div class="table-responsive">
     <table class="table">
         <thead>
         <tr>
             <th></th>
             <th>Название</th>
-            <th>Описание</th>
+            <th>Длина описания(симв.)</th>
             <th>Категория</th>
             <th>Время публикации</th>
             <th>Опции</th>
@@ -67,6 +64,7 @@ else
         </thead>
         @foreach (var avm in ViewBag.ArticlesVM)
         {
+
             <tr>
                 <td><input type="checkbox" name="checkedToDoSmth" value="@avm.Id"/></td>
 
@@ -76,7 +74,17 @@ else
                 </td>
                 <!--DESCRIPTION-->
                 <td>
-                    @avm.Description
+                    @{
+                        int len = avm.Description.Length;
+                    }
+                    @if (len<=1500)
+                    {
+                        <span style="color:red;">@len</span>
+                    }
+                    else
+                    {
+                        <span style="color:lawngreen;">@len</span>
+                    }
                 </td>
                 
                 <!--CATEGORY-->
@@ -110,7 +118,9 @@ else
         }
     </table>
 </div>
-
+<div class="col-xs-12 ">
+    @await Component.InvokeAsync("AdminArticlesPagination", new { pi = ViewBag.PagingInfo })
+</div>
 
 <script type="text/javascript">
     //function Archieve() {

@@ -1,18 +1,21 @@
-﻿<!DOCTYPE html>
+﻿@model ArticleList.Models.CommonModels.SearchArticleModel
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="yandex-verification" content="5ba78b1a8e408c0f" />
-        <title>@ViewData["Title"] - BizFace</title>
+        <title>
+            @ViewData["Title"]
+        </title>
 
-        <environment names="Development">            
+        @*<environment names="Development">            
             <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
             <link href="~/lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
             <link href="~/lib/fancybox/jquery.fancybox.css" rel="stylesheet" />
             <link rel="stylesheet" href="~/css/site.css" />
             <link href="~/lib/fancybox/jquery.fancybox.css" rel="stylesheet" />
-        </environment>
+        </environment>*@
         <environment names="Staging,Production">
             <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
                   asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
@@ -26,6 +29,7 @@
 
     </head>
     <body>
+<!--МЕНЮ ВЕРХНЕЕ-->
         <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -35,7 +39,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a asp-controller="Home" asp-action="Index" class="navbar-brand mainAppIcon">BizFace</a>
+                    <a asp-controller="Home" asp-action="IndexCat" class="navbar-brand mainAppIcon">BuisnessFace.ru</a>
                 </div>
                 <div id="navbarcollapseMain" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
@@ -46,15 +50,38 @@
             </div>
         </div>
         <div class="container body-content">
-            @RenderBody()
-            <hr />
+            <div class="row row-offcanvas row-offcanvas-right">
+<!--МЕНЮ КАТЕГОРИЙ-->
+                <div class="col-md-3">
+                    @await Component.InvokeAsync("AllCategoriesForMain", new { cegvm = Model })
+                </div>
 
+                <div class="col-md-9">
+<!--СТРОКА ПОИСКА-->
+                    <div class="row">
+                        <div class="col-xs-12 ">
+                            <form asp-controller="Home" asp-action="Search" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+                                <div class="input-group" style="margin-top:5px;margin-bottom:5px;">
+                                    <input asp-for="searchstring" class="form-control" id="searchstring" placeholder="Найти...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Поиск</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+<!--ВЫВОД СТАТЕЙ-->
+                    @RenderBody()
+                </div>
+            </div>
+            
+            <hr />
             <footer>
-                <p>&copy; 2017 - BizFace</p>
+                <p>&copy; 2017 - BuisnessFace.ru</p>
             </footer>
         </div>
 
-        <environment names="Development">
+        @*<environment names="Development">
             <script src="~/lib/jquery/dist/jquery.js"></script>
             <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
             <script src="~/lib/jquery-ui/jquery-ui.js"></script>
@@ -65,7 +92,7 @@
               });
             </script>
             <script src="~/lib/fancybox/jquery.fancybox.pack.js"></script>
-        </environment>
+        </environment>*@
         <environment names="Staging,Production">
             <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
                     asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
@@ -81,6 +108,21 @@
               $(document).ready(function() {
                 $("a.fancyimage").fancybox();
               });
+
+              function SearchArticle() {
+                  var formData = new FormData();
+                  formData.append('searchstring', $("#searchstring").val());
+                  $.ajax({
+                      url: "/Home/Search/",
+                      type: 'POST',
+                      data: formData,
+                      processData: false,
+                      contentType: false,
+                      success: function () {
+                      }
+                  });
+              };
+
             </script>
         </environment>
 

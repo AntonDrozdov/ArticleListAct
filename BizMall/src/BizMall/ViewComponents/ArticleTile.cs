@@ -11,7 +11,7 @@ namespace BizMall.ViewComponents
 {
     public class ArticleTile: ViewComponent
     {
-        public ArticleTile(IRepositoryCategory repositoryCategory)
+        public ArticleTile()
         {
         
         }

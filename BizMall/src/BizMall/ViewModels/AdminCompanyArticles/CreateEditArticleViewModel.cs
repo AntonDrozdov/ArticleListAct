@@ -14,9 +14,13 @@ namespace BizMall.ViewModels.AdminCompanyArticles
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Введите описание (от 3 до 3000 символов)")]
-        [StringLength(3000, ErrorMessage = "Введите описание (от 3 до 3000 символов)", MinimumLength = 3)]
+        [Required(ErrorMessage = "Введите название (от 3 до 3000 символов)")]
+        [StringLength(3000, ErrorMessage = "Введите название (от 3 до 3000 символов)", MinimumLength = 3)]
         public string Title { get; set; }
+
+        [Required(ErrorMessage = "Введите название(латиница) (от 3 до 3000 символов)")]
+        [StringLength(3000, ErrorMessage = "Введите название(латиница) (от 3 до 3000 символов)", MinimumLength = 3)]
+        public string EnTitle { get; set; }
 
         [Required(ErrorMessage = "Введите описание (от 6 до 3000 символов)")]
         [StringLength(3000, ErrorMessage = "Введите описание (от 6 до 3000 символов)", MinimumLength = 6)]

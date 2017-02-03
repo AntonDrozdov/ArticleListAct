@@ -17,6 +17,18 @@ textarea {
     max-width: 1000px;
 }
 
+.ArticleTile {
+    /*border:1px solid lightgray;
+    border-radius:5px;
+    padding-left:5px;
+    padding-right:5px;
+    margin-bottom:3px;*/
+}
+
+.ArticleTile h3 > a:hover {
+    text-decoration:none;
+}
+
 .menu 
 {
 margin-top: 10px; 
@@ -31,7 +43,11 @@ background: #fff; /* Цвет фона правой колонки */
 float: left;
 }
 
-
+.hashtags 
+{
+    font-size: smaller;
+    color: #5bc0de;
+}
 
 /*отображение таблицы изображении в диалоге добавления/редактирования товара*/
 .imagetable {
@@ -211,10 +227,34 @@ float: left;
     font-weight: normal;
     color: lightgray;
 }
+
+#TileCategory >a
+{   
+    color: lightgray;
+}
+
 #TileDate 
 {
     font-size: x-small;font-family: sans-serif;font-style: normal;font-weight: 800;color: darkgray;
 }
+
+    .thumb img {
+        filter: none; /* IE6-9 */
+        -webkit-filter: grayscale(0);
+        border-radius: 5px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 5px;
+    }
+
+        .thumb img:hover {
+            filter: gray; /* IE6-9 */
+            -webkit-filter: grayscale(1);
+        }
+
+    .thumb {
+        padding: 5px;
+    }
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {

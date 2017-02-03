@@ -56,6 +56,7 @@ namespace BizMall.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
+            ViewData["Title"] = "Лица бизнеса - Вход";
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -65,6 +66,7 @@ namespace BizMall.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
+            ViewData["Title"] = "Лица бизнеса - Вход";
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
@@ -195,61 +197,6 @@ namespace BizMall.Controllers
         }
         #endregion
 
-        #region POST/GET RegisterPrivatePerson 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult RegisterPrivatePerson(string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterPrivatePerson(CreateEditCompanyViewModel model, string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User created a new account with password.");
-
-                    #region ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ
-                    //ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ - для PrivatePerson он пустой
-                    List<RelCompanyImage> relImages = new List<RelCompanyImage>();
-                    #endregion
-
-                    #region СОЗДАНИЕ КОМПАНИИ
-                    //При регистрации пользователя для него по умолчанию создается компания с параметрами которые он задал
-                    _repositoryCompany.SaveCompanyAccount(new Company
-                    {
-                        ApplicationUserId = user.Id,
-                        AccountType = AccountType.PrivatePerson,
-                        Title = model.Name,
-                        Description = model.ActivityDescription,
-                        ContactEmail = model.Email,
-                        Telephone = model.Telephone,
-                        Images = relImages
-                    });
-                    #endregion
-                    return RedirectToAction(nameof(HomeController.IndexCat), "Home");
-                }
-                AddErrors(result);
-            }
-            return View(model);
-        }
-        #endregion
 
         [HttpPost]
         [ValidateAntiForgeryToken]

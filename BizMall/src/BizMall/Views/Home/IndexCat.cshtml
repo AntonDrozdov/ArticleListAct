@@ -1,48 +1,36 @@
-﻿@{
-    ViewData["Title"] = "Лица бизнеса";
+﻿@model ArticleList.ViewModels.AdminCompanyArticles.ArticlesViewModel
+ 
+@if(ViewBag.Category != null)
+{
+    <h1 style="color:#b2b1b1">Категория: @ViewBag.Category</h1>
 }
-<div class="container">
-    <div class="row">
-        <div class="row row-offcanvas row-offcanvas-right">
-            @*<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">*@
-            <div class="col-md-3">
-                @await Component.InvokeAsync("AllCategoriesForMain", new { cegvm = Model })
-            </div>
 
-            <div class="col-md-9">
-                <div class="row">
-                    <div class="col-xs-12 ">
-                        <div class="input-group" style="margin-top:5px;margin-bottom:5px;">
-                            <input type="text" class="form-control" placeholder="Найти...">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">Поиск</button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                @{
-                    int anum = 0;
-                    int acount = ViewBag.ArticlesVM.Count;
-                    double tmp = acount / 3;
-                    int tmp2 =(int)Math.Floor(tmp);
-                    int cols = (acount % 3 == 0) ? (acount / 3) : (tmp2 + 1);//по три картинки в ряд
-                    cols = (cols > 3) ? 3 : cols;
-                }
-                @for (int i = 0; i < 3; i++)
-                {
-                    <div class="col-xs-12 col-sm-4">
-                        @{
-                            int aincol = ((acount - anum) >= 3) ? 3 : (acount - anum);
-                        }
-                        @for (int j = 0; j < aincol; j++, anum++)
-                        {
-                            @await Component.InvokeAsync("ArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
-                        }
-                    </div>
-                }
-            </div>
-        </div>
+@{
+    int anum = 0;
+    int acount = ViewBag.ArticlesVM.Count;
+    double tmp = acount / 3;
+    int tmp2 =(int)Math.Floor(tmp);
+    int cols = (acount % 3 == 0) ? (acount / 3) : (tmp2 + 1);//по три картинки в ряд
+    cols = (cols > 3) ? 3 : cols;
+}
+@for (int i = 0; i < 3; i++)
+{
+    <div class="col-xs-12 col-sm-4">
+        @{
+            int aincol = ((acount - anum) >= 3) ? 3 : (acount - anum);
+        }
+        @for (int j = 0; j < aincol; j++, anum++)
+        {
+            @await Component.InvokeAsync("ArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
+        }
     </div>
+}
+<div class="col-xs-12 ">
+    @await Component.InvokeAsync("Pagination", new { pi = ViewBag.PagingInfo })
 </div>
+
+                
+
+
 
 

@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using ArticleList.Models.CommonModels;
+using Microsoft.Extensions.Options;
 
 namespace BizMall.Controllers
 {
@@ -24,16 +26,19 @@ namespace BizMall.Controllers
         private readonly IRepositoryCompany _repositoryCompany;
         private readonly IRepositoryArticle _repositoryArticle;
         private readonly IRepositoryImage _repositoryImage;
+        private readonly AppSettings _settings;
 
         public AdminArticlesController(IRepositoryUser repositoryUser,
                                             IRepositoryCompany repositoryCompany,
                                             IRepositoryArticle repositoryArticle,
-                                            IRepositoryImage repositoryImage)
+                                            IRepositoryImage repositoryImage, 
+                                            IOptions<AppSettings> settings)
         {
             _repositoryUser = repositoryUser;
             _repositoryCompany = repositoryCompany;
             _repositoryArticle = repositoryArticle;
             _repositoryImage = repositoryImage;
+            _settings = settings.Value;
         }
 
         /// <summary>
@@ -48,39 +53,47 @@ namespace BizMall.Controllers
             return fcr;
         }
 
+        private ArticleViewModel ConstructAVM(Article item, bool shortDescription)
+        {
+            ArticleViewModel avm = new ArticleViewModel
+            {
+                Id = item.Id,
+                Title = item.Title,
+                EnTitle = item.EnTitle,
+                Description = item.Description,
+                UpdateTime = item.UpdateTime,
+                Category = item.Category,
+                CategoryId = item.CategoryId
+            };
+
+            return avm;
+        }
+
+
         /// <summary>
         /// вывод товаров в личный кабинет компании
         /// </summary>
-        public IActionResult Articles()
+        public IActionResult Articles(int Page = 1)
         {
             var currentUser = _repositoryUser.GetCurrentUser(User.Identity.Name);
 
             if (currentUser != null)
             {
                 var Company = _repositoryCompany.GetUserCompany(currentUser);
-                var Items = _repositoryArticle.CompanyArticlesFullInformation(Company.Id).ToList();
+
+                PagingInfo pagingInfo;
+                var Items = _repositoryArticle.CompanyArticlesFullInformation(Company.Id, Page, out pagingInfo).ToList();
 
                 List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
                 foreach (var item in Items)
                 {
-                    var DescriptionLenght = (item.Description.Length > 100) ? 100 : item.Description.Length;
-                    ArticleViewModel avm = new ArticleViewModel
-                    {
-                        Title = item.Title,
-                        Description = item.Description.Substring(0, DescriptionLenght) + "...",
-                        UpdateTime = item.UpdateTime,
-                        Category = item.Category,
-                        CategoryId = item.CategoryId,
-                        Link = item.Link,
-                        HashTags = item.HashTags,
-                        Companies = item.Companies,
-                        Id = item.Id
-                    };
-                    if (item.Images.Count != 0)
-                        avm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(item.Images[0].Image);
+                    var avm = ConstructAVM(item, true);
                     ArticlesVM.Add(avm);
                 }
+
+                ViewData["Title"] = _settings.ApplicationTitle + "Администрирование: Статьи";
                 ViewBag.ArticlesVM = ArticlesVM;
+                ViewBag.PagingInfo = pagingInfo;
             }
             else
             {
@@ -106,6 +119,7 @@ namespace BizMall.Controllers
                 cegvm = new CreateEditArticleViewModel
                 {
                     Title = item.Title,
+                    EnTitle = item.EnTitle,
                     Description = item.Description,
                     Link = item.Link,
                     HashTags = item.HashTags,
@@ -136,7 +150,7 @@ namespace BizMall.Controllers
             }
             else
                 cegvm = new CreateEditArticleViewModel();
-
+            ViewData["Title"] = _settings.ApplicationTitle +"Администрирование: Добавление/Редактирование статьи";
             return View(cegvm);
         }
         [HttpPost]
@@ -175,6 +189,7 @@ namespace BizMall.Controllers
                 {
                     Id = model.Id,
                     Title = model.Title,
+                    EnTitle = model.EnTitle,
                     Description = model.Description,
                     Link = model.Link,
                     HashTags = model.HashTags,
