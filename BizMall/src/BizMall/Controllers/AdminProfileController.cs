@@ -10,31 +10,41 @@ using BizMall.Utils;
 using BizMall.ViewModels.AdminCompanyArticles;
 using Microsoft.AspNetCore.Identity;
 using BizMall.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BizMall.Controllers
 {
+    [Authorize]
     public class AdminProfileController : Controller
     {
         private readonly IRepositoryUser _repositoryUser;
         private readonly IRepositoryCompany _repositoryCompany;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly AppSettings _settings;
+
         public AdminProfileController(   IRepositoryUser repositoryUser, 
                                                 IRepositoryCompany repositoryCompany, 
                                                 UserManager<ApplicationUser> userManager, 
-                                                SignInManager<ApplicationUser> signInManager) {
+                                                SignInManager<ApplicationUser> signInManager,
+                                                IOptions<AppSettings> settings) {
             _repositoryUser = repositoryUser;
             _repositoryCompany = repositoryCompany;
             _userManager = userManager;
             _signInManager = signInManager;
+            _settings = settings.Value;
         }
 
         [HttpGet]
         public IActionResult EditProfile()
         {
             ViewBag.ActiveSubMenu = "Профиль";
+            ViewData["Title"] = _settings.ApplicationTitle + "Администрирование: Статьи";
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
 
             var user = _repositoryUser.GetCurrentUser(User.Identity.Name);
             var Company = _repositoryCompany.GetUserCompany(user);

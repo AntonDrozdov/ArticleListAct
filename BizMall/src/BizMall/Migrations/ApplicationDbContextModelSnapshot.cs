@@ -16,6 +16,20 @@ namespace BizMall.Migrations
                 .HasAnnotation("ProductVersion", "1.0.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("ArticleList.Models.CompanyModels.ExternalLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Link");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExternalLink");
+                });
+
             modelBuilder.Entity("BizMall.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id");
@@ -94,6 +108,8 @@ namespace BizMall.Migrations
 
                     b.Property<int?>("CategoryId");
 
+                    b.Property<int>("CategoryType");
+
                     b.Property<string>("Description");
 
                     b.Property<string>("EnTitle");
@@ -120,7 +136,11 @@ namespace BizMall.Migrations
 
                     b.Property<int?>("CategoryId");
 
-                    b.Property<string>("EnTitle");
+                    b.Property<int>("CategoryType");
+
+                    b.Property<string>("EnTitle")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 100);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -186,6 +206,21 @@ namespace BizMall.Migrations
                     b.HasIndex("ImageId");
 
                     b.ToTable("RelCompanyImage");
+                });
+
+            modelBuilder.Entity("BizMall.Models.CompanyModels.RelGoodExternalLink", b =>
+                {
+                    b.Property<int>("ExternalLinkId");
+
+                    b.Property<int>("GoodId");
+
+                    b.HasKey("ExternalLinkId", "GoodId");
+
+                    b.HasIndex("ExternalLinkId");
+
+                    b.HasIndex("GoodId");
+
+                    b.ToTable("RelGoodExternalLink");
                 });
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelGoodImage", b =>
@@ -354,6 +389,19 @@ namespace BizMall.Migrations
                     b.HasOne("BizMall.Models.CommonModels.Image", "Image")
                         .WithMany("Companies")
                         .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BizMall.Models.CompanyModels.RelGoodExternalLink", b =>
+                {
+                    b.HasOne("ArticleList.Models.CompanyModels.ExternalLink", "ExternalLink")
+                        .WithMany("Articles")
+                        .HasForeignKey("ExternalLinkId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BizMall.Models.CompanyModels.Article", "Good")
+                        .WithMany("ExternalLinks")
+                        .HasForeignKey("GoodId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -13,16 +13,20 @@ namespace BizMall.Models.CompanyModels
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Введите название (от 3 до 100 символов)")]
+        [StringLength(100, ErrorMessage = "Введите название (от 3 до 100 символов)", MinimumLength = 3)]
         public string Title { get; set; }
 
+        [Required(ErrorMessage = "Введите название(латиница) (от 3 до 100 символов)")]
+        [StringLength(100, ErrorMessage = "Введите название(латиница) (от 3 до 100 символов)", MinimumLength = 3)]
         public string EnTitle { get; set; }
 
         public int? CategoryId { get; set; }
         public Category ParentCategory { get; set; }
 
         public ICollection<Article> Goods { get; set; }
+
+        public CategoryType CategoryType { get; set; }
 
         public Category()
         {

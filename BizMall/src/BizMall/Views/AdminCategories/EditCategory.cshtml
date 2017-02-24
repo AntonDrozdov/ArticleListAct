@@ -1,0 +1,60 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@using BizMall.ViewModels.AccountViewModels
+
+@model BizMall.Models.CompanyModels.Category
+
+@{
+    ViewData["Title"] = "Новая категория";
+    Layout = "_AdminLayout";
+}
+
+<h3>@ViewData["Title"]</h3>
+<form asp-controller="AdminCategories" asp-action="EditCategory" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+    <hr />
+    <!--Id добавляемого/редактируемого товара-->
+    @if (Model.Id != 0)
+    {
+        <input asp-for="Id" type="hidden" class="form-control" id="Id" readonly="readonly" Value ="@Model.Id" />
+    }
+    <!--НАИМЕНОВАНИЕ-->
+    <div class="form-group">
+        <label asp-for="Title" class="col-md-2 control-label">Название</label>
+        <div class="col-md-10" >
+            <input asp-for="Title" class="form-control col-md-10" id="Title" placeholder="Наименование"  Value ="@Model.Title"/>
+        </div>
+    </div>
+
+    <!--КАТЕГОРИИ-->
+    @await Component.InvokeAsync("AllParentCategories", new { cat = Model })
+    
+    <!--ЛАТ НАИМЕНОВАНИЕ-->
+    <div class="form-group">
+        <label asp-for="EnTitle" class="col-md-2 control-label">Название(латиница)</label>
+        <div class="col-md-10">
+            <input asp-for="EnTitle" class="form-control col-md-10" id="EnTitle" placeholder="Наименование(латиница)" Value="@Model.EnTitle" />
+        </div>
+    </div>
+   
+    <!--СООБЩЕНИЯ ВАЛИДАЦИИ-->
+    <div class="form-group">
+        <label class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+    </div>  
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10 text-right">
+            <button type="submit" class="btn btn-primary  col-md-2" style="margin-top: 5px;">Сохранить</button>
+            <a asp-controller="AdminCategories" asp-action="Categories" class='btn btn-default col-md-2 ' style="margin-left: 5px; margin-top: 5px;">Назад</a>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+

@@ -79,10 +79,12 @@ namespace BizMall.Controllers
                 {
                     ViewData["Title"] = _settings.ApplicationTitle + _repositoryCategory.GetCategoryByName(Category).Title; 
                 }
-                
             }
             else
                 ViewData["Title"] = _settings.ApplicationTitle + "Главная";
+
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
 
             ViewBag.ArticlesVM = ArticlesVM;
             ViewBag.PagingInfo = pagingInfo;
@@ -106,6 +108,8 @@ namespace BizMall.Controllers
             }
 
             ViewData["Title"] = _settings.ApplicationTitle + "Поиск: " + searchstring;
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewBag.ArticlesVM = ArticlesVM;
             ViewBag.PagingInfo = pagingInfo;
 
@@ -125,6 +129,8 @@ namespace BizMall.Controllers
             }
 
             ViewData["Title"] = _settings.ApplicationTitle + "Хэштег: " + hashtag;
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewBag.ArticlesVM = ArticlesVM;
             ViewBag.PagingInfo = pagingInfo;
 
@@ -139,6 +145,8 @@ namespace BizMall.Controllers
             var avm = ConstructAVM(item, false);
 
             ViewData["Title"] = _settings.ApplicationTitle + avm.Title;
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewBag.ArticleVM = avm;
             
             return View();
@@ -147,6 +155,8 @@ namespace BizMall.Controllers
         public IActionResult About()
         {
             ViewData["Title"] = _settings.ApplicationTitle + "О проекте";
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
 
             return View();
         }

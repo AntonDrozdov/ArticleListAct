@@ -92,8 +92,11 @@ namespace BizMall.Controllers
                 }
 
                 ViewData["Title"] = _settings.ApplicationTitle + "Администрирование: Статьи";
+                ViewData["HeaderTitle"] = _settings.HeaderTitle;
+                ViewData["FooterTitle"] = _settings.FooterTitle;
                 ViewBag.ArticlesVM = ArticlesVM;
                 ViewBag.PagingInfo = pagingInfo;
+                ViewBag.ActiveSubMenu = "Статьи";
             }
             else
             {
@@ -151,6 +154,9 @@ namespace BizMall.Controllers
             else
                 cegvm = new CreateEditArticleViewModel();
             ViewData["Title"] = _settings.ApplicationTitle +"Администрирование: Добавление/Редактирование статьи";
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
+            ViewBag.ActiveSubMenu = "Статьи";
             return View(cegvm);
         }
         [HttpPost]
@@ -223,7 +229,7 @@ namespace BizMall.Controllers
         }
 
         //ДЛЯ ajax
-
+        //ДЛЯ ajax
         /// <summary>
         /// ajax:деактивация товаров
         /// </summary>

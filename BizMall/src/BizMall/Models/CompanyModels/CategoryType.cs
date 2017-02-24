@@ -8,20 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BizMall.Models.CompanyModels
 {
-    public class CategoryType
+    public enum CategoryType
     {
-        [HiddenInput(DisplayValue = false)]
-        public int Id { get; set; }
-
-        [Required]
-        [StringLength(300)]
-        public string Title { get; set; }
-
-        [Required]
-        [StringLength(3000)]
-        [DataType(DataType.MultilineText)]
-        public string Description { get; set; }
-
-        public ICollection<Category> Categories { get; set; }
+        BuisnessFace = 1, BuisnessDev = 2, UgleglavProm = 3, Cook = 4, Joke = 5, MusicText = 6, Congratulation = 7
     }
 }

@@ -7,13 +7,6 @@
         @ViewData["Title"]
     </title>
 
-    <environment names="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
@@ -42,20 +35,28 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-controller="Home" asp-action="IndexCat" class="navbar-brand mainAppIcon">BuisnessFace.ru</a>
+                <a asp-controller="Home" asp-action="IndexCat" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @*@if (ViewBag.ActiveSubMenu == "Профиль")
+                    @if (ViewBag.ActiveSubMenu == "Профиль")
                     {
-                        <li  ><a style ="color: white;" asp-controller="AdminCompanyProfile" asp-action="Profile">Профиль</a></li>
-                        <li><a asp-controller="AdminCompanyGoods" asp-action="Goods">Товары/Услуги</a></li>
+                        <li><a style = "padding-top: 15px; color: white;" asp-controller="AdminProfile" asp-action="EditProfile">Профиль</a></li>
+                        <li><a style = "padding-top: 15px;" asp-controller="AdminArticles" asp-action="Articles">Статьи</a></li>
+                        <li><a style="padding-top: 15px;" asp-controller="AdminCategories" asp-action="Categories">Категории</a></li>
                     }
-                    @if (ViewBag.ActiveSubMenu == "Товары/Услуги")
+                    @if (ViewBag.ActiveSubMenu == "Статьи")
                     {
-                        <li style="color: white;"><a asp-controller="AdminCompanyProfile" asp-action="EditProfile">Профиль</a></li>*@
-                        <li><a style ="color: white;padding-top: 15px;" asp-controller="AdminArticles" asp-action="Articles" >Статьи</a></li>
-                    @*}*@
+                        <li><a style = "padding-top: 15px;" asp-controller="AdminProfile" asp-action="EditProfile">Профиль</a></li>
+                        <li><a style = "padding-top: 15px; color: white;" asp-controller="AdminArticles" asp-action="Articles" >Статьи</a></li>
+                        <li><a style="padding-top: 15px;" asp-controller="AdminCategories" asp-action="Categories">Категории</a></li>
+                    }
+                    @if (ViewBag.ActiveSubMenu == "Категории")
+                    {
+                        <li><a style="padding-top: 15px;" asp-controller="AdminProfile" asp-action="EditProfile">Профиль</a></li>
+                        <li><a style="padding-top: 15px;" asp-controller="AdminArticles" asp-action="Articles">Статьи</a></li>
+                        <li><a style="padding-top: 15px; color: white;" asp-controller="AdminCategories" asp-action="Categories">Категории</a></li>
+                    }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -65,7 +66,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2017 - BuisnessFace.ru</p>
+            <p>&copy; @DateTime.Now.Year  - @ViewData["FooterTitle"]</p>
         </footer>
     </div>
 

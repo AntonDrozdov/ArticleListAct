@@ -10,18 +10,21 @@ using BizMall.Data.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using ArticleList.Models.CommonModels;
+using Microsoft.Extensions.Options;
 
 namespace BizMall.Data.Repositories.Concrete
 {
     public class RepositoryArticle : RepositoryBase, IRepository, IRepositoryArticle
     {
         private readonly IRepositoryImage _repositoryImage;
+        private CategoryType categoryType;
         int pageSize = 9;
         int pageAdminSize = 5;
         int pageSearchSize = 5;
 
-        public RepositoryArticle(ApplicationDbContext ctx, IRepositoryImage repositoryImage) : base(ctx)
+        public RepositoryArticle(ApplicationDbContext ctx, IRepositoryImage repositoryImage, IOptions<AppSettings> settings) : base(ctx)
         {
+            categoryType = settings.Value.CategoryType;
             _repositoryImage = repositoryImage;
         }
 
@@ -101,21 +104,6 @@ namespace BizMall.Data.Repositories.Concrete
             return Items.AsQueryable();
         }
 
-        public IQueryable<Article> TopArticlesFullInformation()
-        {
-            //выбираем из таблицы товаров все, ид которых, содержаться в вышеопределенной коллекции необходимых ид
-            List<Article> Items = new List<Article>();
-            Items = _ctx.Articles
-                            .Include(g => g.Category)
-                            .Include(g => g.Category.ParentCategory)
-                            .Include(g => g.Images).ThenInclude(g => g.Image)
-                            .OrderByDescending(g => g.UpdateTime)
-                            .Take(10)
-                            .ToList();
-
-            return Items.AsQueryable();
-        }
-
         public Article SaveArticle(Article good, Company company)
         {
             //Редактирование СУЩЕСТВУЮЩЕЙ позиции (дата UpdateStatus не меняется - она меняется только из списка неактивных товаров)
@@ -129,6 +117,7 @@ namespace BizMall.Data.Repositories.Concrete
                                     .SingleOrDefault();
                 if (dbEntry != null)
                 {
+                    dbEntry.CategoryType = categoryType;
                     dbEntry.Title = good.Title;
                     dbEntry.EnTitle = good.EnTitle;
                     dbEntry.Description = good.Description;
@@ -142,7 +131,8 @@ namespace BizMall.Data.Repositories.Concrete
             }
             //Добавление НОВОЙ позиции (в т.ч. дата UpdateStatus выставляется на текущий день - берется из параметра - good)
             else
-            {         
+            {
+                good.CategoryType = categoryType;  
                 _ctx.Articles.Add(good);
                 _ctx.SaveChanges();
 
@@ -183,7 +173,7 @@ namespace BizMall.Data.Repositories.Concrete
         public IQueryable<Article> CategoryArticlesFullInformation(string Category, int page, out PagingInfo pagingInfo)
         {
             int totaItems = _ctx.Articles
-                            .Where(g => Category == null || g.Category.EnTitle == Category)
+                            .Where(g => (Category == null && g.CategoryType == categoryType) || (g.Category.EnTitle == Category && g.CategoryType == categoryType))
                             .Count();
 
             pagingInfo = new PagingInfo
@@ -197,7 +187,7 @@ namespace BizMall.Data.Repositories.Concrete
             Items = _ctx.Articles
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
-                            .Where(g => Category == null||g.Category.EnTitle== Category)
+                            .Where(g => (Category == null && g.CategoryType == categoryType) || (g.Category.EnTitle == Category && g.CategoryType == categoryType))
                             .Include(g => g.Images).ThenInclude(g => g.Image)
                             .OrderByDescending(g => g.UpdateTime)
                             .Skip((page - 1) * pageSize)
@@ -218,20 +208,23 @@ namespace BizMall.Data.Repositories.Concrete
             {
                 case 1:
                     SearchedArticlesIds = _ctx.Articles
-                        .Where(g => g.HashTags.Contains(tosearch[0]) || g.Description.Contains(tosearch[0]))
+                        .Where(g => (g.HashTags.Contains(tosearch[0]) || g.Description.Contains(tosearch[0]))
+                                        && g.CategoryType == categoryType)
                         .Select(g => g.Id)
                         .ToList();
                         
                     break;
                 case 2:
                     SearchedArticlesIds = _ctx.Articles
-                        .Where(g => g.HashTags.Contains(tosearch[0])||g.Description.Contains(tosearch[0])||g.HashTags.Contains(tosearch[1]) ||g.Description.Contains(tosearch[1]))
+                        .Where(g => (g.HashTags.Contains(tosearch[0])||g.Description.Contains(tosearch[0])||g.HashTags.Contains(tosearch[1]) ||g.Description.Contains(tosearch[1]))
+                                        && g.CategoryType == categoryType)
                         .Select(g => g.Id)
                         .ToList();
                     break;
                 case 3:
                     SearchedArticlesIds = _ctx.Articles
-                        .Where(g => g.HashTags.Contains(tosearch[0])||g.Description.Contains(tosearch[0])||g.HashTags.Contains(tosearch[1])||g.Description.Contains(tosearch[1])||g.HashTags.Contains(tosearch[2])||g.Description.Contains(tosearch[2]))
+                        .Where(g => (g.HashTags.Contains(tosearch[0])||g.Description.Contains(tosearch[0])||g.HashTags.Contains(tosearch[1])||g.Description.Contains(tosearch[1])||g.HashTags.Contains(tosearch[2])||g.Description.Contains(tosearch[2]))
+                                         && g.CategoryType == categoryType)
                         .Select(g => g.Id)
                         .ToList();
                     break;
@@ -262,7 +255,8 @@ namespace BizMall.Data.Repositories.Concrete
         public IQueryable<Article> SearchHashTagArticlesFullInformation(string hashtag, int page, out PagingInfo pagingInfo)
         {
             int totaItems = _ctx.Articles
-                .Where(g => g.HashTags.Contains(hashtag))
+                .Where(g => g.HashTags.Contains(hashtag) 
+                        && g.CategoryType == categoryType)
                 .Count();
 
             pagingInfo = new PagingInfo

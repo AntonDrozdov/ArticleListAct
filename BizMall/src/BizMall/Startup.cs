@@ -14,11 +14,15 @@ using BizMall.Models;
 using BizMall.Services;
 using BizMall.Data.Repositories.Abstract;
 using BizMall.Data.Repositories.Concrete;
+using BizMall.Models.CompanyModels;
 
 namespace BizMall
 {
     public class AppSettings
     {
+        public CategoryType CategoryType { get; set; }
+        public string HeaderTitle { get; set; }
+        public string FooterTitle { get; set; }
         public string ApplicationTitle { get; set; }
         public int TopItemsOnStart { get; set; }
         public bool ShowEditLink { get; set; }

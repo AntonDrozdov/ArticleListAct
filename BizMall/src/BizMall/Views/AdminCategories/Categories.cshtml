@@ -1,0 +1,96 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+<br />
+
+<!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
+<div>
+    <div style="margin-right:10px;margin-bottom:5px;">
+        <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminCategories" asp-action="EditCategory">Новая категория</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Название категории</th>
+            <th>Название категории(лат.)</th>
+            <th>Родительская категория</th>
+            <th>Опции</th>
+        </tr>
+        </thead>
+        @foreach (var cat in ViewBag.CategoriesVM)
+        {
+            <tr>
+                <!--CATEGORY TITLE-->
+                <td>
+                    <a asp-controller="AdminCategories" asp-action="EditCategory" asp-route-id="@cat.Id">@cat.Title</a>
+                </td>
+                <!--CATEGORY ENTITLE-->
+                <td>
+                    @cat.EnTitle
+                </td>
+                <!--PARENT CATEGORY TITLE-->
+                @if (@cat.ParentCategory != null)
+                    {<td>@cat.ParentCategory.Title</td>}
+                else
+                    {<td> -</td >}
+                <!--OPTIONS-->
+                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminCategories" asp-action="DeleteCategory" asp-route-itemId="@cat.Id">Удалить</a></td>
+            </tr>
+        }
+    </table>
+</div>
+
+<script type="text/javascript">
+    //function Archieve() {
+    //    //перебрать все checkbox(checkedToDoSmth) на странице
+    //    var checkedGoods = "";
+    //    $("input[name='checkedToDoSmth']").each(function () {
+    //        if ($(this)[0].checked == true) {
+    //            checkedGoods += $(this).val() + "_";
+    //        }
+    //    });
+
+    //    //отправить запрос на обновление статусов
+    //    var formData = new FormData();
+    //    formData.append('checkedGoods', checkedGoods);
+    //    $.ajax({
+    //        url: "/AdminCompanyGoods/ArchieveGoods",
+    //        type: 'POST',
+    //        data: formData,
+    //        processData: false,
+    //        contentType: false,
+    //        success: function () {
+    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=1");
+    //        }
+    //    });
+    //}
+
+    //function Activate() {
+    //    //перебрать все checkbox(checkedToDoSmth) на странице
+    //    var checkedGoods = "";
+    //    $("input[name='checkedToDoSmth']").each(function () {
+    //        if ($(this)[0].checked == true) {
+    //            checkedGoods += $(this).val() + "_";
+    //        }
+    //    });
+
+    //    //отправить запрос на обновление статусов
+    //    var formData = new FormData();
+    //    formData.append('checkedGoods', checkedGoods);
+    //    $.ajax({
+    //        url: "/AdminCompanyGoods/ActivateGoods",
+    //        type: 'POST',
+    //        data: formData,
+    //        processData: false,
+    //        contentType: false,
+    //        success: function () {
+    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=0");
+    //        }
+    //    });
+    //}
+</script>
+

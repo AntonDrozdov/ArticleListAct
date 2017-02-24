@@ -27,7 +27,7 @@
         }
     </script>*@
 
-<form asp-controller="AdminCompanyProfile" asp-action="EditProfile" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+<form asp-controller="AdminProfile" asp-action="EditProfile" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
     <hr />
     <!--ПЕРЕКЛЮЧАТЕЛЬ КОМПАНИЯ/КЛИЕНТ-->
     <!--<br />
@@ -74,17 +74,11 @@
     <!--ЛОГО-->
     <div class="form-group">
         <label class="col-md-2 control-label">Логотип компании:</label>
-        @*Ids изображений добавляемого/редактируемого товара*@
         @if (Model.LogoImageInBase64 == null)
         {
             <div class="form-group">
-                <div class="col-md-10">
-                    <div class="imageTable">
-                        <table style="margin-left:25px;">
-                            <tr id="images">
-                                <td style="text-align:center;padding:3px;"></td>
-                            </tr>
-                        </table>
+                <div class="col-md-8">
+                    <div id="images">
                     </div>
                 </div>
             </div>
@@ -93,40 +87,34 @@
         {
             <div class="form-group">
                 <div class="col-md-8">
-                    <div class="imageTable">
-                        <table style="margin-left:25px;">
-                            <tr id="images">
-                                @foreach (var imageViewModel in Model.ImageViewModels)
-                                {
-                                    <td id="imgthumb_@imageViewModel.Id" class="imagethumbcell">
-                                        <img class="thumb" src='@imageViewModel.ImageInBase64' />
-                                    </td>
-                                    <td id="delbtn_@imageViewModel.Id" class="imagedeletebuttoncell">
-                                        <a class='btn btn-default' onclick="deleteCompanyImage('@imageViewModel.goodImageIds');"><span class="imagedeletebutton">x</span></a>
-                                    </td>
-                                }
-                            </tr>
-                        </table>
+                    <div id="images">
+                        @foreach (var imageViewModel in Model.ImageViewModels)
+                        {
+                            <div style="float:left;position: relative;margin-left:15px;margin-top:10px;" id="imgthumb_@imageViewModel.Id" class="imagethumbcell">
+                                <img class="thumb" src='@imageViewModel.ImageInBase64' />
+                                <div style="position:absolute; left:70px; top:-10px;" id="delbtn_@imageViewModel.Id" class="imagedeletebuttoncell">
+                                    <a class='btn btn-default' onclick="deleteCompanyImage('@imageViewModel.goodImageIds');"><span class="imagedeletebutton">x</span></a>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         }
-
-        @*<input asp-for="CompanyLogoId" type="hidden" id="goodImagesIds" readonly="readonly" value="@Model.CompanyLogo" />*@
         <div class="col-md-2"></div>
         <div class="form-group">
-                <div class="col-md-8">
-                    <a class='btn btn-default col-md-3' style="height:35px; margin-bottom:5px;margin-left:25px;">
-                        Загрузить логотип ...
-                        <input type="file"
-                               id="loadfile"
-                               name="newimages"
-                               style="position: absolute;z-index: 2; top: 0; left: 0; opacity: 0; background-color: transparent;color: transparent;"
-                               onchange='saveImage();'>
-                    </a>
-                </div>
-                <input asp-for="companyImagesIds" type="hidden" id="companyImagesIds" readonly="readonly" value="@Model.companyImagesIds" />
+            <div class="col-md-3">
+                <a class='btn btn-default' style="height:35px; margin-bottom:5px;margin-left:25px;">
+                    Загрузить логотип ...
+                    <input type="file"
+                            id="loadfile"
+                            name="newimages"
+                            style="position: absolute;z-index: 2; top: 0; left: 0; opacity: 0; background-color: transparent;color: transparent;"
+                            onchange='saveImage();'>
+                </a>
             </div>
+            <input asp-for="companyImagesIds" type="hidden" id="companyImagesIds" readonly="readonly" value="@Model.companyImagesIds" />
+        </div>
     </div>
 
     <!--ТЕЛЕФОН-->
@@ -223,7 +211,9 @@
                     if (idxOfDeletedIm == -1) return;
                     tmpIdsArr.splice(idxOfDeletedIm, 1);
                     //новый список id изображений  товара
-                    companyImagesIds = tmpIdsArr.join('_') + "_";
+                    //companyImagesIds = tmpIdsArr.join('_') + "_";
+                    //у нас только одно лого для компаниЙ, поэтому вычищаем полностью поле companyImagesIds
+                    companyImagesIds = "";
                     $("#companyImagesIds").val(companyImagesIds);
                     //удаляем из DOM
                     $("#imgthumb_" + idOfDeletedIm).remove();
@@ -236,7 +226,10 @@
         function saveImage() {
             //берем изображение
             var image = $('#loadfile')[0].files[0];
-                //ПРОВЕРКИ
+            //ПРОВЕРКИ
+                //должен быть только один логотип
+                var isExist = $("#companyImagesIds").val();
+                if (isExist != "") return;
                 //если оно есть
                 if (image == undefined) return;
                 //если оно подходящего размера (не более 300Кб)
@@ -271,16 +264,15 @@
                             var newImagesIds = $("#companyImagesIds").val() + data.id + "_";
                             $("#companyImagesIds").val(newImagesIds);
                             //отображение thumb только что добавленного изображения
-                            var image = "<td id='imgthumb_" + data.id + "' class = 'imagethumbcell'> \
-                                                    <img class='thumb' src='" + data.imageInBase64 + "' /> \
-                                                </td>";
-                            $("#images").append(image);
-                            var closeButton = "<td id='delbtn_" + data.id + "' class ='imagedeletebuttoncell'> \
-                                                    <a class='btn btn-default' href = '#' onclick = \"deleteCompanyImage('" + data.goodImageIds + "');\"> \
+                            var image = "<div style='float:left;position: relative;margin-left:15px;margin-top:10px;' id='imgthumb_" + data.id + "' class = 'imagethumbcell'> \
+                                                <img class='thumb' src='" + data.imageInBase64 + "' /> \
+                                                <div style='position:absolute; left:70px; top:-10px;' id='delbtn_" + data.id + "' class ='imagedeletebuttoncell'> \
+                                                    <a class='btn btn-default' onclick = \"deleteCompanyImage('" + data.goodImageIds + "');\"> \
                                                         <span class='imagedeletebutton'>x</span> \
                                                     </a> \
-                                                </td>";
-                            $("#images").append(closeButton);
+                                                </div> \
+                                            </div>";
+                            $("#images").append(image);
                         }
                     });
                 }

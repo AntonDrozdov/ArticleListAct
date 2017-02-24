@@ -19,6 +19,8 @@ namespace BizMall.Models.CompanyModels
 
         public string Link { get; set; }
 
+        public CategoryType CategoryType { get; set; }
+
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
@@ -26,11 +28,13 @@ namespace BizMall.Models.CompanyModels
 
         public List<RelGoodImage> Images { get; set; }
         public List<RelCompanyGood> Companies { get; set; }
-        
+        public List<RelGoodExternalLink> ExternalLinks { get; set; }
+
         public Article()
         {
             Images = new List<RelGoodImage>();
             Companies = new List<RelCompanyGood>();
-        }
+            ExternalLinks = new List<RelGoodExternalLink>();
+    }
     }
 }
