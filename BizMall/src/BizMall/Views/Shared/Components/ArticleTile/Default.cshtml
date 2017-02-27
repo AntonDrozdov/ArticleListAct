@@ -22,7 +22,7 @@
             }
             else
             {
-                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle" >@Model.Category.Title</a>
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.Title</a>
             }
         </span>
         <span id="TileDate">
@@ -30,7 +30,11 @@
         </span>
     </p>
     <!--ОПИСАНИЕ-->
-    <p align="justify">@Model.Description</p>
+    <p align="justify">
+        <p>
+            @Model.Description
+        </p>
+    </p>
     <!--КНОПКА ЧИТАТЬ-->
     <p>
         @*<a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link" class="btn btn-info">Читать полностью...</a>

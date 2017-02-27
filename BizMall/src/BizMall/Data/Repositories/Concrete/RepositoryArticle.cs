@@ -18,14 +18,20 @@ namespace BizMall.Data.Repositories.Concrete
     {
         private readonly IRepositoryImage _repositoryImage;
         private CategoryType categoryType;
-        int pageSize = 9;
-        int pageAdminSize = 5;
-        int pageSearchSize = 5;
+        int countOfSimilarArticlesOnArticlePage = 0;
+        int pageSize = 0;
+        int pageAdminSize = 0;
+        int pageSearchSize = 0;
 
         public RepositoryArticle(ApplicationDbContext ctx, IRepositoryImage repositoryImage, IOptions<AppSettings> settings) : base(ctx)
         {
             categoryType = settings.Value.CategoryType;
             _repositoryImage = repositoryImage;
+
+            countOfSimilarArticlesOnArticlePage = Convert.ToInt32(settings.Value.CountOfSimilarArticlesOnArticlePage);
+            pageSize = Convert.ToInt32(settings.Value.PageSize);
+            pageAdminSize = Convert.ToInt32(settings.Value.PageAdminSize);
+            pageSearchSize = Convert.ToInt32(settings.Value.PageSearchSize);
         }
 
         public Article GetArticle(int goodId) {
@@ -97,7 +103,7 @@ namespace BizMall.Data.Repositories.Concrete
                             .Include(g => g.Category.ParentCategory)
                             .OrderByDescending(g => g.UpdateTime)
                             .Skip((page - 1) * pageSize)
-                            .Take(pageSize)
+                            .Take(pageAdminSize)
                             .ToList();
 
 
@@ -192,6 +198,23 @@ namespace BizMall.Data.Repositories.Concrete
                             .OrderByDescending(g => g.UpdateTime)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .ToList();
+
+            return Items.AsQueryable();
+        }
+
+        public IQueryable<Article> SimilarArticlesFullInformation(string Category, int ArticleId)
+        {
+            List<Article> Items = new List<Article>();
+            Items = _ctx.Articles
+                            .Include(g => g.Category)
+                            .Include(g => g.Category.ParentCategory)
+                            .Where(g => ((Category == null && g.CategoryType == categoryType) 
+                                        || (g.Category.EnTitle == Category && g.CategoryType == categoryType))
+                                        && g.Id!= ArticleId)
+                            .Include(g => g.Images).ThenInclude(g => g.Image)
+                            .OrderByDescending(g => g.UpdateTime)
+                            .Take(countOfSimilarArticlesOnArticlePage)
                             .ToList();
 
             return Items.AsQueryable();

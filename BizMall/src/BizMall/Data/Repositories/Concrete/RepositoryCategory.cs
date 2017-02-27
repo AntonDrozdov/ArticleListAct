@@ -88,13 +88,22 @@ namespace BizMall.Data.Repositories.Concrete
                 var dbEntry = _ctx.Categories.Where(c => c.Id == model.Id).SingleOrDefault();
                 if (dbEntry != null)
                 {
-                    dbEntry.CategoryType = categoryType;
-                    dbEntry.Title = model.Title;
-                    dbEntry.EnTitle = model.EnTitle;
-                    dbEntry.CategoryId = model.ParentCategory.Id;
-                    dbEntry.ParentCategory= null;
+                    if (model.ParentCategory.Id!=0)
+                    {
+                        dbEntry.CategoryType = categoryType;
+                        dbEntry.Title = model.Title;
+                        dbEntry.EnTitle = model.EnTitle;
+                        dbEntry.CategoryId = model.ParentCategory.Id;
+                        dbEntry.ParentCategory = null;
+                    }
+                    else
+                    {
+                        dbEntry.CategoryType = categoryType;
+                        dbEntry.Title = model.Title;
+                        dbEntry.EnTitle = model.EnTitle;
+                        dbEntry.ParentCategory = null;
+                    }
                 }
-
                 _ctx.Entry(dbEntry).State = EntityState.Modified;
                 _ctx.SaveChanges();
             }
@@ -127,9 +136,22 @@ namespace BizMall.Data.Repositories.Concrete
         {
             try
             {
-                var item = _ctx.Categories.Where(c => c.Id == itemId).FirstOrDefault();
-                _ctx.Categories.Remove(item);
-                _ctx.SaveChanges();
+                var item = _ctx.Categories
+                            .Where(c => c.Id == itemId)
+                            .Include(c=>c.ParentCategory)
+                            .FirstOrDefault();
+                //if (item.ParentCategory != null)
+                //{
+                //    item.CategoryId = null;
+                //    item.ParentCategory = null;
+                //    _ctx.Entry(item).State = EntityState.Modified;
+                //    _ctx.SaveChanges();
+                //}
+                //else
+                //{
+                    _ctx.Entry(item).State = EntityState.Deleted;
+                    _ctx.SaveChanges();
+                //}
             }
             catch
             {

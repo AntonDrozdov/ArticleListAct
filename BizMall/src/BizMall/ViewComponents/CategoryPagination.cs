@@ -10,9 +10,9 @@ using ArticleList.Models.CommonModels;
 
 namespace BizMall.ViewComponents
 {
-    public class Pagination: ViewComponent
+    public class CategoryPagination : ViewComponent
     {
-        public Pagination()
+        public CategoryPagination()
         {
         
         }

@@ -22,7 +22,9 @@
         </span>
     </p>
     <!--ОПИСАНИЕ-->
-    <p align="justify">@Model.Description</p>
+    <p style ="text-indent: 20px; text-align:justify" >
+        @Html.Raw(Model.Description.Replace("\r\n", "</p><p style=\"text-indent:20px;text-align:justify\">"))
+    </p>
     <!--КНОПКА ЧИТАТЬ-->
     <p><a class="btn btn-info" target="_blank" href="@Model.Link">Перейти к источнику... </a></p>
     <!--ФОТКИ-->

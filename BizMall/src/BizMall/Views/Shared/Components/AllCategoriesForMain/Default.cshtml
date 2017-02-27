@@ -65,7 +65,9 @@
                                     {
                                         @if (chcat.CategoryId == topcat.Id)
                                         {
-                                            <li><a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@chcat.EnTitle" style="text-align: center;margin: auto;"><b>@chcat.Title</b></a></li>
+                                            <li>
+                                                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@chcat.EnTitle" style="text-align: center;margin: auto;"><b>@chcat.Title</b></a>
+                                            </li>
                                         }
                                     }
                                 </ul>
@@ -74,7 +76,6 @@
                         if (IsParent == false)
                         {
                             <li >
-                                @*<a href="@Url.Action("CategoryArticles", "Home", new { Category = @topcat.Title })" style="width:240px;text-align: center;margin: auto;">@topcat.Title</a>*@
                                 <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@topcat.EnTitle" style="width:240px;text-align: center;margin: auto;">@topcat.Title</a>
                             </li>
                         }

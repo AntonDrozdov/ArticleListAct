@@ -1,0 +1,25 @@
+﻿@model ArticleList.Models.CommonModels.PagingInfo
+
+<nav aria-label="...">
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            @if (i == Model.CurrentPage)
+            {
+                <li class="page-item active">
+                    <a asp-controller="Home" asp-action="IndexCat"  asp-route-page="@i">
+                        <span class="page-link">@i</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a asp-controller="Home" asp-action="IndexCat" asp-route-page="@i">
+                        @i
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</nav>

@@ -284,9 +284,11 @@ E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\AllCategories
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\AllParentCategories.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\ArticleDetailsTile.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\ArticleTile.cs
-E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\Pagination.cs
+E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\CategoryPagination.cs
+E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\MainPagination.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\SearchHashTagPagination.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\SearchPagination.cs
+E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewComponents\SimilarArticleDetailsTile.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewModels\PagingInfo.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewModels\AccountViewModels\CreateEditCompanyViewModel.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\ViewModels\AccountViewModels\ExternalLoginConfirmationViewModel.cs

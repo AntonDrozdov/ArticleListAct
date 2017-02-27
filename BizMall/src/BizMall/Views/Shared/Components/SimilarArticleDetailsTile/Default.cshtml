@@ -1,0 +1,31 @@
+﻿@model BizMall.ViewModels.AdminCompanyArticles.ArticleViewModel
+
+<div class="ArticleTile">
+    <!--НАЗВАНИЕ-->
+    @{string link = @Model.Id + "_" + @Model.EnTitle;}
+    <p>
+        <h4>
+            <a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link">@Model.Title</a>
+        </h4>
+    </p>
+    <!--КАТЕГРИЯ И ДАТА-->
+
+    <p>
+        <span id="TileCategory">
+            @if (@Model.Category.ParentCategory != null)
+            {
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title</a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.Title</a>
+            }
+        </span>
+        <span id="TileDate">
+            @Model.UpdateTime.Day<span>.</span>@Model.UpdateTime.Month<span>.</span>@Model.UpdateTime.Year
+        </span>
+    </p>
+    <!--ОПИСАНИЕ-->
+    <p align="justify">@Model.Description</p>
+    <hr />
+</div>

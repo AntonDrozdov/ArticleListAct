@@ -1,5 +1,36 @@
-﻿<div class="col-xs-12 col-sm-9">
+﻿<div class="col-xs-12 col-sm-8">
     @await Component.InvokeAsync("ArticleDetailsTile", new { avm = ViewBag.ArticleVM })
+
+    @{
+        int numOfRows = 0;
+        int anum = 0;//номер текущей выводимой статьи
+        double acount = ViewBag.SimilarArticlesVM.Count;
+        if (acount == 1)
+        {
+            numOfRows = 1;
+        }
+        else
+        {
+            int tmp = Convert.ToInt32(acount / 3);
+            numOfRows = (tmp % 3 == 0) ? (tmp / 3) : (tmp + 1);////количество рядов
+        }
+    }
+
+    @for (int rownum = 0; rownum < numOfRows; rownum++)
+    {
+        <div class="row">
+            @{
+                    int iacount = ViewBag.SimilarArticlesVM.Count;
+                    int ainrow = ((iacount - anum) >= 3) ? 3 : (iacount - anum); //количество элементов в ряду
+            }
+            @for (int j = 0; j < ainrow; j++, anum++)
+            {
+                <div class="col-xs-12 col-sm-4">
+                    @await Component.InvokeAsync("SimilarArticleDetailsTile", new { avm = ViewBag.SimilarArticlesVM[anum] })
+                </div>
+            }
+        </div>
+    }
 </div>
 
 

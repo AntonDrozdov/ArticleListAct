@@ -32,11 +32,13 @@ namespace BizMall.Controllers
 
         private ArticleViewModel ConstructAVM(Article item, bool shortDescription)
         {
+            string actualDecription = (shortDescription && item.Description.Length > 300) ? item.Description.Substring(0, 300) + " . . ." : item.Description;
+            //actualDecription = actualDecription.Replace("[newstr]", "</p><p>");
             ArticleViewModel avm = new ArticleViewModel
             {
                 Title = item.Title,
                 EnTitle = item.EnTitle,
-                Description = (shortDescription && item.Description.Length > 300) ? item.Description.Substring(0, 300) + " . . ." : item.Description,
+                Description = actualDecription,
                 UpdateTime = item.UpdateTime,
                 Category = item.Category,
                 CategoryId = item.CategoryId,
@@ -148,7 +150,22 @@ namespace BizMall.Controllers
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewBag.ArticleVM = avm;
-            
+
+            //похожие статьи (для того чтобы наполнить страницу нужным количеством символов)
+            if (Convert.ToInt32(_settings.CountOfSimilarArticlesOnArticlePage) > 0)
+            {
+                var Items = _repositoryArticle.SimilarArticlesFullInformation(item.Category.EnTitle, item.Id).ToList();
+
+                var SimilarArticlesVM = new List<ArticleViewModel>();
+                foreach (var i in Items)
+                {
+                    if (i.Id!= avm.Id)
+                        SimilarArticlesVM.Add(ConstructAVM(i, true));
+                }
+
+                ViewBag.SimilarArticlesVM = SimilarArticlesVM;
+            }
+
             return View();
         }
 

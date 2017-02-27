@@ -24,8 +24,11 @@ namespace BizMall
         public string HeaderTitle { get; set; }
         public string FooterTitle { get; set; }
         public string ApplicationTitle { get; set; }
-        public int TopItemsOnStart { get; set; }
-        public bool ShowEditLink { get; set; }
+        public string CountOfSimilarArticlesOnArticlePage { get; set; }
+        //размеры страниц
+        public string PageSize { get; set; }
+        public string PageAdminSize { get; set; }
+        public string PageSearchSize { get; set; }
     }
 
     public class Startup
@@ -131,16 +134,15 @@ namespace BizMall
                     "ArticleDetails/{articleId}",
                     new { controller = "Home", action = "ArticleDetails" }
                 );
-
-                routes.MapRoute(
-                    null,
-                    "Categories/{Category}",
-                    new { controller = "Home", action = "IndexCat", page = 1 }
-                );
-
+                
                 routes.MapRoute(null,
                     "Shops/{Shop}",
                     new { controller = "Home", action = "IndexShop" }
+                );
+
+                routes.MapRoute(null,
+                    "Categories/{Category}",
+                    new { controller = "Home", action = "IndexCat" }
                 );
 
                 routes.MapRoute(null,
@@ -152,6 +154,7 @@ namespace BizMall
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=IndexCat}/{id?}");
+
             });
         }
     }

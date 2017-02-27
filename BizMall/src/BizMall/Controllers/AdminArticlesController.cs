@@ -191,6 +191,9 @@ namespace BizMall.Controllers
                     }
                 }
 
+                //формирование разделителей
+                //model.Description = model.Description.Replace("\r\n", "[newstr]");
+
                 _repositoryArticle.SaveArticle(new Article
                 {
                     Id = model.Id,
