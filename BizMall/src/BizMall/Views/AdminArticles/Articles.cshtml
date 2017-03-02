@@ -1,8 +1,7 @@
-﻿@{
+﻿@model ArticleList.Models.CommonModels.SearchArticleModel
+@{
     Layout = "_AdminLayout";
 }
-
-<br />
 
 <!--Закладки Активные/НеАктивные-->
 <!--@if (ViewBag.ActiveGoodsStatusMenu == 1)
@@ -21,154 +20,112 @@ else
 }
 -->
 
-<!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
-<div>
-    <div style="margin-right:10px;margin-bottom:5px;">
-        <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminArticles" asp-action="EditArticle">Новая статья</a>
+<div class="row">
+    <!--МЕНЮ КАТЕГОРИЙ-->
+    <div class="col-md-3">
+        @await Component.InvokeAsync("AllCategoriesToFilterEditingArticles", new { cegvm = Model })
     </div>
-    <!--
-    <div style="float:left;margin-bottom:5px;">
-        @if (ViewBag.ActiveGoodsStatusMenu == 1)
-        {
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary dropdown-toggle menuForChecked btn-newpos" data-toggle="dropdown"><img class="chekpic" src="~/images/images.png" /> Для выбранных <span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#" onclick="Archieve();">В Архив</a></li>
-                </ul>
+
+    <div class="col-md-9">
+        <!--СТРОКА ПОИСКА-->
+        <div class="row">
+            <div class="col-xs-12 ">
+                <form asp-controller="AdminArticles" asp-action="Search" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+                    <div class="input-group" style="margin-top:5px;margin-bottom:5px;">
+                        <input asp-for="searchstring" class="form-control" id="searchstring" placeholder="Найти...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Поиск</button>
+                        </span>
+                    </div>
+                </form>
             </div>
-        }
-        else
-        {
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary dropdown-toggle menuForChecked btn-newpos" data-toggle="dropdown"><img class="chekpic" src="~/images/images.png" /> Для выбранных <span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#" onclick="Activate();">Активировать</a></li>
-                </ul>
-            </div>
-        }
+        </div>
+        <br/>
+        <!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
+        <div style="margin-right:10px;margin-bottom:5px;">
+            <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminArticles" asp-action="EditArticle">Новая статья</a>
+        </div>
+
+        <!--ВЫВОД СТАТЕЙ-->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Название</th>
+                        <th>Длина описания(симв.)</th>
+                        <th>Категория</th>
+                        <th>Время публикации</th>
+                        <th>Опции</th>
+                    </tr>
+                </thead>
+                @foreach (var avm in ViewBag.ArticlesVM)
+                {
+                    <tr>
+                        <td><input type="checkbox" name="checkedToDoSmth" value="@avm.Id" /></td>
+
+                        <!--TITLE-->
+                        <td>
+                            <a asp-controller="AdminArticles" asp-action="EditArticle" asp-route-id="@avm.Id">@avm.Title</a>
+                        </td>
+                        <!--DESCRIPTION-->
+                        <td>
+                            @{
+                                int len = avm.Description.Length;
+                            }
+                            @if (len <= 1500)
+                            {
+                                <span style="color:red;">@len</span>
+                            }
+                            else
+                            {
+                                <span style="color:lawngreen;">@len</span>
+                            }
+                        </td>
+
+                        <!--CATEGORY-->
+                        @if (@avm.Category.ParentCategory != null)
+                        {
+                            <td>@avm.Category.ParentCategory.Title/@avm.Category.Title</td>
+                        }
+                        else
+                        {
+                            <td>@avm.Category.Title</td>
+                        }
+
+                        @if (ViewBag.ActiveGoodsStatusMenu == 1)
+                        {
+                            <td>@avm.DaysToSetInActiveStatus дн.</td>
+                        }
+
+                        <!--UPDATETIME-->
+                        <td>
+                            @avm.UpdateTime
+                        </td>
+
+                        <!--
+                        <td>
+                        <img width="50" src='@avm.MainImageInBase64' />
+                        @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
+                    </td>
+                    -->
+                        <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminArticles" asp-action="DeleteArticle" asp-route-itemId="@avm.Id">Удалить</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+        
+        <!--ПАГИНАЦИЯ-->
+        <div class="col-xs-12 ">
+            @await Component.InvokeAsync("AdminArticlesPagination", new { pi = ViewBag.PagingInfo })
+        </div>
     </div>
-    -->
 </div>
 
-<div class="table-responsive">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Id</th>
-            <th>Название</th>
-            <th>Длина описания(симв.)</th>
-            <th>Категория</th>
-            <th>Время публикации</th>
-            <th>Опции</th>
-        </tr>
-        </thead>
-        @foreach (var avm in ViewBag.ArticlesVM)
-        {
 
-            <tr>
-                <td><input type="checkbox" name="checkedToDoSmth" value="@avm.Id"/></td>
 
-                <!--TITLE-->
-                <td>
-                    <a asp-controller="AdminArticles" asp-action="EditArticle" asp-route-id="@avm.Id">@avm.Title</a>
-                </td>
-                <!--DESCRIPTION-->
-                <td>
-                    @{
-                        int len = avm.Description.Length;
-                    }
-                    @if (len<=1500)
-                    {
-                        <span style="color:red;">@len</span>
-                    }
-                    else
-                    {
-                        <span style="color:lawngreen;">@len</span>
-                    }
-                </td>
-                
-                <!--CATEGORY-->
-                @if (@avm.Category.ParentCategory != null)
-                {
-                    <td>@avm.Category.ParentCategory.Title/@avm.Category.Title</td>
-                }
-                else
-                {
-                    <td>@avm.Category.Title</td>
-                }
 
-                @if (ViewBag.ActiveGoodsStatusMenu == 1)
-                {
-                    <td>@avm.DaysToSetInActiveStatus дн.</td>
-                }
-                
-                <!--UPDATETIME-->
-                <td>
-                    @avm.UpdateTime
-                </td>
 
-                <!--
-                    <td>
-                    <img width="50" src='@avm.MainImageInBase64' />
-                    @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
-                </td>
-                -->
-                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminArticles" asp-action="DeleteArticle" asp-route-itemId="@avm.Id">Удалить</a></td>
-            </tr>
-        }
-    </table>
-</div>
-<div class="col-xs-12 ">
-    @await Component.InvokeAsync("AdminArticlesPagination", new { pi = ViewBag.PagingInfo })
-</div>
 
-<script type="text/javascript">
-    //function Archieve() {
-    //    //перебрать все checkbox(checkedToDoSmth) на странице
-    //    var checkedGoods = "";
-    //    $("input[name='checkedToDoSmth']").each(function () {
-    //        if ($(this)[0].checked == true) {
-    //            checkedGoods += $(this).val() + "_";
-    //        }
-    //    });
 
-    //    //отправить запрос на обновление статусов
-    //    var formData = new FormData();
-    //    formData.append('checkedGoods', checkedGoods);
-    //    $.ajax({
-    //        url: "/AdminCompanyGoods/ArchieveGoods",
-    //        type: 'POST',
-    //        data: formData,
-    //        processData: false,
-    //        contentType: false,
-    //        success: function () {
-    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=1");
-    //        }
-    //    });
-    //}
-
-    //function Activate() {
-    //    //перебрать все checkbox(checkedToDoSmth) на странице
-    //    var checkedGoods = "";
-    //    $("input[name='checkedToDoSmth']").each(function () {
-    //        if ($(this)[0].checked == true) {
-    //            checkedGoods += $(this).val() + "_";
-    //        }
-    //    });
-
-    //    //отправить запрос на обновление статусов
-    //    var formData = new FormData();
-    //    formData.append('checkedGoods', checkedGoods);
-    //    $.ajax({
-    //        url: "/AdminCompanyGoods/ActivateGoods",
-    //        type: 'POST',
-    //        data: formData,
-    //        processData: false,
-    //        contentType: false,
-    //        success: function () {
-    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=0");
-    //        }
-    //    });
-    //}
-</script>
 

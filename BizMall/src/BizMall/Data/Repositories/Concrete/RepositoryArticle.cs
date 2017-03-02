@@ -76,7 +76,7 @@ namespace BizMall.Data.Repositories.Concrete
             return Items.AsQueryable();
         }
 
-        public IQueryable<Article> CompanyArticlesFullInformation(int ShopId, int page, out PagingInfo pagingInfo)
+        public IQueryable<Article> CompanyArticlesFullInformation(int ShopId, string Category, int page, out PagingInfo pagingInfo)
         {
             //получаем список ид товаров магазина из объектов RelShopGood поля Goods, что есть связующие объекты между таблицей магазинов и таблицей товаров
             List<int> ShopGoodsIds = new List<int>();
@@ -85,20 +85,22 @@ namespace BizMall.Data.Repositories.Concrete
                 ShopGoodsIds.Add(rsg.GoodId);
 
             int totaItems = _ctx.Articles
-                            .Where(g => ShopGoodsIds.Contains(g.Id))
+                            .Where(g => ShopGoodsIds.Contains(g.Id)&&
+                                        (Category == null || g.Category.EnTitle == Category))
                             .Count();
 
             pagingInfo = new PagingInfo
             {
                 CurrentPage = page,
-                ItemsPerPage = pageSize,
+                ItemsPerPage = pageAdminSize,
                 TotalItems = totaItems
             };
 
             //выбираем из таблицы товаров все, ид которых, содержаться в вышеопределенной коллекции необходимых ид
             List<Article> Items = new List<Article>();
             Items = _ctx.Articles
-                            .Where(g => ShopGoodsIds.Contains(g.Id))
+                            .Where(g => ShopGoodsIds.Contains(g.Id) &&
+                                        (Category == null || g.Category.EnTitle == Category))
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
                             .OrderByDescending(g => g.UpdateTime)

@@ -1,5 +1,6 @@
 ﻿@model ArticleList.ViewModels.AdminCompanyArticles.ArticlesViewModel
- 
+
+<!--САМИ СТАТЬИ-->
 @if(ViewBag.Category != null)
 {
     <h1 style="color:#b2b1b1">Категория: @ViewBag.Category</h1>
@@ -27,6 +28,8 @@
     </div>
 }
 
+
+<!--ПАГИНАЦИЯ-->
 @if (ViewBag.PagingInfo.CategoryEnTitleForLink != null)
 {
     <div class="col-xs-12 ">

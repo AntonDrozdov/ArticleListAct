@@ -32,7 +32,7 @@ namespace BizMall.ViewModels.AdminCompanyArticles
         [DataType(DataType.MultilineText)]
         public string HashTags { get; set; }
 
-        [Required(ErrorMessage = "Введите корректный Url (от 5 символов)")]
+        //[Required(ErrorMessage = "Введите корректный Url (от 5 символов)")]
         [StringLength(3000, ErrorMessage = "Введите корректный Url (от 5 символов)", MinimumLength = 5)]
         [DataType(DataType.Url)]
         public string Link { get; set; }

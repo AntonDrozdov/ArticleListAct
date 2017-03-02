@@ -13,7 +13,7 @@ namespace BizMall.Data.Repositories.Abstract
         Article GetArticle(int goodId);
         void DeleteArticle(int goodId);
         IQueryable<Article> CompanyArticlesFullInformation(int ShopId);
-        IQueryable<Article> CompanyArticlesFullInformation(int ShopId, int page, out PagingInfo pagingInfo);
+        IQueryable<Article> CompanyArticlesFullInformation(int ShopId, string Category, int page, out PagingInfo pagingInfo);
         IQueryable<Article> CategoryArticlesFullInformation(string Category, int page, out PagingInfo pagingInfo);
         IQueryable<Article> SimilarArticlesFullInformation(string Category, int ArticleId);
         

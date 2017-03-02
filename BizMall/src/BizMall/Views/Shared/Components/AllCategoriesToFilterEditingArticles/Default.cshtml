@@ -1,0 +1,96 @@
+﻿@model BizMall.ViewModels.AdminCompanyArticles.CreateEditArticleViewModel
+
+<!--
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".nestedcat").click(function () {
+            var parent = $(this).parent().parent().prev().html();
+            var spanbeg = parent.indexOf('<');
+            //вырезаем слово родительской категории и соединяем его с названием дочерней категории
+            var tmp = parent.substring(0, spanbeg).trim() + "/" + $(this).html();
+            tmp = tmp.trim();
+
+            $("#CurrentCatName").val(tmp);
+            $("#CurrentCatId").val($(this).attr('id'));
+            return;
+        });
+    });
+
+    $(document).ready(function () {
+        $(".cat").click(function () {
+            $("#CurrentCatName").val($(this).html());
+            $("#CurrentCatId").val($(this).attr('id'));
+            return;
+        });
+
+
+    });
+</script>
+-->
+
+
+    <nav id="navbar-sub-header" role="navigation" class="navbar navbar-default" style="margin-top:5px;">
+        <div class="navbar-header">
+            <button type="button" data-target="#navbarCollapseCat" data-toggle="collapse" class="navbar-toggle">
+                <span>Категории</span>
+            </button>
+        </div>
+        <div id="navbarCollapseCat" class="navbar-collapse collapse" style="padding-top: 10px;">
+            <ul class="nav navbar-nav">
+                <li style="text-align: center;">
+                    <a asp-controller="AdminArticles" asp-action="Articles"  style="width:240px;text-align: center;margin: auto;">ВСЕ</a>
+                </li>
+                @foreach (var topcat in ViewBag.Categories)
+                {
+
+                    if (topcat.CategoryId == null)
+                    {
+                        bool IsParent = false;
+
+                        @foreach (var cat in ViewBag.Categories)
+                        {
+                            @if (cat.CategoryId == topcat.Id)
+                            {
+                                IsParent = true;
+                                break;
+                            }
+                        }
+                        if (IsParent == true)
+                        {
+                            <li class="dropdown" style="text-align: center;">
+                                <a data-toggle="dropdown" class="dropdown-toggle" href="@topcat.EnTitle" style="border-radius: 4px;padding-top: 5px;width: 240px; margin: auto;">@topcat.Title<b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop"     style="border-radius: 4px;">
+                                    @foreach (var chcat in ViewBag.Categories)
+                                    {
+                                        @if (chcat.CategoryId == topcat.Id)
+                                        {
+                                            <li>
+                                                <a asp-controller="AdminArticles" asp-action="Articles" asp-route-Category="@chcat.EnTitle" style="text-align: center;margin: auto;"><b>@chcat.Title</b></a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        if (IsParent == false)
+                        {
+                            <li >
+                                <a asp-controller="AdminArticles" asp-action="Articles" asp-route-Category="@topcat.EnTitle" style="width:240px;text-align: center;margin: auto;">@topcat.Title</a>
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+        </div>
+    </nav>
+
+
+
+
+
+
+
+
+
+

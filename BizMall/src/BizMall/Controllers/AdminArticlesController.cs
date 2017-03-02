@@ -73,7 +73,7 @@ namespace BizMall.Controllers
         /// <summary>
         /// вывод товаров в личный кабинет компании
         /// </summary>
-        public IActionResult Articles(int Page = 1)
+        public IActionResult Articles(string Category, int Page = 1)
         {
             var currentUser = _repositoryUser.GetCurrentUser(User.Identity.Name);
 
@@ -82,7 +82,7 @@ namespace BizMall.Controllers
                 var Company = _repositoryCompany.GetUserCompany(currentUser);
 
                 PagingInfo pagingInfo;
-                var Items = _repositoryArticle.CompanyArticlesFullInformation(Company.Id, Page, out pagingInfo).ToList();
+                var Items = _repositoryArticle.CompanyArticlesFullInformation(Company.Id, Category, Page, out pagingInfo).ToList();
 
                 List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
                 foreach (var item in Items)
@@ -105,6 +105,32 @@ namespace BizMall.Controllers
 
             return View();
         }
+
+        public IActionResult Search(string searchstring, int Page = 1)
+        {
+            if (searchstring == null)
+                return RedirectToAction("Articles");
+
+            PagingInfo pagingInfo;
+            var Items = _repositoryArticle.SearchStringArticlesFullInformation(searchstring, Page, out pagingInfo).ToList();
+
+            List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
+            foreach (var item in Items)
+            {
+                var avm = ConstructAVM(item, true);
+                ArticlesVM.Add(avm);
+            }
+
+            ViewData["Title"] = _settings.ApplicationTitle + "Поиск: " + searchstring;
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
+            ViewBag.ArticlesVM = ArticlesVM;
+            ViewBag.PagingInfo = pagingInfo;
+            ViewBag.ActiveSubMenu = "Статьи";
+
+            return View();
+        }
+
 
         /// <summary>
         /// редактирование товара

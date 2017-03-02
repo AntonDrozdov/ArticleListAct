@@ -1,0 +1,123 @@
+﻿@model ArticleList.Models.CommonModels.SearchArticleModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<!--Закладки Активные/НеАктивные-->
+<!--@if (ViewBag.ActiveGoodsStatusMenu == 1)
+    {
+    <div class="btn-group" style="margin-bottom:10px;" data-toggle="buttons">
+        <label class="NotActiveStatusGoods btn btn-success active" onclick="document.location='@Url.Action("Goods", new { goodsStatus = "1" })';"><input type="radio" name="options"/>Активные</label>
+        <label class="NotActiveStatusGoods btn btn-success" onclick="document.location='@Url.Action("Goods", new { goodsStatus = "0" })';"><input type="radio" name="options">НеАктивные</label>
+    </div>
+}
+else
+{
+    <div  class="btn-group" style="margin-bottom:10px;" data-toggle="buttons">
+        <label class="NotActiveStatusGoods btn btn-success" onclick="document.location='@Url.Action("Goods", new { goodsStatus = "1" })';"><input type="radio" name="options" />Активные</label>
+        <label class="NotActiveStatusGoods btn btn-success active" onclick="document.location='~@Url.Action("Goods", new { goodsStatus = "0" })';"><input type="radio" name="options">НеАктивные</label>
+    </div>
+}
+-->
+
+<div class="row">
+    <!--МЕНЮ КАТЕГОРИЙ-->
+    <div class="col-md-3">
+        @await Component.InvokeAsync("AllCategoriesToFilterEditingArticles", new { cegvm = Model })
+    </div>
+
+    <div class="col-md-9">
+        <!--СТРОКА ПОИСКА-->
+        <div class="row">
+            <div class="col-xs-12 ">
+                <form asp-controller="AdminArticles" asp-action="Search" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+                    <div class="input-group" style="margin-top:5px;margin-bottom:5px;">
+                        <input asp-for="searchstring" class="form-control" id="searchstring" placeholder="Найти...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Поиск</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br />
+        <!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
+        <div style="margin-right:10px;margin-bottom:5px;">
+            <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminArticles" asp-action="EditArticle">Новая статья</a>
+        </div>
+
+        <!--ВЫВОД СТАТЕЙ-->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Название</th>
+                        <th>Длина описания(симв.)</th>
+                        <th>Категория</th>
+                        <th>Время публикации</th>
+                        <th>Опции</th>
+                    </tr>
+                </thead>
+                @foreach (var avm in ViewBag.ArticlesVM)
+                {
+                    <tr>
+                        <td><input type="checkbox" name="checkedToDoSmth" value="@avm.Id" /></td>
+
+                        <!--TITLE-->
+                        <td>
+                            <a asp-controller="AdminArticles" asp-action="EditArticle" asp-route-id="@avm.Id">@avm.Title</a>
+                        </td>
+                        <!--DESCRIPTION-->
+                        <td>
+                            @{
+                                int len = avm.Description.Length;
+                            }
+                            @if (len <= 1500)
+                            {
+                                <span style="color:red;">@len</span>
+                            }
+                            else
+                            {
+                                <span style="color:lawngreen;">@len</span>
+                            }
+                        </td>
+
+                        <!--CATEGORY-->
+                        @if (@avm.Category.ParentCategory != null)
+                        {
+                            <td>@avm.Category.ParentCategory.Title/@avm.Category.Title</td>
+                        }
+                        else
+                        {
+                            <td>@avm.Category.Title</td>
+                        }
+
+                        @if (ViewBag.ActiveGoodsStatusMenu == 1)
+                        {
+                            <td>@avm.DaysToSetInActiveStatus дн.</td>
+                        }
+
+                        <!--UPDATETIME-->
+                        <td>
+                            @avm.UpdateTime
+                        </td>
+
+                        <!--
+                            <td>
+                            <img width="50" src='@avm.MainImageInBase64' />
+                            @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
+                        </td>
+                        -->
+                        <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminArticles" asp-action="DeleteArticle" asp-route-itemId="@avm.Id">Удалить</a></td>
+                    </tr>
+                                }
+            </table>
+        </div>
+
+        <!--ПАГИНАЦИЯ-->
+        <div class="col-xs-12 ">
+            @await Component.InvokeAsync("AdminArticlesPagination", new { pi = ViewBag.PagingInfo })
+        </div>
+    </div>
+</div>
