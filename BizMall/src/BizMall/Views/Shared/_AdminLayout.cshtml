@@ -44,18 +44,28 @@
                         <li><a style = "padding-top: 15px; color: white;" asp-controller="AdminProfile" asp-action="EditProfile">Профиль</a></li>
                         <li><a style = "padding-top: 15px;" asp-controller="AdminArticles" asp-action="Articles">Статьи</a></li>
                         <li><a style="padding-top: 15px;" asp-controller="AdminCategories" asp-action="Categories">Категории</a></li>
+                        <li><a style="padding-top: 15px;" asp-controller="AdminKW" asp-action="Kws">Ключевики</a></li>
                     }
                     @if (ViewBag.ActiveSubMenu == "Статьи")
                     {
                         <li><a style = "padding-top: 15px;" asp-controller="AdminProfile" asp-action="EditProfile">Профиль</a></li>
                         <li><a style = "padding-top: 15px; color: white;" asp-controller="AdminArticles" asp-action="Articles" >Статьи</a></li>
                         <li><a style="padding-top: 15px;" asp-controller="AdminCategories" asp-action="Categories">Категории</a></li>
+                        <li><a style="padding-top: 15px;" asp-controller="AdminKW" asp-action="Kws">Ключевики</a></li>
                     }
                     @if (ViewBag.ActiveSubMenu == "Категории")
                     {
                         <li><a style="padding-top: 15px;" asp-controller="AdminProfile" asp-action="EditProfile">Профиль</a></li>
                         <li><a style="padding-top: 15px;" asp-controller="AdminArticles" asp-action="Articles">Статьи</a></li>
                         <li><a style="padding-top: 15px; color: white;" asp-controller="AdminCategories" asp-action="Categories">Категории</a></li>
+                        <li><a style="padding-top: 15px;" asp-controller="AdminKW" asp-action="Kws">Ключевики</a></li>
+                    }
+                    @if (ViewBag.ActiveSubMenu == "Ключевики")
+                    {
+                        <li><a style="padding-top: 15px;" asp-controller="AdminProfile" asp-action="EditProfile">Профиль</a></li>
+                        <li><a style="padding-top: 15px;" asp-controller="AdminArticles" asp-action="Articles">Статьи</a></li>
+                        <li><a style="padding-top: 15px;" asp-controller="AdminCategories" asp-action="Categories">Категории</a></li>
+                        <li><a style="padding-top: 15px; color: white;" asp-controller="AdminKW" asp-action="Kws">Ключевики</a></li>
                     }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")

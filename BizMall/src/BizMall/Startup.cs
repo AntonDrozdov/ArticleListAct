@@ -65,7 +65,12 @@ namespace BizMall
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(o =>
+            {
+                // add TimeSpan with N minutes plus timezone difference from Utc time
+                o.Cookies.ApplicationCookie.ExpireTimeSpan = DateTime.Now.Subtract(DateTime.UtcNow).Add(TimeSpan.FromMinutes(45));
+
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -80,6 +85,7 @@ namespace BizMall
             services.AddTransient<IRepositoryUser, RepositoryUser>();
             services.AddTransient<IRepositoryImage, RepositoryImage>();
             services.AddTransient<IRepositoryCategory, RepositoryCategory>();
+            services.AddTransient<IRepositoryKW, RepositoryKW>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

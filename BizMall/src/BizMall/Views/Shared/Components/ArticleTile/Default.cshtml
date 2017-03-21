@@ -30,8 +30,11 @@
         </span>
     </p>
     <!--ОПИСАНИЕ-->
-    <p align="justify">
+    @*<p align="justify">
         @Model.Description
+    </p>*@
+    <p style="text-indent: 20px; text-align:justify">
+        @Html.Raw(Model.Description.Replace("\r\n", "</p><p style=\"text-indent:20px;text-align:justify\">"))
     </p>
     <!--КНОПКА ЧИТАТЬ-->
     <p>

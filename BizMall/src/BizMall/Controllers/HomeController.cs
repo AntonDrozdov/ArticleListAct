@@ -152,19 +152,19 @@ namespace BizMall.Controllers
             ViewBag.ArticleVM = avm;
 
             //похожие статьи (для того чтобы наполнить страницу нужным количеством символов)
+            var SimilarArticlesVM = new List<ArticleViewModel>();
             if (Convert.ToInt32(_settings.CountOfSimilarArticlesOnArticlePage) > 0)
             {
                 var Items = _repositoryArticle.SimilarArticlesFullInformation(item.Category.EnTitle, item.Id).ToList();
 
-                var SimilarArticlesVM = new List<ArticleViewModel>();
                 foreach (var i in Items)
                 {
-                    if (i.Id!= avm.Id)
+                    if (i.Id != avm.Id)
                         SimilarArticlesVM.Add(ConstructAVM(i, true));
                 }
-
-                ViewBag.SimilarArticlesVM = SimilarArticlesVM;
             }
+
+            ViewBag.SimilarArticlesVM = SimilarArticlesVM;           
 
             return View();
         }

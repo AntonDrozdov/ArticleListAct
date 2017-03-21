@@ -7,7 +7,7 @@
             @if (i == Model.CurrentPage)
             {
                 <li class="page-item active">
-                    <a asp-controller="AdminArticles" asp-action="Articles" asp-route-Page="@i">
+                    <a asp-controller="AdminArticles" asp-action="Articles" asp-route-Page="@i" asp-route-Category="@Model.CategoryEnTitleForLink" >
                         <span class="page-link">
                             @i
                         </span>
@@ -17,7 +17,7 @@
             else
             {
                 <li class="page-item">
-                    <a asp-controller="AdminArticles" asp-action="Articles" asp-route-Page="@i" class="page-link">
+                    <a asp-controller="AdminArticles" asp-action="Articles" asp-route-Page="@i" asp-route-Category="@Model.CategoryEnTitleForLink" class="page-link">
                         @i
                     </a>
                 </li>

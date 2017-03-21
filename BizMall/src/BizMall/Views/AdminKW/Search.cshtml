@@ -1,0 +1,136 @@
+﻿@model ArticleList.Models.CommonModels.SearchArticleModel
+@{
+
+    Layout = "_AdminLayout";
+}
+
+<div class="row">
+    <!--МЕНЮ КАТЕГОРИЙ-->
+    <div class="col-md-3">
+        @await Component.InvokeAsync("AllCategoriesToFilterEditingKws")
+    </div>
+    <div class="col-md-9">
+        <!--СТРОКА ПОИСКА-->
+        <div class="row">
+            <div class="col-xs-12 ">
+                <form asp-controller="AdminKW" asp-action="Search" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+                    <div class="input-group" style="margin-top:5px;margin-bottom:5px;">
+                        <input asp-for="searchstring" class="form-control" id="searchstring" placeholder="Найти...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Поиск</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br />    
+        
+        <!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
+        
+        <div>
+            <div style="margin-right:10px;margin-bottom:5px;">
+                <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminKW" asp-action="EditKw">Новый ключевик</a>
+            </div>
+        </div>
+
+        <!--ВЫВОД СТАТЕЙ-->
+
+        <br />
+        <span style="font-size:20px;">Всего ключевиков: @ViewBag.PagingInfo.TotalItems</span>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ключевик</th>
+                        <th>Категория</th>
+                        <th>Опции</th>
+                    </tr>
+                </thead>
+                @foreach (var kw in ViewBag.KWs)
+                {
+                    <tr>
+                        <!--CATEGORY TITLE-->
+                        <td>
+                            <a asp-controller="AdminKW" asp-action="EditKw" asp-route-id="@kw.Id">@kw.kw</a>
+                        </td>
+                        <!--CATEGORY TITLE-->
+                        @if (kw.Category != null)
+                        {
+                            @if (kw.Category.ParentCategory != null)
+                            {
+                                <td>@kw.Category.ParentCategory.Title/@kw.Category.Title</td>
+                            }
+                            else
+                            {
+                                 <td>@kw.Category.Title</td>
+                            }
+                        }
+                        else
+                        {
+                        <td> ДЛЯ САЙТА </td>
+                        }
+                        <!--OPTIONS-->
+                        <td style="width: 10%;"><a asp-controller="AdminKW" asp-action="DeleteKW" asp-route-itemId="@kw.Id">Удалить</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    
+        <!--ПАГИНАЦИЯ-->
+        <div class="col-xs-12 ">
+            @await Component.InvokeAsync("AdminSearchKwsPagination", new { pi = ViewBag.PagingInfo })
+        </div>
+    
+    </div>
+</div>
+    <script type="text/javascript">
+    //function Archieve() {
+    //    //перебрать все checkbox(checkedToDoSmth) на странице
+    //    var checkedGoods = "";
+    //    $("input[name='checkedToDoSmth']").each(function () {
+    //        if ($(this)[0].checked == true) {
+    //            checkedGoods += $(this).val() + "_";
+    //        }
+    //    });
+
+    //    //отправить запрос на обновление статусов
+    //    var formData = new FormData();
+    //    formData.append('checkedGoods', checkedGoods);
+    //    $.ajax({
+    //        url: "/AdminCompanyGoods/ArchieveGoods",
+    //        type: 'POST',
+    //        data: formData,
+    //        processData: false,
+    //        contentType: false,
+    //        success: function () {
+    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=1");
+    //        }
+    //    });
+    //}
+
+    //function Activate() {
+    //    //перебрать все checkbox(checkedToDoSmth) на странице
+    //    var checkedGoods = "";
+    //    $("input[name='checkedToDoSmth']").each(function () {
+    //        if ($(this)[0].checked == true) {
+    //            checkedGoods += $(this).val() + "_";
+    //        }
+    //    });
+
+    //    //отправить запрос на обновление статусов
+    //    var formData = new FormData();
+    //    formData.append('checkedGoods', checkedGoods);
+    //    $.ajax({
+    //        url: "/AdminCompanyGoods/ActivateGoods",
+    //        type: 'POST',
+    //        data: formData,
+    //        processData: false,
+    //        contentType: false,
+    //        success: function () {
+    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=0");
+    //        }
+    //    });
+    //}
+    </script>
+

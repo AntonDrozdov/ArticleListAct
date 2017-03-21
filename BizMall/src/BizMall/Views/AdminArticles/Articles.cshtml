@@ -23,7 +23,7 @@ else
 <div class="row">
     <!--МЕНЮ КАТЕГОРИЙ-->
     <div class="col-md-3">
-        @await Component.InvokeAsync("AllCategoriesToFilterEditingArticles", new { cegvm = Model })
+        @await Component.InvokeAsync("AllCategoriesToFilterEditingArticles")
     </div>
 
     <div class="col-md-9">
@@ -47,6 +47,10 @@ else
         </div>
 
         <!--ВЫВОД СТАТЕЙ-->
+
+        <br />
+        <span style="font-size:20px;">Всего статей: @ViewBag.PagingInfo.TotalItems</span>
+
         <div class="table-responsive">
             <table class="table">
                 <thead>

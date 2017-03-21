@@ -26,18 +26,21 @@ namespace BizMall.Controllers
         private readonly IRepositoryCompany _repositoryCompany;
         private readonly IRepositoryArticle _repositoryArticle;
         private readonly IRepositoryImage _repositoryImage;
+        private readonly IRepositoryKW _repositoryKW;
         private readonly AppSettings _settings;
 
         public AdminArticlesController(IRepositoryUser repositoryUser,
                                             IRepositoryCompany repositoryCompany,
                                             IRepositoryArticle repositoryArticle,
-                                            IRepositoryImage repositoryImage, 
+                                            IRepositoryImage repositoryImage,
+                                            IRepositoryKW repositoryKW,
                                             IOptions<AppSettings> settings)
         {
             _repositoryUser = repositoryUser;
             _repositoryCompany = repositoryCompany;
             _repositoryArticle = repositoryArticle;
             _repositoryImage = repositoryImage;
+            _repositoryKW = repositoryKW;
             _settings = settings.Value;
         }
 
@@ -112,7 +115,7 @@ namespace BizMall.Controllers
                 return RedirectToAction("Articles");
 
             PagingInfo pagingInfo;
-            var Items = _repositoryArticle.SearchStringArticlesFullInformation(searchstring, Page, out pagingInfo).ToList();
+            var Items = _repositoryArticle.SearchStringAdminArticlesFullInformation(searchstring, Page, out pagingInfo).ToList();
 
             List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
             foreach (var item in Items)
@@ -143,6 +146,7 @@ namespace BizMall.Controllers
             CreateEditArticleViewModel cegvm = null;
             if (id != 0)
             {
+                #region формирование данных статьи для отображения в интерфейсе редактирования
                 Article item = _repositoryArticle.GetArticle(id);
 
                 cegvm = new CreateEditArticleViewModel
@@ -176,9 +180,17 @@ namespace BizMall.Controllers
                         cegvm.goodImagesIds += rgi.ImageId + "_";
                     }
                 }
+                #endregion
+
+                #region формирование списка ключевиков для САЙТА
+
+                ViewBag.SiteKws = _repositoryKW.Kws(null).ToList();
+                
+                #endregion
             }
             else
                 cegvm = new CreateEditArticleViewModel();
+
             ViewData["Title"] = _settings.ApplicationTitle +"Администрирование: Добавление/Редактирование статьи";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
@@ -291,6 +303,16 @@ namespace BizMall.Controllers
         /// <param name="Id">id товара</param>
         /// <param name="newimages"></param>
         /// <returns></returns>
+
+
+        [HttpPost]
+        public JsonResult CategoryKws(string Category)
+        {
+            var categoryKws = _repositoryKW.Kws(Category).ToList();
+            return Json(categoryKws);
+        }
+
+
         [HttpPost]
         public JsonResult AddArticleImage(int Id, ICollection<IFormFile> newimages)
         {

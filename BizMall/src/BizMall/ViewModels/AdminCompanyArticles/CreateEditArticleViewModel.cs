@@ -22,8 +22,8 @@ namespace BizMall.ViewModels.AdminCompanyArticles
         [StringLength(3000, ErrorMessage = "Введите название(латиница) (от 3 до 3000 символов)", MinimumLength = 3)]
         public string EnTitle { get; set; }
 
-        [Required(ErrorMessage = "Введите описание (от 6 до 3000 символов)")]
-        [StringLength(3000, ErrorMessage = "Введите описание (от 6 до 3000 символов)", MinimumLength = 6)]
+        [Required(ErrorMessage = "Введите описание (от 6 до 10000 символов)")]
+        [StringLength(10000, ErrorMessage = "Введите описание (от 6 до 10000 символов)", MinimumLength = 6)]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 

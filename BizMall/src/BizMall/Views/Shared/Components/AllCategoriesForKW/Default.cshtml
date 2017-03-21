@@ -1,0 +1,91 @@
+﻿@model BizMall.ViewModels.AdminCompanyArticles.CreateEditKWViewModel
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".nestedcat").click(function () {
+            var parent = $(this).parent().parent().prev().html();
+            var spanbeg = parent.indexOf('<');
+            //вырезаем слово родительской категории и соединяем его с названием дочерней категории
+            var tmp = parent.substring(0, spanbeg).trim() + "/" + $(this).html();
+            tmp = tmp.trim();
+
+            $("#CurrentCatName").val(tmp);
+            $("#CurrentCatId").val($(this).attr('id'));
+            return;
+        });
+    });
+
+    $(document).ready(function () {
+        $(".cat").click(function () {
+            $("#CurrentCatName").val($(this).html());
+            $("#CurrentCatId").val($(this).attr('id'));
+            return;
+        });
+
+
+    });
+</script>
+
+
+    <div class="form-group">
+
+        <label class="col-md-2 control-label">Категории</label>
+
+        <div class="col-md-3">
+            <div class="btn-group-vertical">
+                @foreach (var topcat in ViewBag.Categories)
+                {
+                    if (topcat.CategoryId == null)
+                    {
+                        bool IsParent = false;
+                        @foreach (var cat in ViewBag.Categories){
+                            @if (cat.CategoryId== topcat.Id){
+                                IsParent = true;
+                                break;
+                            }
+                        }
+                        if (IsParent == true){
+                            <div class="btn-group">
+                                <button id="btnGroupVerticalDrop" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    @topcat.Title
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop">
+                                @foreach (var chcat in ViewBag.Categories){
+                                    @if (chcat.CategoryId == topcat.Id){
+                                        <li><a class="nestedcat" role="button" id="@chcat.Id">@chcat.Title</a></li>
+                                    }
+                                }
+                                </ul>
+                            </div>
+                        }
+                        if (IsParent == false){
+                            <a class="cat btn btn-default " role="button" id="@topcat.Id">@topcat.Title</a>
+                        }
+                    }
+                }
+              </div>
+        </div>
+       
+        @if (Model?.CategoryId != 0)
+        {
+            <div class="col-md-3">
+                <label style="padding-top:20px;">Текущая категория:</label><br />
+                <input asp-for="CategoryTitle" class="form-control" id="CurrentCatName" readonly="readonly" value="@Model.CategoryTitle"/>
+                <input asp-for="CategoryId" type="hidden" class="form-control" id="CurrentCatId" readonly="readonly" value="@Model.CategoryId"/>
+                @*<span asp-validation-for="Category" class="text-danger"></span>*@
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3">
+                <label style="padding-top:20px;">Текущая категория:</label><br />
+                <input asp-for="CategoryTitle" class="form-control" id="CurrentCatName" readonly="readonly" />
+                <input asp-for="CategoryId" type="hidden" class="form-control" id="CurrentCatId" readonly="readonly" />
+                @*<span asp-validation-for="Category" class="text-danger"></span>*@
+            </div>
+        }
+
+    </div>
+

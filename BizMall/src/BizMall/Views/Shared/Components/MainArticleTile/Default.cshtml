@@ -1,0 +1,80 @@
+﻿@model BizMall.ViewModels.AdminCompanyArticles.ArticleViewModel
+
+<div class="ArticleTile">
+    <!--НАЗВАНИЕ-->
+    @{
+        string link = @Model.Id + "_" + @Model.EnTitle;
+    }
+    <!--ЗАГОЛОВОК-->
+    <p>
+        <h2>
+            <a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link">@Model.Title</a>
+        </h2>
+    </p>
+    @if(@Model.ImagesInBase64.Count > 0)
+    {     
+        <div class="col-xs-12 col-sm-5"style="text-align:center;">
+            <img style="width:220px; margin-right:25px;margin-right:10px;"  src='@Model.ImagesInBase64[0]' />
+        </div>
+    }
+
+
+        <!--КАТЕГРИЯ И ДАТА-->
+        <p>
+            <span id="TileCategory">
+                @if (@Model.Category.ParentCategory != null)
+            {
+                    <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title</a>
+            }
+            else
+            {
+                    <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.Title</a>
+            }
+            </span>
+            <span id="TileDate">
+                @Model.UpdateTime.Day<span>.</span>@Model.UpdateTime.Month<span>.</span>@Model.UpdateTime.Year
+            </span>
+        </p>
+        <!--ОПИСАНИЕ-->
+        <p style="text-indent: 20px; text-align:justify">
+            @Html.Raw(Model.Description.Replace("\r\n", "</p><p style=\"text-indent:20px;text-align:justify\">"))
+        </p>
+        <!--КНОПКА ЧИТАТЬ-->
+        <p>
+            @*<a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link" class="btn btn-info">Читать полностью...</a>
+                <a class="btn btn-info" target="_blank" href="@Model.Link">Читать полностью...</a>*@
+        </p>
+        <!--ХЭШТЕГИ -->
+        <p class="hashtags">
+            @foreach (var hashtag in Model.HashTags)
+        {
+                <a asp-controller="Home" asp-action="SearchHashTag" asp-route-hashtag="@hashtag">@hashtag</a>
+        }
+        </p>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

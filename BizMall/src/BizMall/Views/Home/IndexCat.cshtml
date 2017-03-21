@@ -5,14 +5,30 @@
 {
     <h1 style="color:#b2b1b1">Категория: @ViewBag.Category</h1>
 }
+@{
+    int anum = 0;
+}
+<!--ГЛАВНАЯ СТАТЬЯ НА СТРАНИЦЕ + ОБЛАКО ТЕГОВ-->
+<div class="row">
+    <div class="col-xs-12 col-sm-9">
+        @await Component.InvokeAsync("MainArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
+    </div>
+    <div class="col-xs-12 col-sm-3">
+        @await Component.InvokeAsync("TagCloud", new { avm = ViewBag.ArticlesVM[anum]})
+    </div>
+</div>
+
 
 @{
-    int anum = 0;//номер текущей выводимой статьи
+    anum = 1;//номер текущей выводимой статьи
     double acount = ViewBag.ArticlesVM.Count;
     int tmp = (int)Math.Floor(acount / 3);
-    int numOfRows = (tmp % 3 == 0) ? (tmp / 3) : (tmp + 1);////количество рядов
+    int numOfRows = (tmp!=0&&tmp % 3 == 0) ? (tmp / 3) : (tmp + 1);////количество рядов
+
 }
-@for (int i = 0; i < 3; i++)
+
+<!--СТАТЬИ В РЯДОВЫХ ТАЙЛАЙХ-->
+@for (int i = 0; i < numOfRows; i++)
 {
     <div class="row">
         @{

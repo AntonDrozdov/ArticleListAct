@@ -3,6 +3,31 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        var curcat2 = $("#CurrentCatName").val();
+        var formData = new FormData();
+        formData.append('Category', curcat2);
+        $.ajax({
+            url: "/AdminArticles/CategoryKws/",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (categoryKws) {
+                var strKws = "";
+                categoryKws.forEach(function (item, i, categoryKws) {
+                    var kw = item.kw;
+                    strKws+= kw + ", ";
+                });
+
+                strKws = strKws.substr(0, strKws.length - 2);
+                    
+                $("#categoryKws").html(strKws);
+            }
+        });
+    });
+
+
+    $(document).ready(function () {
         $(".nestedcat").click(function () {
             var parent = $(this).parent().parent().prev().html();
             var spanbeg = parent.indexOf('<');
@@ -20,13 +45,39 @@
         $(".cat").click(function () {
             $("#CurrentCatName").val($(this).html());
             $("#CurrentCatId").val($(this).attr('id'));
+
+            var category = $("#CurrentCatName").val();
+            var formData = new FormData();
+            formData.append('Category', category);
+            $.ajax({
+                url: "/AdminArticles/CategoryKws/",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (categoryKws) {
+                    
+                    var strKws = "";
+                    categoryKws.forEach(function (item, i, categoryKws) {
+                        var kw = item.kw;
+                        strKws+= kw + ", ";
+                    });
+
+                    strKws = strKws.substr(0, strKws.length - 2);
+                    
+                    $("#categoryKws").html(strKws);
+                }
+            });
+
+
+
+
             return;
         });
 
 
     });
 </script>
-
 
     <div class="form-group">
 
@@ -88,4 +139,23 @@
         }
 
     </div>
+
+    <!--Ключевики-->
+    <div class="form-group">
+        <label asp-for="Description" class="col-md-2 control-label">Ключевики</label>
+        <div style="margin-left:13px;margin-right:13px; margin-bottom:10px;" class="col-md-4">
+            <b>ДЛЯ САЙТА: </b><br />
+            <div style="border:1px solid #dcd6d6; border-radius:5px;padding:5px;">
+                @foreach (var item in ViewBag.SiteKws)
+                {@item.kw;<span>, &nbsp;</span>}
+            </div>
+        </div>
+        <div style="margin-left:13px;margin-right:13px; margin-bottom:10px;" class="col-md-4">
+            <b>ДЛЯ КАТЕГОРИИ: </b><br />
+            <div id="categoryKws" style="border:1px solid #dcd6d6; border-radius:5px;padding:5px;">
+            </div>
+        </div>
+    </div>
+
+
 

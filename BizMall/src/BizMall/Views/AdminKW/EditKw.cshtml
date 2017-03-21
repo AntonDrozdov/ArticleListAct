@@ -1,0 +1,52 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@using BizMall.Models.CompanyModels
+
+@model BizMall.ViewModels.AdminCompanyArticles.CreateEditKWViewModel
+
+@{
+    ViewData["Title"] = "Новый ключевик";
+    Layout = "_AdminLayout";
+}
+
+<h3>@ViewData["Title"]</h3>
+<form asp-controller="AdminKW" asp-action="EditKw" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+    <hr />
+    <!--Id добавляемого/редактируемого товара-->
+    @if (Model.Id != 0)
+    {
+        <input asp-for="Id" type="hidden" class="form-control" id="Id" readonly="readonly" Value ="@Model.Id" />
+    }
+    <!--КЛЮЧЕВИК-->
+    <div class="form-group">
+        <label asp-for="kw" class="col-md-2 control-label">Ключевик</label>
+        <div class="col-md-10" >
+            <input asp-for="kw" class="form-control col-md-10" id="Title" placeholder="Наименование"  Value ="@Model.kw"/>
+        </div>
+    </div>
+
+    <!--КАТЕГОРИИ-->
+    @await Component.InvokeAsync("AllCategoriesForKW", new { cekwvm = Model })
+    
+    <!--СООБЩЕНИЯ ВАЛИДАЦИИ-->
+    <div class="form-group">
+        <label class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+    </div>  
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10 text-right">
+            <button type="submit" class="btn btn-primary  col-md-2" style="margin-top: 5px;">Сохранить</button>
+            <a asp-controller="AdminKW" asp-action="Kws" class='btn btn-default col-md-2 ' style="margin-left: 5px; margin-top: 5px;">Назад</a>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+

@@ -18,6 +18,7 @@ namespace BizMall.Data.Repositories.Abstract
         IQueryable<Article> SimilarArticlesFullInformation(string Category, int ArticleId);
         
         IQueryable<Article> SearchStringArticlesFullInformation(string searchstring, int page, out PagingInfo pagingInfo);
+        IQueryable<Article> SearchStringAdminArticlesFullInformation(string searchstring, int page, out PagingInfo pagingInfo);
         IQueryable<Article> SearchHashTagArticlesFullInformation(string hashtag, int page, out PagingInfo pagingInfo);
 
         IQueryable<Article> CompanyArticles(int ShopId);

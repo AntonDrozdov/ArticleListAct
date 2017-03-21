@@ -45,8 +45,12 @@ else
         <div style="margin-right:10px;margin-bottom:5px;">
             <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminArticles" asp-action="EditArticle">Новая статья</a>
         </div>
-
+        
         <!--ВЫВОД СТАТЕЙ-->
+
+        <br />
+        <span style="font-size:20px;">Всего статей: @ViewBag.PagingInfo.TotalItems</span>
+
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -117,7 +121,7 @@ else
 
         <!--ПАГИНАЦИЯ-->
         <div class="col-xs-12 ">
-            @await Component.InvokeAsync("AdminArticlesPagination", new { pi = ViewBag.PagingInfo })
+            @await Component.InvokeAsync("AdminSearchArticlesPagination", new { pi = ViewBag.PagingInfo })
         </div>
     </div>
 </div>

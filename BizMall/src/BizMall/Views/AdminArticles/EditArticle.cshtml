@@ -34,18 +34,17 @@
             @*<span asp-validation-for="Title" class="text-danger"></span>*@
         </div>
     </div>
+         
+    <!--КАТЕГОРИИ в них же и КЛЮЧЕВИКИ-->
+    @await Component.InvokeAsync("AllCategoriesForEditing", new{ cegvm = Model } )
 
     <!--ОПИСАНИЕ-->
     <div class="form-group">
-        <label asp-for="Description" class="col-md-2 control-label" >Описание</label>
+        <label asp-for="Description" class="col-md-2 control-label">Описание</label>
         <div class="col-md-10">
-            <textarea asp-for="Description" class="form-control" id="Description" style ="resize: vertical;" placeholder="Описание" Value ="@Model.Description" rows="10" ></textarea>
-            @*<span asp-validation-for="Description" class="text-danger"></span>*@
+            <textarea asp-for="Description" class="form-control" id="Description" style="resize: vertical;" placeholder="Описание" Value="@Model.Description" rows="10"></textarea>
         </div>
     </div>
-    
-    <!--КАТЕГОРИИ-->
-    @await Component.InvokeAsync("AllCategoriesForEditing", new{ cegvm = Model } )
    
     <!--ССЫЛКА-->
     <div class="form-group">
@@ -158,7 +157,7 @@
             data: formData,
             processData: false,
             contentType: false,
-            success: function (idOfDeletedIm) {
+            success: function (idOfDeletedIm){
                 //РЕДАКТИРУЕМ СПИСОК ТЕКЦЩИХ ИЗОБРАЖЕНИЙ ТОВАРА
                 //берем исходный список изображений в виде строки
                 var goodImagesIds = $("#goodImagesIds").val();
@@ -180,7 +179,6 @@
                 var tmp = $("#deletedImagesIds").val();
                 var deletedImagesIds = $("#deletedImagesIds").val() + idOfDeletedIm + "_";
                 $("#deletedImagesIds").val(deletedImagesIds);
-
             }
         });
 

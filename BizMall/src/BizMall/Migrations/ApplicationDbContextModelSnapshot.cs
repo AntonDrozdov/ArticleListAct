@@ -178,6 +178,26 @@ namespace BizMall.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("BizMall.Models.CompanyModels.KW", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CategoryId");
+
+                    b.Property<int>("CategoryType");
+
+                    b.Property<string>("kw")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 100);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("KWs");
+                });
+
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyGood", b =>
                 {
                     b.Property<int>("CompanyId");
@@ -364,6 +384,13 @@ namespace BizMall.Migrations
                     b.HasOne("BizMall.Models.ApplicationUser", "User")
                         .WithOne("Company")
                         .HasForeignKey("BizMall.Models.CompanyModels.Company", "ApplicationUserId");
+                });
+
+            modelBuilder.Entity("BizMall.Models.CompanyModels.KW", b =>
+                {
+                    b.HasOne("BizMall.Models.CompanyModels.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyGood", b =>

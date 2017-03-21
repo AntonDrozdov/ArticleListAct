@@ -91,6 +91,7 @@ namespace BizMall.Data.Repositories.Concrete
 
             pagingInfo = new PagingInfo
             {
+                CategoryEnTitleForLink = Category, 
                 CurrentPage = page,
                 ItemsPerPage = pageAdminSize,
                 TotalItems = totaItems
@@ -104,7 +105,7 @@ namespace BizMall.Data.Repositories.Concrete
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
                             .OrderByDescending(g => g.UpdateTime)
-                            .Skip((page - 1) * pageSize)
+                            .Skip((page - 1) * pageAdminSize)
                             .Take(pageAdminSize)
                             .ToList();
 
@@ -276,6 +277,63 @@ namespace BizMall.Data.Repositories.Concrete
 
             return Items.AsQueryable();
         }
+
+
+        public IQueryable<Article> SearchStringAdminArticlesFullInformation(string searchstring, int page, out PagingInfo pagingInfo)
+        {
+            string[] tosearch = searchstring.Split(' ');
+
+            int seachhwordscount = tosearch.Count();
+            List<int> SearchedArticlesIds = null;
+
+            switch (seachhwordscount)
+            {
+                case 1:
+                    SearchedArticlesIds = _ctx.Articles
+                        .Where(g => (g.HashTags.Contains(tosearch[0]) || g.Description.Contains(tosearch[0]))
+                                        && g.CategoryType == categoryType)
+                        .Select(g => g.Id)
+                        .ToList();
+
+                    break;
+                case 2:
+                    SearchedArticlesIds = _ctx.Articles
+                        .Where(g => (g.HashTags.Contains(tosearch[0]) || g.Description.Contains(tosearch[0]) || g.HashTags.Contains(tosearch[1]) || g.Description.Contains(tosearch[1]))
+                                        && g.CategoryType == categoryType)
+                        .Select(g => g.Id)
+                        .ToList();
+                    break;
+                case 3:
+                    SearchedArticlesIds = _ctx.Articles
+                        .Where(g => (g.HashTags.Contains(tosearch[0]) || g.Description.Contains(tosearch[0]) || g.HashTags.Contains(tosearch[1]) || g.Description.Contains(tosearch[1]) || g.HashTags.Contains(tosearch[2]) || g.Description.Contains(tosearch[2]))
+                                         && g.CategoryType == categoryType)
+                        .Select(g => g.Id)
+                        .ToList();
+                    break;
+            }
+
+            pagingInfo = new PagingInfo
+            {
+                searchstring = searchstring,
+                CurrentPage = page,
+                ItemsPerPage = pageAdminSize,
+                TotalItems = SearchedArticlesIds.Count()
+            };
+
+            List<Article> Items = new List<Article>();
+            Items = _ctx.Articles
+                            .Include(g => g.Category)
+                            .Include(g => g.Category.ParentCategory)
+                            .Where(g => SearchedArticlesIds.Contains(g.Id))
+                            .Include(g => g.Images).ThenInclude(g => g.Image)
+                            .OrderByDescending(g => g.UpdateTime)
+                            .Skip((page - 1) * pageAdminSize)
+                            .Take(pageAdminSize)
+                            .ToList();
+
+            return Items.AsQueryable();
+        }
+
 
         public IQueryable<Article> SearchHashTagArticlesFullInformation(string hashtag, int page, out PagingInfo pagingInfo)
         {
