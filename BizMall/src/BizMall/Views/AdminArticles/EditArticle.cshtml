@@ -104,7 +104,7 @@
     <div class="form-group">
         <label asp-for="HashTags" class="col-md-2 control-label">Хэш-теги</label>
         <div class="col-md-10">
-            <textarea asp-for="HashTags" class="form-control" id="Description" style="resize: vertical;" placeholder="Хэш-теги" Value="@Model.HashTags"></textarea>
+            <textarea asp-for="HashTags" class="form-control" id="HashTags" style="resize: vertical;" placeholder="Хэш-теги" Value="@Model.HashTags"></textarea>
             @*<span asp-validation-for="Description" class="text-danger"></span>*@
         </div>
     </div>
@@ -213,33 +213,80 @@
         $("#EnTitle").val(result);
     }
 
+    function unique(arr) {
+        var obj = {};
+
+        for (var i = 0; i < arr.length; i++) {
+            var str = arr[i];
+            obj[str] = true; // запомнить строку в виде свойства объекта
+        }
+
+        return Object.keys(obj); // или собрать ключи перебором для IE8-
+    }
+
     function analyzeDecription()
     {
         var initialtext = $("#Description").val();
 
 
+        var arrpurekws = [];
+        //формирование массива ключевиков сайта
         var sitekws = $("#sitekws").html();
         var arrsitekws = sitekws.split(",");
 
-        var arrpuresitekws = [];
         arrsitekws.forEach(function (item, i, arrsitekws) {
             item = item.replace(/^\s*/, '').replace(/\s*$/, '');
-            arrpuresitekws.push(item);
+            arrpurekws.push(item);
         });
 
+        //формирование массива ключевиков категории
+        var sitekws = $("#categoryKws").html();
+        var arrcatkws = sitekws.split(",");
+        arrcatkws.forEach(function (item, i, arrcatkws) {
+            item = item.replace(/^\s*/, '').replace(/\s*$/, '');
+            arrpurekws.push(item);
+        });
 
-
-        var tmpstr = "";
-        var count  = 0;
-        arrpuresitekws.forEach(function (item, i, arrpuresitekws) {
+        //выделение ключевиков в тексте и отображение текста с выделенными ключевиками
+        var count = 0;
+        var foundkws = [];
+        arrpurekws.forEach(function (item, i, arrpurekws) {
             if (initialtext.indexOf(item)>0)
             {
                 count++;
+                foundkws.push(item);
             }
             initialtext = initialtext.replace(item, "<span style='font-weight:bold;'>" + item + "</span>")
          });
 
-         $("#analizedText").html("Всего ключевиков в тексте: "+ count + "<br/>" + initialtext);
+        $("#analizedText").html("<span style='font-size:20px;font-weght:bold;'>Всего ключевиков в тексте: " + count + "</span><br/><br/>" + initialtext);
+
+        //формирование хэштегов
+        var curhashtags = $("#HashTags").val();
+        var arrhashtags = curhashtags.split(" ");
+        var resulthashtags = [];
+
+        //добавляем добавленный хэштеги-kw
+        foundkws.forEach(function (found, i, foundkws) {
+            var foundkws = found.replace(" ", "");
+            resulthashtags.push(foundkws);
+        });
+
+        //добавляем оставшиеся
+        arrhashtags.forEach(function (cur, i, arrhashtags) {
+            resulthashtags.push(cur); 
+        });
+
+        //удаляем дубликаты
+        var arrfinalhastags = unique(resulthashtags);
+
+        var strresulthashtags = "";
+        arrfinalhastags.forEach(function (item, i, arrfinalhastags) {
+            strresulthashtags += item + " ";
+        });
+
+        var curhashtags = $("#HashTags").val(strresulthashtags);
+
     }
 
     //заполнение списка ключевиков для категории ЕСЛИ она выбрана для редактируемой статьи
