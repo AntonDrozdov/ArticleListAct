@@ -108,11 +108,44 @@
             <script src="~/js/site.min.js" asp-append-version="true"></script>
             <script src="~/lib/fancybox/jquery.fancybox.pack.js"></script>
             <script type="text/javascript">
-              $(document).ready(function() {
-                $("a.fancyimage").fancybox();
-              });
+                $(document).ready(function() {
+                    $("a.fancyimage").fancybox();
+                });
 
-              function SearchArticle() {
+                function randomInteger(min, max) {
+                    var rand = min - 0.5 + Math.random() * (max - min + 1)
+                    rand = Math.round(rand);
+                    return rand;
+                }
+            
+                @*$(document).ready(function () {
+                        var formData = new FormData();
+                        formData.append('CategoryId', '@ViewBag.CategoryId');
+                        $.ajax({
+                        url: "/Home/KwsForTagCloud/",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (categoryKws) {
+                        var strKws = "";
+                        categoryKws.forEach(function (item, i, categoryKws) {
+
+                        var kw = item.kw;
+                        var linkkw = kw.replace(/\s+/g, '');
+                        var fontsize = randomInteger(14, 20);
+
+                        strKws += "<a href='/Home/SearchKwArticles?kw=" + linkkw + "' style='font-size:" + fontsize + "px;'>" + kw + "</a> ";
+                        });
+
+                        strKws = strKws;
+
+                        $("#kwsForTagCloud").html(strKws);
+                        }
+                    });
+                });*@            
+
+                function SearchArticle() {
                   var formData = new FormData();
                   formData.append('searchstring', $("#searchstring").val());
                   $.ajax({
@@ -125,8 +158,8 @@
                       }
                   });
               };
-                                        
-             (function(w,doc) {
+
+                (function(w,doc) {
                 if (!w.__utlWdgt ) {
                     w.__utlWdgt = true;
                     var d = doc, s = d.createElement('script'), g = 'getElementsByTagName';
@@ -135,6 +168,9 @@
                     var h=d[g]('body')[0];
                     h.appendChild(s);
                 }})(window,document);
+
+
+
             </script>
         </environment>
 

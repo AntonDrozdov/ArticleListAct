@@ -182,14 +182,16 @@ namespace BizMall.Controllers
                 }
                 #endregion
 
-                #region формирование списка ключевиков для САЙТА
 
-                ViewBag.SiteKws = _repositoryKW.Kws(null).ToList();
-                
-                #endregion
             }
             else
                 cegvm = new CreateEditArticleViewModel();
+
+            #region формирование списка ключевиков для САЙТА
+
+            ViewBag.SiteKws = _repositoryKW.Kws(null).ToList();
+
+            #endregion
 
             ViewData["Title"] = _settings.ApplicationTitle +"Администрирование: Добавление/Редактирование статьи";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
@@ -306,10 +308,17 @@ namespace BizMall.Controllers
 
 
         [HttpPost]
-        public JsonResult CategoryKws(string Category)
+        public JsonResult CategoryKws(string CategoryId)
         {
-            var categoryKws = _repositoryKW.Kws(Category).ToList();
-            return Json(categoryKws);
+            if (CategoryId != null)
+            {
+                var categoryKws = _repositoryKW.Kws(CategoryId).ToList();
+                return Json(categoryKws);
+            }
+            else
+            {
+                return Json(null); 
+            }
         }
 
 

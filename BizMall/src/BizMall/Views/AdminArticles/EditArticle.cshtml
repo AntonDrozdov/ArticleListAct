@@ -25,6 +25,13 @@
             @*<span asp-validation-for="Title" class="text-danger"></span>*@
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <a class='btn btn-default col-md-2 ' onclick="translitTitle();" style="margin-left: 15px;">Транслит =></a>
+        </div>
+    </div>
     
     <!--НАИМЕНОВАНИЕ (ЛАТ)-->
     <div class="form-group">
@@ -40,11 +47,49 @@
 
     <!--ОПИСАНИЕ-->
     <div class="form-group">
-        <label asp-for="Description" class="col-md-2 control-label">Описание</label>
-        <div class="col-md-10">
-            <textarea asp-for="Description" class="form-control" id="Description" style="resize: vertical;" placeholder="Описание" Value="@Model.Description" rows="10"></textarea>
+            <label asp-for="Description" class="col-md-2 control-label" >Описание</label>
+            <label asp-for="Description" class="col-md-7 control-label">Ключевики</label>
+    </div>
+    <div class="form-group">
+        <div class="col-md-6">
+            <textarea asp-for="Description" class="form-control" id="Description" style="resize: vertical;" placeholder="Описание" Value="@Model.Description" rows="30"></textarea>
+            <br />
+            <a class='btn btn-default col-md-5 ' onclick="analyzeDecription();" style="margin-left: 15px;">Анализировать =></a>
+            <br />
+            <br />
+
+            <br />
+        </div>
+        <div class="col-md-6">
+            <!--Ключевики-->
+            <div style="margin-left:13px;margin-right:13px; margin-bottom:10px;" class="col-md-5">
+                <b>ДЛЯ САЙТА: </b><br />
+                <div style="border:1px solid #dcd6d6; border-radius:5px;padding:5px;" id="sitekws">
+                    @if (ViewBag.SiteKws != null)
+                    {
+                        @foreach (var item in ViewBag.SiteKws)
+                        {
+                            var str = item.kw + ", ";
+                            @str; 
+                        }
+                    }
+                </div>
+            </div>
+            <div style="margin-left:13px;margin-right:13px; margin-bottom:10px;" class="col-md-5">
+                <b>ДЛЯ КАТЕГОРИИ: </b><br />
+                <div id="categoryKws" style="border:1px solid #dcd6d6; border-radius:5px;padding:5px;">
+
+                </div>
+            </div>
         </div>
     </div>
+    <div class="form-group">
+        <div class="col-md-12">
+            <div id="analizedText"></div>
+        </div>
+    </div>
+
+
    
     <!--ССЫЛКА-->
     <div class="form-group">
@@ -130,6 +175,100 @@
 </form>
 
 <script type="text/javascript">
+    var arrru = new Array('Я', 'я', 'Ю', 'ю', 'Ч', 'ч', 'Ш', 'ш', 'Щ', 'щ', 'Ж', 'ж', 'А', 'а', 'Б', 'б', 'В', 'в', 'Г', 'г', 'Д', 'д', 'Е', 'е', 'Ё', 'ё', 'З', 'з', 'И', 'и', 'Й', 'й', 'К', 'к', 'Л', 'л', 'М', 'м', 'Н', 'н', 'О', 'о', 'П', 'п', 'Р', 'р', 'С', 'с', 'Т', 'т', 'У', 'у', 'Ф', 'ф', 'Х', 'х', 'Ц', 'ц', 'Ы', 'ы', 'Ь', 'ь', 'Ъ', 'ъ', 'Э', 'э');
+
+    var arren = new Array('ya', 'ya', 'yu', 'yu', 'ch', 'ch', 'sh', 'sh', 'sh', 'sh', 'zh', 'zh', 'a', 'a', 'b', 'b', 'v', 'v', 'g', 'g', 'd', 'd', 'e', 'e', 'e', 'e', 'z', 'z', 'i', 'i', 'j', 'j', 'k', 'k', 'l', 'l', 'm', 'm', 'n', 'n', 'o', 'o', 'p', 'p', 'r', 'r', 's', 's', 't', 't', 'u', 'u', 'f', 'f', 'h', 'h', 'c', 'c', 'y', 'y', '', '', '', '', 'e', 'e');
+    function cyrill_to_latin(text){
+        for (var i = 0; i < arrru.length; i++) {
+            var reg = new RegExp(arrru[i], "g");
+            text = text.replace(reg, arren[i]);
+        }
+        return text;
+    }
+
+    function latin_to_cyrill(id){
+        var text = $("#" + id).html();
+        for (var i = 0; i < arren.length; i++) {
+            var reg = new RegExp(arren[i], "g");
+            text = text.replace(reg, arrru[i]);
+        }
+        $("#" + id).html(text);
+    }
+
+    function translitTitle(){
+        var originalTitle = $("#Title").val();
+
+        var translitTitle = cyrill_to_latin(originalTitle);        
+
+        words = translitTitle.split(" ");
+
+        var result = "";
+        words.forEach(function (item, i, words) {
+            var word = item;
+            result += word + "_";
+        });
+
+        result = result.substr(0, result.length - 1);
+
+        $("#EnTitle").val(result);
+    }
+
+    function analyzeDecription()
+    {
+        var initialtext = $("#Description").val();
+
+
+        var sitekws = $("#sitekws").html();
+        var arrsitekws = sitekws.split(",");
+
+        var arrpuresitekws = [];
+        arrsitekws.forEach(function (item, i, arrsitekws) {
+            item = item.replace(/^\s*/, '').replace(/\s*$/, '');
+            arrpuresitekws.push(item);
+        });
+
+
+
+        var tmpstr = "";
+        var count  = 0;
+        arrpuresitekws.forEach(function (item, i, arrpuresitekws) {
+            if (initialtext.indexOf(item)>0)
+            {
+                count++;
+            }
+            initialtext = initialtext.replace(item, "<span style='font-weight:bold;'>" + item + "</span>")
+         });
+
+         $("#analizedText").html("Всего ключевиков в тексте: "+ count + "<br/>" + initialtext);
+    }
+
+    //заполнение списка ключевиков для категории ЕСЛИ она выбрана для редактируемой статьи
+    $(document).ready(function () {
+        var categoryId = $("#CurrentCatId").val();
+        if (categoryId != "") {
+            var formData = new FormData();
+            formData.append('CategoryId', categoryId);
+            $.ajax({
+                url: "/AdminArticles/CategoryKws/",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (categoryKws) {
+                    var strKws = "";
+                    categoryKws.forEach(function (item, i, categoryKws) {
+                        var kw = item.kw;
+                        strKws += kw + ", ";
+                    });
+
+                    strKws = strKws.substr(0, strKws.length - 2);
+
+                    $("#categoryKws").html(strKws);
+                }
+            });
+        }
+    });
+
     function restoreImagesAndBack() {
         var formData = new FormData();
         formData.append('goodImageIds', $("#goodImagesIds").val());

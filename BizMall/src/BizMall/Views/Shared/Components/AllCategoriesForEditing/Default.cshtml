@@ -1,35 +1,15 @@
 ﻿@model BizMall.ViewModels.AdminCompanyArticles.CreateEditArticleViewModel
 
 <script type="text/javascript">
-
-    $(document).ready(function () {
-        var curcat2 = $("#CurrentCatName").val();
-        var formData = new FormData();
-        formData.append('Category', curcat2);
-        $.ajax({
-            url: "/AdminArticles/CategoryKws/",
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (categoryKws) {
-                var strKws = "";
-                categoryKws.forEach(function (item, i, categoryKws) {
-                    var kw = item.kw;
-                    strKws+= kw + ", ";
-                });
-
-                strKws = strKws.substr(0, strKws.length - 2);
-                    
-                $("#categoryKws").html(strKws);
-            }
-        });
-    });
-
-
+    //заполнение списка ключевиков для ВЛОЖЕННОЙ категории КОГДА она выбрана для редактируемой статьи
     $(document).ready(function () {
         $(".nestedcat").click(function () {
+            //устанавливаем значения выбраной категории в соответсвующее текстовое поле  и ее ид в скрытое
             var parent = $(this).parent().parent().prev().html();
+            if (parent == "")
+            {
+                parent = $(this).parent().parent().prev().prev().html();
+            }
             var spanbeg = parent.indexOf('<');
             //вырезаем слово родительской категории и соединяем его с названием дочерней категории
             var tmp = parent.substring(0, spanbeg).trim() + "/" + $(this).html();
@@ -37,18 +17,47 @@
 
             $("#CurrentCatName").val(tmp);
             $("#CurrentCatId").val($(this).attr('id'));
-            return;
+
+            //запрашиваем ключевики для выбраной категории
+            var categoryId = $("#CurrentCatId").val();
+            var formData = new FormData();
+            formData.append('CategoryId', categoryId);
+            $.ajax({
+                url: "/AdminArticles/CategoryKws/",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (categoryKws) {
+
+                    var strKws = "";
+                    categoryKws.forEach(function (item, i, categoryKws) {
+                        var kw = item.kw;
+                        strKws += kw + ", ";
+                    });
+
+                    strKws = strKws.substr(0, strKws.length - 2);
+
+                    $("#categoryKws").html(strKws);
+                }
+            });            
         });
     });
 
+    //заполнение списка ключевиков для РОДИТЕЛЬСКОЙ категории КОГДА она выбрана для редактируемой статьи
     $(document).ready(function () {
         $(".cat").click(function () {
-            $("#CurrentCatName").val($(this).html());
+            //устанавливаем значения выбраной категории в соответсвующее текстовое поле  и ее ид в скрытое
+            var tmp = $(this).html();
+            tmp = tmp.trim();
+
+            $("#CurrentCatName").val(tmp);
             $("#CurrentCatId").val($(this).attr('id'));
 
-            var category = $("#CurrentCatName").val();
+            //запрашиваем ключевики для выбраной категории
+            var categoryId = $("#CurrentCatId").val();
             var formData = new FormData();
-            formData.append('Category', category);
+            formData.append('CategoryId', categoryId);
             $.ajax({
                 url: "/AdminArticles/CategoryKws/",
                 type: 'POST',
@@ -68,15 +77,9 @@
                     $("#categoryKws").html(strKws);
                 }
             });
-
-
-
-
-            return;
         });
-
-
     });
+
 </script>
 
     <div class="form-group">
@@ -140,22 +143,7 @@
 
     </div>
 
-    <!--Ключевики-->
-    <div class="form-group">
-        <label asp-for="Description" class="col-md-2 control-label">Ключевики</label>
-        <div style="margin-left:13px;margin-right:13px; margin-bottom:10px;" class="col-md-4">
-            <b>ДЛЯ САЙТА: </b><br />
-            <div style="border:1px solid #dcd6d6; border-radius:5px;padding:5px;">
-                @foreach (var item in ViewBag.SiteKws)
-                {@item.kw;<span>, &nbsp;</span>}
-            </div>
-        </div>
-        <div style="margin-left:13px;margin-right:13px; margin-bottom:10px;" class="col-md-4">
-            <b>ДЛЯ КАТЕГОРИИ: </b><br />
-            <div id="categoryKws" style="border:1px solid #dcd6d6; border-radius:5px;padding:5px;">
-            </div>
-        </div>
-    </div>
+
 
 
 

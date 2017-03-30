@@ -30,15 +30,15 @@ namespace BizMall.Data.Repositories.Concrete
             pageSearchSize = Convert.ToInt32(settings.Value.PageSearchSize);
         }
 
-        public IQueryable<KW> Kws(string Category)
+        public IQueryable<KW> Kws(string CategoryId)
         {
-            if (Category == null)
+            if (CategoryId == null)
                 return _ctx.KWs.Where(kw => kw.CategoryType == categoryType && kw.Category == null)
                             .Include(kw => kw.Category)
                             .Include(kw => kw.Category.ParentCategory)
                             .OrderBy(kw => kw.kw);
             else
-                return _ctx.KWs.Where(kw => kw.CategoryType == categoryType && kw.Category.Title == Category)
+                return _ctx.KWs.Where(kw => kw.Category.Id == Convert.ToInt32(CategoryId))
                                 .Include(kw => kw.Category)
                                 .Include(kw => kw.Category.ParentCategory)
                                 .OrderBy(kw => kw.kw);
@@ -95,16 +95,16 @@ namespace BizMall.Data.Repositories.Concrete
         {
             try
             {
-                var item = _ctx.Categories
+                var item = _ctx.KWs
                             .Where(c => c.Id == itemId)
-                            .Include(c=>c.ParentCategory)
                             .FirstOrDefault();
                     _ctx.Entry(item).State = EntityState.Deleted;
                     _ctx.SaveChanges();
 
             }
-            catch
+            catch (Exception ex)
             {
+                var tmp = 0;
             }
         }
 
@@ -138,6 +138,37 @@ namespace BizMall.Data.Repositories.Concrete
                         .OrderBy(kw => kw.kw).AsQueryable()
                         .Skip((page - 1) * pageAdminSize)
                         .Take(pageAdminSize); ;
+        }
+
+        public IQueryable<KW> KwsForTagCloud(int CategoryId)
+        {
+            if (CategoryId == 0)
+            {
+                var sitekws = _ctx.KWs.Where(kw => kw.CategoryType == categoryType && kw.CategoryId == null)
+                                .Include(kw => kw.Category)
+                                .Include(kw => kw.Category.ParentCategory)
+                                .OrderBy(kw => kw.kw)
+                                .Take(15);
+
+                return sitekws;
+            }
+            else
+            {
+                var catkws = _ctx.KWs.Where(kw => kw.CategoryId == CategoryId)
+                .Include(kw => kw.Category)
+                .Include(kw => kw.Category.ParentCategory)
+                .OrderBy(kw => kw.kw)
+                .Take(10);
+
+                var sitekws = _ctx.KWs.Where(kw => kw.CategoryType == categoryType && kw.CategoryId == null)
+                            .Include(kw => kw.Category)
+                            .Include(kw => kw.Category.ParentCategory)
+                            .OrderBy(kw => kw.kw)
+                            .Take(5);
+                List<KW> kws = new List<KW>(catkws.ToList());
+                kws.AddRange(sitekws.ToList());
+                return kws.AsQueryable<KW>();
+            }
         }
     }
 }

@@ -1,11 +1,16 @@
-﻿@model BizMall.ViewModels.AdminCompanyArticles.ArticleViewModel
+﻿@*@model BizMall.ViewModels.AdminCompanyArticles.ArticleViewModel*@
 
-<div >
-    <span style="padding:25px;">
-        TagCloud
-    </span>
+@{ 
+    Random rnd = new Random();
+}
+
+<div id="kwsForTagCloud" style="text-align: center;margin-top:10px;">
+    @foreach (var item in ViewBag.Kws)
+    {
+        string linkkws = item.kw.Replace(" ", "");
+        <a asp-controller="Home" asp-action="SearchKwArticles" asp-route-kw="@item.kw" style="font-size:@rnd.Next(13, 24)px;">@item.kw</a>
+    }
 </div>
-
 
 
 

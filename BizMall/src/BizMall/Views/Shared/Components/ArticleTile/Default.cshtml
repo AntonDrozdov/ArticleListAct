@@ -30,16 +30,13 @@
         </span>
     </p>
     <!--ОПИСАНИЕ-->
-    @*<p align="justify">
-        @Model.Description
-    </p>*@
-    <p style="text-indent: 20px; text-align:justify">
+    <p style="text-indent: 20px; text-align:justify;font-size:14px;">
         @Html.Raw(Model.Description.Replace("\r\n", "</p><p style=\"text-indent:20px;text-align:justify\">"))
     </p>
     <!--КНОПКА ЧИТАТЬ-->
     <p>
         @*<a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link" class="btn btn-info">Читать полностью...</a>
-    <a class="btn btn-info" target="_blank" href="@Model.Link">Читать полностью...</a>*@
+        <a class="btn btn-info" target="_blank" href="@Model.Link">Читать полностью...</a>*@
     </p>
     <!--ФОТКИ-->
     <div class="container">

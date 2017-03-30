@@ -1,5 +1,4 @@
 ﻿@model BizMall.ViewModels.AdminCompanyArticles.ArticleViewModel
-
 <div class="ArticleTile">
     <!--НАЗВАНИЕ-->
     @{
@@ -14,7 +13,7 @@
     @if(@Model.ImagesInBase64.Count > 0)
     {     
         <div class="col-xs-12 col-sm-5"style="text-align:center;">
-            <img style="width:220px; margin-right:25px;margin-right:10px;"  src='@Model.ImagesInBase64[0]' />
+            <img style="width:180px; margin-right:25px;margin-right:10px;"  src='@Model.ImagesInBase64[0]' />
         </div>
     }
 
@@ -36,7 +35,7 @@
             </span>
         </p>
         <!--ОПИСАНИЕ-->
-        <p style="text-indent: 20px; text-align:justify">
+        <p id="desc" style="text-indent: 20px;text-align:justify;padding-right:10px;">
             @Html.Raw(Model.Description.Replace("\r\n", "</p><p style=\"text-indent:20px;text-align:justify\">"))
         </p>
         <!--КНОПКА ЧИТАТЬ-->

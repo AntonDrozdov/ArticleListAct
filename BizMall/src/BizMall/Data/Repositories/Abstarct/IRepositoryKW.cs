@@ -16,5 +16,6 @@ namespace BizMall.Data.Repositories.Abstract
         KW SaveKW(KW model);
         void DeleteKW(int itemId);
         KW GetKwById(int id);
+        IQueryable<KW> KwsForTagCloud(int CategoryId);
     }
 }

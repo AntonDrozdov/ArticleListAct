@@ -17,6 +17,11 @@ textarea {
     max-width: 1000px;
 }
 
+#desc > p:first-letter {
+    color:#575656;
+    font-size:30px;
+}
+
 .ArticleTile {
     /*border:1px solid lightgray;
     border-radius:5px;

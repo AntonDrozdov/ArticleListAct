@@ -9,55 +9,71 @@
     int anum = 0;
 }
 <!--ГЛАВНАЯ СТАТЬЯ НА СТРАНИЦЕ + ОБЛАКО ТЕГОВ-->
-<div class="row">
-    <div class="col-xs-12 col-sm-9">
-        @await Component.InvokeAsync("MainArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
+<div class="col-xs-12 col-sm-10">
+    <div class="row">
+        @if (ViewBag.ArticlesVM.Count > 0)
+        {
+            @await Component.InvokeAsync("MainArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
+        }
     </div>
-    <div class="col-xs-12 col-sm-3">
-        @await Component.InvokeAsync("TagCloud", new { avm = ViewBag.ArticlesVM[anum]})
+
+    @{
+        int kolvoarticleinrow = 2;
+        anum = 1;//номер текущей выводимой статьи
+        double acount = ViewBag.ArticlesVM.Count;
+        int tmp = (int)Math.Floor(acount / kolvoarticleinrow);
+        int numOfRows = (tmp != 0 && tmp % kolvoarticleinrow == 0) ? (tmp / kolvoarticleinrow) : (tmp + 1);////количество рядов
+    }
+
+    <!--СТАТЬИ В РЯДОВЫХ ТАЙЛАЙХ-->
+    @for (int i = 0; i < numOfRows; i++)
+    {
+        <div class="row">
+            @{
+                int iacount = ViewBag.ArticlesVM.Count;
+                int ainrow = ((iacount - anum) >= kolvoarticleinrow) ? kolvoarticleinrow : (iacount - anum); //количество элементов в ряду
+            }
+            @for (int j = 0; j < ainrow; j++, anum++)
+            {
+                <div class="col-xs-12 col-sm-6">
+                    @await Component.InvokeAsync("ArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
+                </div>
+            }
+        </div>
+    }
+
+    <!--ПАГИНАЦИЯ-->
+    @if (ViewBag.PagingInfo.CategoryEnTitleForLink != null)
+    {
+        <div class="col-xs-12 ">
+            @await Component.InvokeAsync("CategoryPagination", new { pi = ViewBag.PagingInfo })
+        </div>
+    }
+    else
+    {
+        <div class="col-xs-12 ">
+            @await Component.InvokeAsync("MainPagination", new { pi = ViewBag.PagingInfo })
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-2">
+    @await Component.InvokeAsync("TagCloud", null)
+    </br>
+    </br>
+    </br>
+    </br>
+    </br>
+    <hr />
+    <div style="text-align:center;">
+        <span style="font-size:15px; font-weight:bold; color:#808080;">Наши партнеры:</span>
+        <br />
+        <br />
+        <a class="btn btn-info" target="_blank" href="http://www.buisnessdev.ru">BuisnessDev.ru</a>
+        <hr />
     </div>
 </div>
 
-
-@{
-    anum = 1;//номер текущей выводимой статьи
-    double acount = ViewBag.ArticlesVM.Count;
-    int tmp = (int)Math.Floor(acount / 3);
-    int numOfRows = (tmp!=0&&tmp % 3 == 0) ? (tmp / 3) : (tmp + 1);////количество рядов
-
-}
-
-<!--СТАТЬИ В РЯДОВЫХ ТАЙЛАЙХ-->
-@for (int i = 0; i < numOfRows; i++)
-{
-    <div class="row">
-        @{
-            int iacount = ViewBag.ArticlesVM.Count;
-            int ainrow = ((iacount - anum) >= 3) ? 3 : (iacount - anum); //количество элементов в ряду
-        }
-        @for (int j = 0; j < ainrow; j++, anum++)
-        {
-            <div class="col-xs-12 col-sm-4">
-                @await Component.InvokeAsync("ArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
-            </div>
-        }
-    </div>
-}
-
-
-<!--ПАГИНАЦИЯ-->
-@if (ViewBag.PagingInfo.CategoryEnTitleForLink != null)
-{
-    <div class="col-xs-12 ">
-        @await Component.InvokeAsync("CategoryPagination", new { pi = ViewBag.PagingInfo })
-    </div>
-}
-else
-{
-    <div class="col-xs-12 ">
-        @await Component.InvokeAsync("MainPagination", new { pi = ViewBag.PagingInfo })
-    </div>
-}
 
 
 

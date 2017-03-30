@@ -153,8 +153,9 @@ namespace BizMall.Data.Repositories.Concrete
                     _ctx.SaveChanges();
                 //}
             }
-            catch
+            catch (Exception ex)
             {
+                var tmp = 0;
             }
         }
     }

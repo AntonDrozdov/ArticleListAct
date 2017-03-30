@@ -133,6 +133,7 @@ namespace BizMall.Data.Repositories.Concrete
                     dbEntry.CategoryId = good.CategoryId;
                     dbEntry.Link = good.Link;
                     dbEntry.HashTags = good.HashTags;
+                    dbEntry.UpdateTime = DateTime.Now;
                 }
 
                 _ctx.Entry(dbEntry).State = EntityState.Modified;
@@ -278,7 +279,6 @@ namespace BizMall.Data.Repositories.Concrete
             return Items.AsQueryable();
         }
 
-
         public IQueryable<Article> SearchStringAdminArticlesFullInformation(string searchstring, int page, out PagingInfo pagingInfo)
         {
             string[] tosearch = searchstring.Split(' ');
@@ -333,7 +333,6 @@ namespace BizMall.Data.Repositories.Concrete
 
             return Items.AsQueryable();
         }
-
 
         public IQueryable<Article> SearchHashTagArticlesFullInformation(string hashtag, int page, out PagingInfo pagingInfo)
         {
