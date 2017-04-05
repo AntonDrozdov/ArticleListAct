@@ -18,6 +18,7 @@
             <th>Название категории</th>
             <th>Название категории(лат.)</th>
             <th>Родительская категория</th>
+            <th>Кол-во статей</th>
             <th>Опции</th>
         </tr>
         </thead>
@@ -37,6 +38,20 @@
                     {<td>@cat.ParentCategory.Title</td>}
                 else
                     {<td> -</td >}
+
+
+                <!--ARTICLES COUNT-->
+                @{
+                    string idac = cat.Id.ToString() + "articlescount";
+                }
+
+                <td style="width:15%;text-align:center;">
+                    
+                        <a class="articlesCount"  onclick='CategoryArticlesCount(@cat.Id);'></a>
+                        @*<a class="btn btn-primary articlesCount" role="button" onclick='CategoryArticlesCount(@cat.Id);'>статей...?</a>*@
+                        <span id="@idac" ></span>
+                    
+                </td>
                 <!--OPTIONS-->
                 <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminCategories" asp-action="DeleteCategory" asp-route-itemId="@cat.Id">Удалить</a></td>
             </tr>
@@ -45,6 +60,30 @@
 </div>
 
 <script type="text/javascript">
+    //показываем сколько статей 
+    $(document).ready(function () {
+        $(".articlesCount").click();
+    });
+
+
+    function CategoryArticlesCount(catId) {
+        //отправить запрос на обновление статусов
+        var formData = new FormData();
+        formData.append('catId', catId);
+        $.ajax({
+            url: "/AdminCategories/CategoryArticlesCount",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (articlescount) {
+                var spanid = catId + "articlescount";
+                $("#"+spanid).html(articlescount);
+            }
+        });
+    }
+
+
     //function Archieve() {
     //    //перебрать все checkbox(checkedToDoSmth) на странице
     //    var checkedGoods = "";

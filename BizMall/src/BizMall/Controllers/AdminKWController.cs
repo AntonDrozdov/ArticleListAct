@@ -22,14 +22,17 @@ namespace BizMall.Controllers
     [Authorize]
     public class AdminKWController : Controller
     {
+        private readonly IRepositoryArticle _repositoryArticle;
         private readonly IRepositoryCategory _repositoryCategory;
         private readonly IRepositoryKW _repositoryKW;
         private readonly AppSettings _settings;
 
-        public AdminKWController(IRepositoryKW repositoryKW, 
+        public AdminKWController(IRepositoryArticle repositoryArticle,
+                                IRepositoryKW repositoryKW, 
                                 IRepositoryCategory repositoryCategory,
                                 IOptions<AppSettings> settings)
         {
+            _repositoryArticle = repositoryArticle;
             _repositoryKW = repositoryKW;
             _repositoryCategory = repositoryCategory;
             _settings = settings.Value;
@@ -104,6 +107,18 @@ namespace BizMall.Controllers
             });
 
             return RedirectToAction("Kws");
+        }
+
+        [HttpPost]
+        public JsonResult KwArticlesCount(int kwid)
+        {
+            var kw = _repositoryKW.GetKwById(kwid);
+            PagingInfo pagingInfo;
+            var searchkw = kw.kw.Replace(" ", "");
+            var Items = _repositoryArticle.SearchHashTagArticlesFullInformation(searchkw, 1, out pagingInfo).ToList();
+
+            var KwArticlesCount = pagingInfo.TotalItems;
+            return Json(KwArticlesCount);
         }
 
         /// <summary>

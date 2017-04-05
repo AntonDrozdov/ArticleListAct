@@ -44,6 +44,7 @@
                     <tr>
                         <th>Ключевик</th>
                         <th>Категория</th>
+                        <th>Кол-во статей</th>
                         <th>Опции</th>
                     </tr>
                 </thead>
@@ -70,8 +71,20 @@
                         {
                         <td> ДЛЯ САЙТА </td>
                         }
+                        <!--ARTICLES COUNT-->
+                        @{
+                            string idac = kw.Id.ToString() + "articlescount";
+                        }
+                        <td style="width: 20%;">
+                            <div style="text-align:center;">
+                                <a class="articlesCount" onclick='KwArticlesCount(@kw.Id);'></a>
+                                @*<a class="btn btn-primary articlesCount" role="button" onclick='KwArticlesCount(@kw.Id);'>статей...?</a>*@
+                                <span id="@idac" style="margin-left:10px;margin-right:10px;"></span>
+                            </div>
+                        </td>
+
                         <!--OPTIONS-->
-                        <td style="width: 10%;"><a asp-controller="AdminKW" asp-action="DeleteKW" asp-route-itemId="@kw.Id">Удалить</a></td>
+                        <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminKW" asp-action="DeleteKW" asp-route-itemId="@kw.Id">Удалить</a></td>
                     </tr>
                 }
             </table>
@@ -85,52 +98,26 @@
     </div>
 </div>
     <script type="text/javascript">
-    //function Archieve() {
-    //    //перебрать все checkbox(checkedToDoSmth) на странице
-    //    var checkedGoods = "";
-    //    $("input[name='checkedToDoSmth']").each(function () {
-    //        if ($(this)[0].checked == true) {
-    //            checkedGoods += $(this).val() + "_";
-    //        }
-    //    });
+        function KwArticlesCount(kwid) {
+        //отправить запрос на обновление статусов
+        var formData = new FormData();
+        formData.append('kwid', kwid);
+        $.ajax({
+            url: "/AdminKW/KwArticlesCount",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (articlescount) {
+                var spanid = kwid + "articlescount";
+                $("#"+spanid).html(articlescount);
+            }
+        });
+    }
 
-    //    //отправить запрос на обновление статусов
-    //    var formData = new FormData();
-    //    formData.append('checkedGoods', checkedGoods);
-    //    $.ajax({
-    //        url: "/AdminCompanyGoods/ArchieveGoods",
-    //        type: 'POST',
-    //        data: formData,
-    //        processData: false,
-    //        contentType: false,
-    //        success: function () {
-    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=1");
-    //        }
-    //    });
-    //}
-
-    //function Activate() {
-    //    //перебрать все checkbox(checkedToDoSmth) на странице
-    //    var checkedGoods = "";
-    //    $("input[name='checkedToDoSmth']").each(function () {
-    //        if ($(this)[0].checked == true) {
-    //            checkedGoods += $(this).val() + "_";
-    //        }
-    //    });
-
-    //    //отправить запрос на обновление статусов
-    //    var formData = new FormData();
-    //    formData.append('checkedGoods', checkedGoods);
-    //    $.ajax({
-    //        url: "/AdminCompanyGoods/ActivateGoods",
-    //        type: 'POST',
-    //        data: formData,
-    //        processData: false,
-    //        contentType: false,
-    //        success: function () {
-    //            window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=0");
-    //        }
-    //    });
-    //}
-    </script>
+        //показываем сколько статей 
+        $(document).ready(function () {
+            $(".articlesCount").click();
+        });
+</script>
 

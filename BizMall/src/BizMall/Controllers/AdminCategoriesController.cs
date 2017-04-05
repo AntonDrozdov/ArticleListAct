@@ -22,12 +22,15 @@ namespace BizMall.Controllers
     [Authorize]
     public class AdminCategoriesController : Controller
     {
+        private readonly IRepositoryArticle _repositoryArticle;
         private readonly IRepositoryCategory _repositoryCategory;
         private readonly AppSettings _settings;
 
-        public AdminCategoriesController(IRepositoryCategory repositoryCategory,
+        public AdminCategoriesController(IRepositoryArticle repositoryArticle,
+                                        IRepositoryCategory repositoryCategory,
                                             IOptions<AppSettings> settings)
         {
+            _repositoryArticle = repositoryArticle;
             _repositoryCategory = repositoryCategory;
             _settings = settings.Value;
         }
@@ -78,6 +81,17 @@ namespace BizMall.Controllers
                 _repositoryCategory.DeleteCategory(itemId);
             }
             return RedirectToAction("Categories");
+        }
+
+        [HttpPost]
+        public JsonResult CategoryArticlesCount(int catId)
+        {
+            var category = _repositoryCategory.GetCategoryById(catId);
+            PagingInfo pagingInfo;
+            var Items = _repositoryArticle.CategoryArticlesFullInformation(category.EnTitle, 1, out pagingInfo).ToList();
+
+            var CategoryArticlesCount = pagingInfo.TotalItems;
+            return Json(CategoryArticlesCount);
         }
     }
 }

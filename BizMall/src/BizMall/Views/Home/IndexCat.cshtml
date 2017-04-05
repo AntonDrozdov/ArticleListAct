@@ -20,9 +20,16 @@
     @{
         int kolvoarticleinrow = 2;
         anum = 1;//номер текущей выводимой статьи
-        double acount = ViewBag.ArticlesVM.Count;
-        int tmp = (int)Math.Floor(acount / kolvoarticleinrow);
-        int numOfRows = (tmp != 0 && tmp % kolvoarticleinrow == 0) ? (tmp / kolvoarticleinrow) : (tmp + 1);////количество рядов
+        int acount = ViewBag.ArticlesVM.Count-1;
+        int numOfRows = 0;
+        if (acount != 0 && acount % kolvoarticleinrow == 0)
+        {
+            numOfRows = acount / kolvoarticleinrow;
+        }
+        else
+        {
+            numOfRows = acount + 1;
+        }
     }
 
     <!--СТАТЬИ В РЯДОВЫХ ТАЙЛАЙХ-->
@@ -30,8 +37,8 @@
     {
         <div class="row">
             @{
-                int iacount = ViewBag.ArticlesVM.Count;
-                int ainrow = ((iacount - anum) >= kolvoarticleinrow) ? kolvoarticleinrow : (iacount - anum); //количество элементов в ряду
+                int iacount = ViewBag.ArticlesVM.Count-1;
+                int ainrow = ((iacount - anum + 1) >= kolvoarticleinrow) ? kolvoarticleinrow : (iacount - anum + 1); //количество элементов в ряду
             }
             @for (int j = 0; j < ainrow; j++, anum++)
             {

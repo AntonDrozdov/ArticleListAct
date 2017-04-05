@@ -269,6 +269,12 @@
         //добавляем добавленный хэштеги-kw
         foundkws.forEach(function (found, i, foundkws) {
             var foundkws = found.replace(" ", "");
+            var tmp = foundkws.indexOf(" ");
+            while (tmp!=-1)
+            {
+                foundkws = foundkws.replace(" ", "");
+                tmp = foundkws.indexOf(" ");
+            }
             resulthashtags.push(foundkws);
         });
 
