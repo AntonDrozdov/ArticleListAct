@@ -41,6 +41,11 @@ namespace BizMall.ViewModels.AdminCompanyArticles
 
         public string MainImageInBase64 { get; set; }
 
-        
+
+        public string metaKeyWords { get; set; }
+
+        public string metaDescription { get; set; }
+
+
     }
 }

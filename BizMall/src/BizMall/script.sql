@@ -1,37 +1,321 @@
-﻿
-[Agile]В статье рассуждения о методологии разработки ПО Agile и ее применимости в больших от руководителя проектного офиса компании Phobos Алексей Прокопенко.
-Сама суть гибкой методологии разработки довольна просто и предполагает возможность быстро подстроится под требование реалий и в кратчайшие сроки реализовать нужный функционал, требуемый рынку.
-По мнению Прокопенко она совершенно неприменима в такой трактовке в больших компаниях, так как для того чтобы притворить какоето решение в жизнь - необходимо пройти множество бюрократических 
-процедур по утвердждению того или иного изменения - что противоречит самой сути Agile. 
-Основываясь на своем опыте работы в "Сбертехе" - подразделении Сбербанка и в Альфа-банке, Алексей описывает ситуации,
-когда продукт даже не начал разрабатываться, а сроки сдачи его уже прошли. В качестве удачного примера реализации проекта в крупной компании он приводит "Сбербанк-онлайн". Его разработка была отдана на аутсорс внешней команде дизайнеров, которая была лишена необходимости в постоянном согласовании чего - либо с руковоством Сбербанка, и выполнила работу качественно и в срок.
-Именно таким, он видит применение Agile - либо выделение команды в отдельное совершенно обособленное небольшое подразделение, либо передачу всей реализации продукта на аутсорсинг. Краеугольным камнем 
-успешной работы по этой методологии является то, что она расчитана на небольшие команды.
-К сожалению, в России, корректному использованию запданых методов работы мешают плохой инвестиционный климат - отсутсвие большого количество развитых бизнес - инкубаторов, бизнес-англелов, инвесторов - от
-собственной практики разработки ПО у нас нет, а то что перенимается с запада иногда имплементируется неправильно  - как в случае Сбербанка и Agile.
-В значительной степени это повлияло на решение Алексея перейти на работу в другую компанию, для того чтобы заниматься именно реализацией проектов, а не бесконечным согласованием чего бы то ни было.
+﻿IF OBJECT_ID(N'__EFMigrationsHistory') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
 
+GO
 
-[ИТ]О том как работает дизайнерская студия Clay. С некоторых пор, компания, разрабатывающая интерфейсы переехала работать в США. Как имеонно строится производство, отношение к процессу работы над проектом, разнице между российскими и иностранными заказчиками читайте в статье.
-Студия изначально основана и начала работу в Санкт-Петербурге и основана Антоном Зыкиным, Олегом Турбаба, Дмитрием Цозиком и Александром Хмелевским - выходцами из SFCD. Позже они открыли офисы в США ввиду того, что большая часть заказчиков - изза океана и присутствует необходимость в большом количестве личных встреч. Тем не менее большая часть дизайнеров находится в Санкт-Петербурге и вся компания управляется отсюда.
-Специализация компании - нишевый бизнес-софт, хотя дизайнеры уже много поработали с гигантами вроде Google и Huawei.
-В Clay существует свое мнение по поводу процесса ведения проекта. Выработана своя методология, которой команда четко следует. Основными этапами являются исследование, тесты, прототипы, производство, устранение проблем. Особенностью последних лет работы над дизайном стало создание подробных дизайн-спецификаций. Дизайн-спецификация состоит из нескольких документов: User Flow (сценарии взаимодействия), Style Guide (как выстроить элементы интерфеса, описание стиля), UI Kit (различные состояния элементов интерфейса).
-В Clay есть свое мнение по поводу создания презентаций - ребята считаю что лучшим решением является рабочий прототип, хотя на практике все таки испольщуют скрины экраеов или видео, что тоже круто.
-Говоря об американской аудитории вообще, в команде бытует мнение, что в Америке люди не так подкованиы технически как в России, это и есть преимущество, хотя на слузу какие либо русские дизайнерские компании не находятся.
+CREATE TABLE [ExternalLink] (
+    [Id] int NOT NULL IDENTITY,
+    [Link] nvarchar(max),
+    [Title] nvarchar(max),
+    CONSTRAINT [PK_ExternalLink] PRIMARY KEY ([Id])
+);
 
-Антоном Зыкиным, Олегом Турбаба, Дмитрием Цозиком и Александром Хмелевским clay sfcd 
+GO
 
+CREATE TABLE [AspNetUsers] (
+    [Id] nvarchar(450) NOT NULL,
+    [AccessFailedCount] int NOT NULL,
+    [CompanyId] int,
+    [ConcurrencyStamp] nvarchar(max),
+    [Email] nvarchar(256),
+    [EmailConfirmed] bit NOT NULL,
+    [LockoutEnabled] bit NOT NULL,
+    [LockoutEnd] datetimeoffset,
+    [NormalizedEmail] nvarchar(256),
+    [NormalizedUserName] nvarchar(256),
+    [PasswordHash] nvarchar(max),
+    [PhoneNumber] nvarchar(max),
+    [PhoneNumberConfirmed] bit NOT NULL,
+    [SecurityStamp] nvarchar(max),
+    [TwoFactorEnabled] bit NOT NULL,
+    [UserName] nvarchar(256),
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id])
+);
 
-[ИТ]Астро Теллер - глава структуры Х - инновационного подразделния Alphabet, занимающегося поиском и развитием перспективных проектов для Google, где сотрудники получают бонусы за отправку проектов в мусорку. Харизма главы инновационного крыла и перспективы, а также список начинаний подраздения, которые доросли до момента когда они смогли отправится в самостоятельное плавание - Chauffeur, Verily, Google Glass, GCam, Google Watch, Project Insight, Google Brain, Flux, Project Tango.
-Астро очень серьезно относится к своей работе, он говорит что, его команда решает задачи, которые могут сделать мир лучше. Одна из задач подобного рода это обеспечение интернет-покрытием всей поверзности щемли. Дляэтого в подращделении придумали прикреплять передатчики к уоздушным гарам и "подвешивать" их в стратосфере. Проект называется Loon, но он еще не прошел все фильтры внутри подращделения, чтобы стать самостоятельным.
-Были и гпомкие неудачи проектоав, рещультаты работы в которых вывели на рынок. Самый ищвестный проект это Google Glass. После вызода устройства нашлось огромное количество людей вощмутившизся покушением на свою свободу, будучи против того что из могут снимать незаметно для них. 
-Другой перспективный проект касается популярной сейчас среди гигантов индустрии темы - беспилотные автомобили. В подразделении Х он называется Chauffeur и сейчас он уже оформлен в самостоятельное юридическое лицо.
-Сам Теллер достаточно успешный предприниматель, хотя в его роду в основном все являются учеными. Он основпл компанию BodyMedia, проищводящую фитнес-браслеты. Компанию Теллер продал в 2013 году за сумму превышающую 100 млн долл.
-http://www.rbc.ru/business/10/11/2016/58245d869a7947c7bcf37592
- 
-#эриктеллер #астротеллер #alphabet #google #bodymedia #chauffeur #verily #googleglass #gcam #googlewatch #projectinsight #googlebrain #flux #projecttango
+GO
 
+CREATE TABLE [Images] (
+    [Id] int NOT NULL IDENTITY,
+    [Description] nvarchar(max),
+    [ImageContent] varbinary(max),
+    [ImageMimeType] nvarchar(max),
+    [IsMain] bit NOT NULL,
+    [ToDelete] bit NOT NULL,
+    CONSTRAINT [PK_Images] PRIMARY KEY ([Id])
+);
 
+GO
 
+CREATE TABLE [Categories] (
+    [Id] int NOT NULL IDENTITY,
+    [CategoryId] int,
+    [CategoryType] int NOT NULL,
+    [EnTitle] nvarchar(100) NOT NULL,
+    [Title] nvarchar(100) NOT NULL,
+    CONSTRAINT [PK_Categories] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Categories_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]) ON DELETE NO ACTION
+);
 
+GO
+
+CREATE TABLE [AspNetRoles] (
+    [Id] nvarchar(450) NOT NULL,
+    [ConcurrencyStamp] nvarchar(max),
+    [Name] nvarchar(256),
+    [NormalizedName] nvarchar(256),
+    CONSTRAINT [PK_AspNetRoles] PRIMARY KEY ([Id])
+);
+
+GO
+
+CREATE TABLE [AspNetUserTokens] (
+    [UserId] nvarchar(450) NOT NULL,
+    [LoginProvider] nvarchar(450) NOT NULL,
+    [Name] nvarchar(450) NOT NULL,
+    [Value] nvarchar(max),
+    CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY ([UserId], [LoginProvider], [Name])
+);
+
+GO
+
+CREATE TABLE [Companies] (
+    [Id] int NOT NULL IDENTITY,
+    [AccountType] int NOT NULL,
+    [ApplicationUserId] nvarchar(450),
+    [ContactEmail] nvarchar(max),
+    [Description] nvarchar(max),
+    [Telephone] nvarchar(max),
+    [Title] nvarchar(max),
+    CONSTRAINT [PK_Companies] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Companies_AspNetUsers_ApplicationUserId] FOREIGN KEY ([ApplicationUserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION
+);
+
+GO
+
+CREATE TABLE [AspNetUserClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [ClaimType] nvarchar(max),
+    [ClaimValue] nvarchar(max),
+    [UserId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE TABLE [AspNetUserLogins] (
+    [LoginProvider] nvarchar(450) NOT NULL,
+    [ProviderKey] nvarchar(450) NOT NULL,
+    [ProviderDisplayName] nvarchar(max),
+    [UserId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
+    CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE TABLE [Articles] (
+    [Id] int NOT NULL IDENTITY,
+    [CategoryId] int,
+    [CategoryType] int NOT NULL,
+    [Description] nvarchar(max),
+    [EnTitle] nvarchar(max),
+    [HashTags] nvarchar(max),
+    [Link] nvarchar(max),
+    [Title] nvarchar(max),
+    [UpdateTime] datetime2 NOT NULL,
+    CONSTRAINT [PK_Articles] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Articles_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]) ON DELETE NO ACTION
+);
+
+GO
+
+CREATE TABLE [AspNetRoleClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [ClaimType] nvarchar(max),
+    [ClaimValue] nvarchar(max),
+    [RoleId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE TABLE [AspNetUserRoles] (
+    [UserId] nvarchar(450) NOT NULL,
+    [RoleId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY ([UserId], [RoleId]),
+    CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE TABLE [RelCompanyImage] (
+    [CompanyId] int NOT NULL,
+    [ImageId] int NOT NULL,
+    CONSTRAINT [PK_RelCompanyImage] PRIMARY KEY ([CompanyId], [ImageId]),
+    CONSTRAINT [FK_RelCompanyImage_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_RelCompanyImage_Images_ImageId] FOREIGN KEY ([ImageId]) REFERENCES [Images] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE TABLE [RelCompanyGood] (
+    [CompanyId] int NOT NULL,
+    [GoodId] int NOT NULL,
+    CONSTRAINT [PK_RelCompanyGood] PRIMARY KEY ([CompanyId], [GoodId]),
+    CONSTRAINT [FK_RelCompanyGood_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_RelCompanyGood_Articles_GoodId] FOREIGN KEY ([GoodId]) REFERENCES [Articles] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE TABLE [RelGoodExternalLink] (
+    [ExternalLinkId] int NOT NULL,
+    [GoodId] int NOT NULL,
+    CONSTRAINT [PK_RelGoodExternalLink] PRIMARY KEY ([ExternalLinkId], [GoodId]),
+    CONSTRAINT [FK_RelGoodExternalLink_ExternalLink_ExternalLinkId] FOREIGN KEY ([ExternalLinkId]) REFERENCES [ExternalLink] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_RelGoodExternalLink_Articles_GoodId] FOREIGN KEY ([GoodId]) REFERENCES [Articles] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE TABLE [RelGoodImage] (
+    [ImageId] int NOT NULL,
+    [GoodId] int NOT NULL,
+    CONSTRAINT [PK_RelGoodImage] PRIMARY KEY ([ImageId], [GoodId]),
+    CONSTRAINT [FK_RelGoodImage_Articles_GoodId] FOREIGN KEY ([GoodId]) REFERENCES [Articles] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_RelGoodImage_Images_ImageId] FOREIGN KEY ([ImageId]) REFERENCES [Images] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE INDEX [EmailIndex] ON [AspNetUsers] ([NormalizedEmail]);
+
+GO
+
+CREATE UNIQUE INDEX [UserNameIndex] ON [AspNetUsers] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;
+
+GO
+
+CREATE INDEX [IX_Articles_CategoryId] ON [Articles] ([CategoryId]);
+
+GO
+
+CREATE INDEX [IX_Categories_CategoryId] ON [Categories] ([CategoryId]);
+
+GO
+
+CREATE UNIQUE INDEX [IX_Companies_ApplicationUserId] ON [Companies] ([ApplicationUserId]) WHERE [ApplicationUserId] IS NOT NULL;
+
+GO
+
+CREATE INDEX [IX_RelCompanyGood_CompanyId] ON [RelCompanyGood] ([CompanyId]);
+
+GO
+
+CREATE INDEX [IX_RelCompanyGood_GoodId] ON [RelCompanyGood] ([GoodId]);
+
+GO
+
+CREATE INDEX [IX_RelCompanyImage_CompanyId] ON [RelCompanyImage] ([CompanyId]);
+
+GO
+
+CREATE INDEX [IX_RelCompanyImage_ImageId] ON [RelCompanyImage] ([ImageId]);
+
+GO
+
+CREATE INDEX [IX_RelGoodExternalLink_ExternalLinkId] ON [RelGoodExternalLink] ([ExternalLinkId]);
+
+GO
+
+CREATE INDEX [IX_RelGoodExternalLink_GoodId] ON [RelGoodExternalLink] ([GoodId]);
+
+GO
+
+CREATE INDEX [IX_RelGoodImage_GoodId] ON [RelGoodImage] ([GoodId]);
+
+GO
+
+CREATE INDEX [IX_RelGoodImage_ImageId] ON [RelGoodImage] ([ImageId]);
+
+GO
+
+CREATE INDEX [RoleNameIndex] ON [AspNetRoles] ([NormalizedName]);
+
+GO
+
+CREATE INDEX [IX_AspNetRoleClaims_RoleId] ON [AspNetRoleClaims] ([RoleId]);
+
+GO
+
+CREATE INDEX [IX_AspNetUserClaims_UserId] ON [AspNetUserClaims] ([UserId]);
+
+GO
+
+CREATE INDEX [IX_AspNetUserLogins_UserId] ON [AspNetUserLogins] ([UserId]);
+
+GO
+
+CREATE INDEX [IX_AspNetUserRoles_RoleId] ON [AspNetUserRoles] ([RoleId]);
+
+GO
+
+CREATE INDEX [IX_AspNetUserRoles_UserId] ON [AspNetUserRoles] ([UserId]);
+
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20170218100007_Initial', N'1.0.1');
+
+GO
+
+CREATE TABLE [KWs] (
+    [Id] int NOT NULL IDENTITY,
+    [CategoryId] int,
+    [CategoryType] int NOT NULL,
+    [kw] nvarchar(100) NOT NULL,
+    CONSTRAINT [PK_KWs] PRIMARY KEY ([Id])
+);
+
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20170311132843_AddKws', N'1.0.1');
+
+GO
+
+CREATE INDEX [IX_KWs_CategoryId] ON [KWs] ([CategoryId]);
+
+GO
+
+ALTER TABLE [KWs] ADD CONSTRAINT [FK_KWs_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]) ON DELETE NO ACTION;
+
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20170311133540_AddKwsRelToCategory', N'1.0.1');
+
+GO
+
+ALTER TABLE [Articles] ADD [metaDescription] nvarchar(max);
+
+GO
+
+ALTER TABLE [Articles] ADD [metaKeyWords] nvarchar(max);
+
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20170502115429_AddMetaTagsToArticleModel', N'1.0.1');
+
+GO
 

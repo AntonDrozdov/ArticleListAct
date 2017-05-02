@@ -122,6 +122,10 @@ namespace BizMall.Migrations
 
                     b.Property<DateTime>("UpdateTime");
 
+                    b.Property<string>("metaDescription");
+
+                    b.Property<string>("metaKeyWords");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");

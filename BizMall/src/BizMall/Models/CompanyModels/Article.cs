@@ -35,6 +35,15 @@ namespace BizMall.Models.CompanyModels
             Images = new List<RelGoodImage>();
             Companies = new List<RelCompanyGood>();
             ExternalLinks = new List<RelGoodExternalLink>();
-    }
+        }
+
+        //для meta - тегов
+
+        public string metaKeyWords { get; set; }
+
+        public string metaDescription { get; set; }
+
+
+
     }
 }
