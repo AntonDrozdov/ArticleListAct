@@ -81,12 +81,18 @@ namespace BizMall.Controllers
                 ViewData["Title"] = _settings.ApplicationTitle + category.Title;
                 ViewBag.Category = category.Title;
                 ViewBag.CategoryId = category.Id;
-                
+                ViewData["metaDescription"] = "";
+                ViewData["metaKeyWords"] = "";
+
+
             }
             else
             {
                 ViewData["Title"] = _settings.ApplicationTitle + "Главная";
                 ViewBag.CategoryId = 0;
+                ViewData["metaDescription"] = "";
+                ViewData["metaKeyWords"] = "";
+
             }
 
             ViewBag.Kws = _repositoryKW.KwsForTagCloud(ViewBag.CategoryId);
@@ -118,6 +124,8 @@ namespace BizMall.Controllers
             ViewData["Title"] = _settings.ApplicationTitle + "Поиск: " + searchstring;
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
+            ViewData["metaDescription"] = "Результаты поиска по: " + searchstring;
+            ViewData["metaKeyWords"] = searchstring;
             ViewBag.ArticlesVM = ArticlesVM;
             ViewBag.PagingInfo = pagingInfo;
             ViewBag.PageTitle = "Результаты поиска по: " + searchstring;
@@ -141,6 +149,8 @@ namespace BizMall.Controllers
             ViewData["Title"] = _settings.ApplicationTitle + "Хэштег: " + hashtag;
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
+            ViewData["metaDescription"] = "По хэштегу: #" + hashtag;
+            ViewData["metaKeyWords"] = hashtag;
             ViewBag.ArticlesVM = ArticlesVM;
             ViewBag.PagingInfo = pagingInfo;
             ViewBag.PageTitle = "По хэштегу: #" + hashtag;
@@ -165,6 +175,8 @@ namespace BizMall.Controllers
             ViewData["Title"] = _settings.ApplicationTitle + "По запросу: " + kw;
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
+            ViewData["metaDescription"] = "По запросу: " + kw;
+            ViewData["metaKeyWords"] = kw;
             ViewBag.ArticlesVM = ArticlesVM;
             ViewBag.PagingInfo = pagingInfo;
             ViewBag.PageTitle = "По запросу: " + kw;
@@ -184,6 +196,9 @@ namespace BizMall.Controllers
             ViewData["Title"] = _settings.ApplicationTitle + avm.Title;
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
+            ViewData["metaDescription"] = item.metaDescription;
+            ViewData["metaKeyWords"] = item.metaKeyWords;
+
             ViewBag.ArticleVM = avm;
 
             //похожие статьи (для того чтобы наполнить страницу нужным количеством символов)
@@ -210,6 +225,8 @@ namespace BizMall.Controllers
             ViewData["Title"] = _settings.ApplicationTitle + "О проекте";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
+            ViewData["metaDescription"] = _settings.metaDescription;
+            ViewData["metaKeyWords"] = _settings.metaKeyWords;
 
             return View();
         }

@@ -33,5 +33,12 @@ namespace BizMall.Models.CompanyModels
             Goods = new List<Article>();
         }
 
+        //для meta - тегов
+
+        public string metaKeyWords { get; set; }
+
+        public string metaDescription { get; set; }
+
+
     }
 }

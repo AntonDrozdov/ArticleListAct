@@ -76,6 +76,8 @@ namespace BizMall.Data.Repositories.Concrete
                 dbEntry.CategoryType = categoryType;
                 dbEntry.kw = model.kw;
                 dbEntry.CategoryId = model.CategoryId;
+                dbEntry.metaDescription = model.metaDescription;
+                dbEntry.metaKeyWords = model.metaKeyWords;
 
                 _ctx.Entry(dbEntry).State = EntityState.Modified;
                 _ctx.SaveChanges();

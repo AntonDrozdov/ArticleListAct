@@ -7,7 +7,7 @@
 <div id="kwsForTagCloud" style="text-align: center;margin-top:10px;">
     @foreach (var item in ViewBag.Kws)
     {
-        <a asp-controller="Home" asp-action="SearchKwArticles" asp-route-kw="@item.kw" style="font-size:@rnd.Next(13, 24)px;">@item.kw</a>
+        <a asp-controller="Home" asp-action="SearchKwArticles" asp-route-kw="@Html.Raw(@item.kw)" style="font-size:@rnd.Next(13, 24)px;">@Html.Raw(@item.kw)</a>
     }
 </div>
 

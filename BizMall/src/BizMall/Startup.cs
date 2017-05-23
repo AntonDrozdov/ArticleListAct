@@ -25,6 +25,9 @@ namespace BizMall
         public string FooterTitle { get; set; }
         public string ApplicationTitle { get; set; }
         public string CountOfSimilarArticlesOnArticlePage { get; set; }
+        public string metaDescription { get; set; }
+        public string metaKeyWords { get; set; }
+
         //размеры страниц
         public string PageSize { get; set; }
         public string PageAdminSize { get; set; }

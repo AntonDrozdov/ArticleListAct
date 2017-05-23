@@ -29,6 +29,22 @@
     <!--КАТЕГОРИИ-->
     @await Component.InvokeAsync("AllCategoriesForKW", new { cekwvm = Model })
     
+    <!--metaKeyWords-->
+    <div class="form-group">
+        <label asp-for="metaKeyWords" class="col-md-2 control-label">Meta-тег Keywords</label>
+        <div class="col-md-10">
+            <textarea asp-for="metaKeyWords" class="form-control" id="metaKeyWords" style="resize: vertical;" placeholder="Keywords" Value="@Model.metaKeyWords"></textarea>
+        </div>
+    </div>
+
+    <!--metaDescription-->
+    <div class="form-group">
+        <label asp-for="metaDescription" class="col-md-2 control-label">Meta-тег Description</label>
+        <div class="col-md-10">
+            <textarea asp-for="metaDescription" class="form-control" id="metaDescription" style="resize: vertical;" placeholder="Description" Value="@Model.metaDescription"></textarea>
+        </div>
+    </div>
+
     <!--СООБЩЕНИЯ ВАЛИДАЦИИ-->
     <div class="form-group">
         <label class="col-md-2 control-label"></label>

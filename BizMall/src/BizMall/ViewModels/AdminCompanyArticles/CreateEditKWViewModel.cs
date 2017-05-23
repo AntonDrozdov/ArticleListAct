@@ -22,5 +22,13 @@ namespace BizMall.ViewModels.AdminCompanyArticles
         public string CategoryTitle { get; set; }
 
         public CategoryType CategoryType { get; set; }
+
+        [Required(ErrorMessage = "Введите данные для Meta тега KeyWords")]
+        [StringLength(100, ErrorMessage = "Введите данные для Meta тега KeyWords", MinimumLength = 2)]
+        public string metaKeyWords { get; set; }
+
+        [Required(ErrorMessage = "Введите данные для Meta тега Description")]
+        [StringLength(100, ErrorMessage = "Введите данные для Meta тега Description", MinimumLength = 2)]
+        public string metaDescription { get; set; }
     }
 }

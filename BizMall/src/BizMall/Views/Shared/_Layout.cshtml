@@ -5,8 +5,18 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="yandex-verification" content="5ba78b1a8e408c0f" />
+        @if (ViewData["metaDescription"] != null)
+        {
+            <meta name="Description" content="@Html.Raw(@ViewData["metaDescription"])" />
+        }
+
+        @if (ViewData["metaKeyWords"] != null)
+        {
+            <meta name="Keywords" content="@Html.Raw(@ViewData["metaKeyWords"])" />
+        }
+
         <title>
-            @ViewData["Title"]
+            @Html.Raw(@ViewData["Title"])
         </title>
 
         @*<environment names="Development">            

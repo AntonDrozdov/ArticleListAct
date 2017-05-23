@@ -10,7 +10,7 @@
     <!--ЗАГОЛОВОК-->
     @if (ViewBag.PageTitle != null)
     {
-        <h1 style="color:#b2b1b1">@ViewBag.PageTitle</h1>
+        <h1 style="color:#b2b1b1">@Html.Raw(@ViewBag.PageTitle)</h1>
     }
 
     <!--САМИ СТАТЬИ-->

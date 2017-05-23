@@ -251,6 +251,8 @@ E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Migrations\201703111335
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Migrations\20170311133540_AddKwsRelToCategory.Designer.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Migrations\20170502115429_AddMetaTagsToArticleModel.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Migrations\20170502115429_AddMetaTagsToArticleModel.Designer.cs
+E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Migrations\20170509200959_KwCatMetaTagsAdded.cs
+E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Migrations\20170509200959_KwCatMetaTagsAdded.Designer.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Migrations\ApplicationDbContextModelSnapshot.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Repositories\Abstarct\IRepository.cs
 E:\!DEVELOP\Сайты\buisness\BizMall\src\BizMall\Data\Repositories\Abstarct\IRepositoryArticle.cs

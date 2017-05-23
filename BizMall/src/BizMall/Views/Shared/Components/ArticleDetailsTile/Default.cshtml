@@ -3,18 +3,20 @@
     <!--НАЗВАНИЕ-->
     @*<p style="font-weight:bold;font-size:15px;">@Model.Title</p>*@
     <p>
-        <h1 style="color:#808080">@Model.Title</h1>
+        <h1 style="color:#808080">
+            @Html.Raw(@Model.Title)
+        </h1>
     </p>
     <!--КАТЕГРИЯ И ДАТА-->
     <p>
         <span id="TileCategory">
             @if (@Model.Category.ParentCategory != null)
             {
-                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title</a>
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Html.Raw(@Model.Category.ParentCategory.Title)<span>/</span>@Html.Raw(Model.Category.Title)</a>
             }
             else
             {
-                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle" >@Model.Category.Title</a>
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Html.Raw(Model.Category.Title)</a>
             }
         </span>
         <span id="TileDate">
@@ -25,6 +27,7 @@
     <p style ="text-indent: 20px; text-align:justify" >
         @Html.Raw(Model.Description.Replace("\r\n", "</p><p style=\"text-indent:20px;text-align:justify\">"))
     </p>
+
     <!--КНОПКА ЧИТАТЬ-->
     @if (Model.Link != null)
     {
@@ -54,7 +57,7 @@
                     @for (int j = 0; j < iminrow; j++, imnum++)
                     {
                         <div class="col-md-4 col-sm-4 col-xs-4 thumb">
-                            <a class="fancyimage" data-fancybox-group='@Model.Title' href='@Model.ImagesInBase64[imnum]'> 
+                            <a class="fancyimage" data-fancybox-group='@Html.Raw(@Model.Title)' href='@Model.ImagesInBase64[imnum]'> 
                                 <img style="height:60px;margin:auto; " class="img-responsive" src='@Model.ImagesInBase64[imnum]' />
                             </a>
                         </div>
@@ -68,7 +71,7 @@
     <p class="hashtags" align="justify">
         @foreach (var hashtag in Model.HashTags)
         {
-            <a asp-controller="Home" asp-action="SearchHashTag" asp-route-hashtag="@hashtag">@hashtag</a>
+            <a asp-controller="Home" asp-action="SearchHashTag" asp-route-hashtag="@Html.Raw(hashtag)">@Html.Raw(hashtag)</a>
         }
     </p>
     @*<p>

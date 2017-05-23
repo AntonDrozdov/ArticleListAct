@@ -36,6 +36,22 @@
             <input asp-for="EnTitle" class="form-control col-md-10" id="EnTitle" placeholder="Наименование(латиница)" Value="@Model.EnTitle" />
         </div>
     </div>
+
+    <!--metaKeyWords-->
+    <div class="form-group">
+        <label asp-for="metaKeyWords" class="col-md-2 control-label">Meta-тег Keywords</label>
+        <div class="col-md-10">
+            <textarea asp-for="metaKeyWords" class="form-control" id="metaKeyWords" style="resize: vertical;" placeholder="Keywords" Value="@Model.metaKeyWords"></textarea>
+        </div>
+    </div>
+
+    <!--metaDescription-->
+    <div class="form-group">
+        <label asp-for="metaDescription" class="col-md-2 control-label">Meta-тег Description</label>
+        <div class="col-md-10">
+            <textarea asp-for="metaDescription" class="form-control" id="metaDescription" style="resize: vertical;" placeholder="Description" Value="@Model.metaDescription"></textarea>
+        </div>
+    </div>
    
     <!--СООБЩЕНИЯ ВАЛИДАЦИИ-->
     <div class="form-group">

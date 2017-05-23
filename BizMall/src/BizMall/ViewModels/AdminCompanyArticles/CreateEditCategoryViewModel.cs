@@ -26,5 +26,14 @@ namespace BizMall.ViewModels.AdminCompanyArticles
         [StringLength(3000, ErrorMessage = "Введите название (от 3 до 3000 символов)", MinimumLength = 3)]
         public string ParentCategory { get; set; }
         public int? ParentCategoryId { get; set; }
+
+        [Required(ErrorMessage = "Введите данные для Meta тега KeyWords")]
+        [StringLength(100, ErrorMessage = "Введите данные для Meta тега KeyWords", MinimumLength = 2)]
+        public string metaKeyWords { get; set; }
+
+        [Required(ErrorMessage = "Введите данные для Meta тега Description")]
+        [StringLength(100, ErrorMessage = "Введите данные для Meta тега Description", MinimumLength = 2)]
+        public string metaDescription { get; set; }
+
     }
 }

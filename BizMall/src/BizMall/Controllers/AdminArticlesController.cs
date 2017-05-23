@@ -158,7 +158,9 @@ namespace BizMall.Controllers
                     HashTags = item.HashTags,
                     Category = item.Category.Title,
                     CategoryId = item.CategoryId,
-                    Id = item.Id
+                    Id = item.Id, 
+                    metaDescription = item.metaDescription,
+                    metaKeyWords = item.metaKeyWords
                 };
                 if (item.Images.Count != 0)
                 {
@@ -244,7 +246,9 @@ namespace BizMall.Controllers
                     HashTags = model.HashTags,
                     CategoryId = Convert.ToInt32(model.CategoryId),
                     Images = relImages,
-                    UpdateTime = DateTime.Now
+                    UpdateTime = DateTime.Now,
+                    metaDescription = model.metaDescription,
+                    metaKeyWords = model.metaKeyWords
                 },
                 company);
                 if (model.deletedImagesIds != null)

@@ -7,7 +7,7 @@
     <!--ЗАГОЛОВОК-->
     <p>
         <h2>
-            <a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link">@Model.Title</a>
+            <a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link">@Html.Raw(@Model.Title)</a>
         </h2>
     </p>
     @if(@Model.ImagesInBase64.Count > 0)
@@ -23,11 +23,11 @@
             <span id="TileCategory">
                 @if (@Model.Category.ParentCategory != null)
             {
-                    <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title</a>
+                    <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Html.Raw(@Model.Category.ParentCategory.Title)<span>/</span>@Html.Raw(@Model.Category.Title)</a>
             }
             else
             {
-                    <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.Title</a>
+                    <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Html.Raw(@Model.Category.Title)</a>
             }
             </span>
             <span id="TileDate">
@@ -47,7 +47,7 @@
         <p class="hashtags">
             @foreach (var hashtag in Model.HashTags)
         {
-                <a asp-controller="Home" asp-action="SearchHashTag" asp-route-hashtag="@hashtag">@hashtag</a>
+            <a asp-controller="Home" asp-action="SearchHashTag" asp-route-hashtag="@hashtag">@Html.Raw(@hashtag)</a>
         }
         </p>
     

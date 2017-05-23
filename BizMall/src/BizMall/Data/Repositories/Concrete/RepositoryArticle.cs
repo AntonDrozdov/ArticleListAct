@@ -134,6 +134,8 @@ namespace BizMall.Data.Repositories.Concrete
                     dbEntry.Link = good.Link;
                     dbEntry.HashTags = good.HashTags;
                     dbEntry.UpdateTime = DateTime.Now;
+                    dbEntry.metaDescription = good.metaDescription;
+                    dbEntry.metaKeyWords = good.metaKeyWords;
                 }
 
                 _ctx.Entry(dbEntry).State = EntityState.Modified;

@@ -21,5 +21,11 @@ namespace BizMall.Models.CompanyModels
         public Category Category { get; set; }
 
         public CategoryType CategoryType { get; set; }
+        
+        //для meta - тегов
+
+        public string metaKeyWords { get; set; }
+
+        public string metaDescription { get; set; }
     }
 }

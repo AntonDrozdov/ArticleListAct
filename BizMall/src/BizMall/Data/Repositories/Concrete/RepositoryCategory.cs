@@ -95,6 +95,8 @@ namespace BizMall.Data.Repositories.Concrete
                         dbEntry.EnTitle = model.EnTitle;
                         dbEntry.CategoryId = model.ParentCategory.Id;
                         dbEntry.ParentCategory = null;
+                        dbEntry.metaDescription = model.metaDescription;
+                        dbEntry.metaKeyWords = model.metaKeyWords;
                     }
                     else
                     {
@@ -102,6 +104,8 @@ namespace BizMall.Data.Repositories.Concrete
                         dbEntry.Title = model.Title;
                         dbEntry.EnTitle = model.EnTitle;
                         dbEntry.ParentCategory = null;
+                        dbEntry.metaDescription = model.metaDescription;
+                        dbEntry.metaKeyWords = model.metaKeyWords;
                     }
                 }
                 _ctx.Entry(dbEntry).State = EntityState.Modified;

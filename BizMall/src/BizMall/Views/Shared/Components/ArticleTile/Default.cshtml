@@ -9,7 +9,7 @@
 
     <p>
         <h3>
-            <a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link">@Model.Title</a>
+            <a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link">@Html.Raw(@Model.Title)</a>
         </h3>
     </p>
     <!--КАТЕГРИЯ И ДАТА-->
@@ -18,11 +18,11 @@
         <span id="TileCategory">
             @if (@Model.Category.ParentCategory != null)
             {
-                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title</a>
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Html.Raw(@Model.Category.ParentCategory.Title)<span>/</span>@Html.Raw(@Model.Category.Title)</a>
             }
             else
             {
-                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.Title</a>
+                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Html.Raw(@Model.Category.Title)</a>
             }
         </span>
         <span id="TileDate">
@@ -62,7 +62,7 @@
                     @for (int j = 0; j < iminrow; j++, imnum++)
                     {
                         <div class="col-md-4 col-sm-4 col-xs-4 thumb">
-                            <a class="fancyimage" data-fancybox-group='@Model.Title' href='@Model.ImagesInBase64[imnum]'> 
+                            <a class="fancyimage" data-fancybox-group='@Html.Raw(@Model.Title)' href='@Model.ImagesInBase64[imnum]'> 
                                 <img style="height:60px; " class="img-responsive" src='@Model.ImagesInBase64[imnum]' />
                             </a>
                         </div>
@@ -76,7 +76,7 @@
     <p class="hashtags">
         @foreach (var hashtag in Model.HashTags)
         {
-            <a asp-controller="Home" asp-action="SearchHashTag" asp-route-hashtag="@hashtag">@hashtag</a>
+            <a asp-controller="Home" asp-action="SearchHashTag" asp-route-hashtag="@hashtag">@Html.Raw(@hashtag)</a>
         }
     </p>
     @*<p>

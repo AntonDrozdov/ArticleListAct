@@ -150,6 +150,10 @@ namespace BizMall.Migrations
                         .IsRequired()
                         .HasAnnotation("MaxLength", 100);
 
+                    b.Property<string>("metaDescription");
+
+                    b.Property<string>("metaKeyWords");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -194,6 +198,10 @@ namespace BizMall.Migrations
                     b.Property<string>("kw")
                         .IsRequired()
                         .HasAnnotation("MaxLength", 100);
+
+                    b.Property<string>("metaDescription");
+
+                    b.Property<string>("metaKeyWords");
 
                     b.HasKey("Id");
 
