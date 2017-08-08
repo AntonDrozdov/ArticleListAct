@@ -124,9 +124,10 @@ namespace BizMall.Data.Repositories.Concrete
                                     .Include(g => g.Images)
                                     .AsNoTracking()
                                     .SingleOrDefault();
+
                 if (dbEntry != null)
                 {
-                    dbEntry.CategoryType = categoryType;
+                    dbEntry.CategoryType = good.CategoryType;
                     dbEntry.Title = good.Title;
                     dbEntry.EnTitle = good.EnTitle;
                     dbEntry.Description = good.Description;
@@ -144,7 +145,7 @@ namespace BizMall.Data.Repositories.Concrete
             //Добавление НОВОЙ позиции (в т.ч. дата UpdateStatus выставляется на текущий день - берется из параметра - good)
             else
             {
-                good.CategoryType = categoryType;  
+                good.CategoryType = good.CategoryType;  
                 _ctx.Articles.Add(good);
                 _ctx.SaveChanges();
 
@@ -200,6 +201,33 @@ namespace BizMall.Data.Repositories.Concrete
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
                             .Where(g => (Category == null && g.CategoryType == categoryType) || (g.Category.EnTitle == Category && g.CategoryType == categoryType))
+                            .Include(g => g.Images).ThenInclude(g => g.Image)
+                            .OrderByDescending(g => g.UpdateTime)
+                            .Skip((page - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToList();
+
+            return Items.AsQueryable();
+        }
+
+        public IQueryable<Article> CategoryArticlesFullInformation(CategoryType ct, string Category, int page, out PagingInfo pagingInfo)
+        {
+            int totaItems = _ctx.Articles
+                            .Where(g => (Category == null && g.CategoryType == ct) || (g.Category.EnTitle == Category && g.CategoryType == ct))
+                            .Count();
+
+            pagingInfo = new PagingInfo
+            {
+                CategoryEnTitleForLink = Category,
+                CurrentPage = page,
+                ItemsPerPage = pageSize,
+                TotalItems = totaItems
+            };
+            List<Article> Items = new List<Article>();
+            Items = _ctx.Articles
+                            .Include(g => g.Category)
+                            .Include(g => g.Category.ParentCategory)
+                            .Where(g => (Category == null && g.CategoryType == ct) || (g.Category.EnTitle == Category && g.CategoryType == ct))
                             .Include(g => g.Images).ThenInclude(g => g.Image)
                             .OrderByDescending(g => g.UpdateTime)
                             .Skip((page - 1) * pageSize)
