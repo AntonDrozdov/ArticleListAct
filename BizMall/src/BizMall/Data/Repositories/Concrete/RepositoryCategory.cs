@@ -27,10 +27,28 @@ namespace BizMall.Data.Repositories.Concrete
                         .FirstOrDefault();
         }
 
+        public Category GetCategoryByName(string entitlecategory, CategoryType categoryType)
+        {
+            return _ctx.Categories
+                        .Where(c => c.EnTitle == entitlecategory && c.CategoryType == categoryType)
+                        .FirstOrDefault();
+        }
+
         public IQueryable<Category> Categories()
         {
-            return _ctx.Categories.Where(c => c.CategoryType == categoryType); 
+            //return _ctx.Categories.Where(c => c.CategoryType == categoryType);
+            return _ctx.Categories;
         }
+
+        public IQueryable<Category> Categories(CategoryType ct)
+        {
+            return _ctx.Categories.Where(c => c.CategoryType == ct);
+        }
+
+        public IQueryable<Category> ParentCategories(CategoryType categoryType)
+        {
+            return _ctx.Categories.Where(c => c.CategoryType == categoryType && c.ParentCategory == null);
+        } 
 
         public IQueryable<Category> ParentCategories()
         {
@@ -90,7 +108,7 @@ namespace BizMall.Data.Repositories.Concrete
                 {
                     if (model.ParentCategory.Id!=0)
                     {
-                        dbEntry.CategoryType = categoryType;
+                        dbEntry.CategoryType = model.CategoryType;
                         dbEntry.Title = model.Title;
                         dbEntry.EnTitle = model.EnTitle;
                         dbEntry.CategoryId = model.ParentCategory.Id;
@@ -100,9 +118,10 @@ namespace BizMall.Data.Repositories.Concrete
                     }
                     else
                     {
-                        dbEntry.CategoryType = categoryType;
+                        dbEntry.CategoryType = model.CategoryType;
                         dbEntry.Title = model.Title;
                         dbEntry.EnTitle = model.EnTitle;
+                        dbEntry.CategoryId = null;
                         dbEntry.ParentCategory = null;
                         dbEntry.metaDescription = model.metaDescription;
                         dbEntry.metaKeyWords = model.metaKeyWords;
@@ -123,7 +142,7 @@ namespace BizMall.Data.Repositories.Concrete
                     model.CategoryId = model.ParentCategory.Id;
                     model.ParentCategory = null;
                 }
-                model.CategoryType = categoryType;
+                model.CategoryType = model.CategoryType;
                 _ctx.Categories.Add(model);
                 _ctx.SaveChanges();
             }
@@ -162,5 +181,7 @@ namespace BizMall.Data.Repositories.Concrete
                 var tmp = 0;
             }
         }
+
+
     }
 }
