@@ -119,10 +119,10 @@ namespace BizMall.Controllers
         [HttpGet]
         public IActionResult EditArticle(int id)
         {
-            CreateEditArticleViewModel ceavm = null;
+            // формирование данных статьи для отображения в интерфейсе редактирования
+            CreateEditArticleViewModel ceavm;
             if (id != 0)
             {
-                // формирование данных статьи для отображения в интерфейсе редактирования
                 Article item = _repositoryArticle.GetArticle(id);
 
                 ceavm = ConstructCEAVM(item);
@@ -139,7 +139,6 @@ namespace BizMall.Controllers
                         ceavm.goodImagesIds += rgi.ImageId + "_";
                     }
                 }
-
             }
             else
                 ceavm = new CreateEditArticleViewModel();
@@ -248,9 +247,7 @@ namespace BizMall.Controllers
             var fcr = File(image.ImageContent, image.ImageMimeType);
             return fcr;
         }
-
-
-
+        
         /// <summary>
         /// ajax:добавление на лету изображения к товару
         /// </summary>
