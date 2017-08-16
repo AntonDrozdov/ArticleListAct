@@ -49,15 +49,25 @@ namespace BizMall.Controllers
         [HttpGet]
         public IActionResult EditCategory(int id)
         {
+            CreateEditCategoryViewModel cecvm = null;
+
+            if (id != 0)
+            {
+                Category category = _repositoryCategory.GetCategoryById(id);
+
+                cecvm = ConstructCECVM(category);
+            }
+            else
+                cecvm = new CreateEditCategoryViewModel();
+
+
+
             ViewData["Title"] = _settings.ApplicationTitle + "Администрирование: Добавление/Редактирование категории";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewBag.ActiveSubMenu = "Категории";
 
-            if (id != 0)
-                return View(_repositoryCategory.GetCategoryById(id));
-            else
-                return View(new Category());
+            return View(cecvm);
         }
         [HttpPost]
         public IActionResult EditCategory(Category model)
@@ -93,5 +103,24 @@ namespace BizMall.Controllers
             var CategoryArticlesCount = pagingInfo.TotalItems;
             return Json(CategoryArticlesCount);
         }
+
+        #region PRIVATE METHODS
+
+        private CreateEditCategoryViewModel ConstructCECVM(Category item)
+        {
+            return new CreateEditCategoryViewModel
+            {
+                Id =item.Id,
+                CategoryId = item.CategoryId,
+                Category = item.ParentCategory.Title,
+                CategoryType = item.CategoryType,
+                Title = item.Title,
+                EnTitle = item.EnTitle,
+                metaDescription = item.metaDescription,
+                metaKeyWords = item.metaKeyWords
+            };
+        }
+
+        #endregion
     }
 }

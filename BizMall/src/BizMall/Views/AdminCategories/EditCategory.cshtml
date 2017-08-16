@@ -1,9 +1,4 @@
-﻿@using System.Collections.Generic
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
-@using BizMall.ViewModels.AccountViewModels
-
-@model BizMall.Models.CompanyModels.Category
+﻿@model BizMall.ViewModels.AdminCompanyArticles.CreateEditCategoryViewModel
 
 @{
     ViewData["Title"] = "Новая категория";
@@ -23,6 +18,7 @@
         <label asp-for="Title" class="col-md-2 control-label">Название</label>
         <div class="col-md-10" >
             <input asp-for="Title" class="form-control col-md-10" id="Title" placeholder="Наименование"  Value ="@Model.Title"/>
+            <input asp-for="CategoryType" type="hidden" class="form-control" id="CategoryType" readonly="readonly" Value ="@Model.Id" />
         </div>
     </div>
 

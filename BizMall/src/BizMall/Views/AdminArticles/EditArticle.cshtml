@@ -1,9 +1,5 @@
-﻿@using System.Collections.Generic
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
-@using BizMall.ViewModels.AccountViewModels
+﻿@model BizMall.ViewModels.AdminCompanyArticles.CreateEditArticleViewModel
 
-@model BizMall.ViewModels.AdminCompanyArticles.CreateEditArticleViewModel
 @{
     ViewData["Title"] = "Новая статья";
     Layout = "_AdminLayout";
@@ -67,10 +63,10 @@
                 <div style="border:1px solid #dcd6d6; border-radius:5px;padding:5px;" id="sitekws">
                     @if (ViewBag.SiteKws != null)
                     {
-                        @foreach (var item in ViewBag.SiteKws)
+                        foreach (var item in ViewBag.SiteKws)
                         {
                             var str = item.kw + ", ";
-                            @str; 
+                            @str
                         }
                     }
                 </div>
