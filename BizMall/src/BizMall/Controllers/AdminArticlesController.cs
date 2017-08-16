@@ -27,6 +27,7 @@ namespace BizMall.Controllers
         private readonly IRepositoryArticle _repositoryArticle;
         private readonly IRepositoryImage _repositoryImage;
         private readonly IRepositoryKW _repositoryKW;
+        private readonly IRepositoryCategory _repositoryCategory;
         private readonly AppSettings _settings;
 
         public AdminArticlesController(IRepositoryUser repositoryUser,
@@ -34,6 +35,7 @@ namespace BizMall.Controllers
                                             IRepositoryArticle repositoryArticle,
                                             IRepositoryImage repositoryImage,
                                             IRepositoryKW repositoryKW,
+                                            IRepositoryCategory repositoryCategory,
                                             IOptions<AppSettings> settings)
         {
             _repositoryUser = repositoryUser;
@@ -41,37 +43,11 @@ namespace BizMall.Controllers
             _repositoryArticle = repositoryArticle;
             _repositoryImage = repositoryImage;
             _repositoryKW = repositoryKW;
+            _repositoryCategory = repositoryCategory;
             _settings = settings.Value;
         }
 
-        /// <summary>
-        /// выбрать главное изображение товара
-        /// </summary>
-        /// <param name="GoodId"></param>
-        /// <returns></returns>
-        public FileContentResult GetGoodMainImage(int GoodId)
-        {
-            Image image = _repositoryImage.GetGoodImage(GoodId);
-            var fcr = File(image.ImageContent, image.ImageMimeType);
-            return fcr;
-        }
-
-        private ArticleViewModel ConstructAVM(Article item, bool shortDescription)
-        {
-            ArticleViewModel avm = new ArticleViewModel
-            {
-                Id = item.Id,
-                Title = item.Title,
-                EnTitle = item.EnTitle,
-                Description = item.Description,
-                UpdateTime = item.UpdateTime,
-                Category = item.Category,
-                CategoryId = item.CategoryId
-            };
-
-            return avm;
-        }
-
+        #region статьи: отображени, редактирование, удаление
 
         /// <summary>
         /// вывод товаров в личный кабинет компании
@@ -90,7 +66,7 @@ namespace BizMall.Controllers
                 List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
                 foreach (var item in Items)
                 {
-                    var avm = ConstructAVM(item, true);
+                    var avm = ConstructAVM(item);
                     ArticlesVM.Add(avm);
                 }
 
@@ -109,6 +85,9 @@ namespace BizMall.Controllers
             return View();
         }
 
+        /// <summary>
+        /// поиск по списку редакитруемых статей
+        /// </summary>
         public IActionResult Search(string searchstring, int Page = 1)
         {
             if (searchstring == null)
@@ -120,7 +99,7 @@ namespace BizMall.Controllers
             List<ArticleViewModel> ArticlesVM = new List<ArticleViewModel>();
             foreach (var item in Items)
             {
-                var avm = ConstructAVM(item, true);
+                var avm = ConstructAVM(item);
                 ArticlesVM.Add(avm);
             }
 
@@ -134,128 +113,72 @@ namespace BizMall.Controllers
             return View();
         }
 
-
         /// <summary>
         /// редактирование товара
         /// </summary>
-        /// <param name="id"> id товара</param>
-        /// <returns></returns>
         [HttpGet]
         public IActionResult EditArticle(int id)
         {
-            CreateEditArticleViewModel cegvm = null;
+            CreateEditArticleViewModel ceavm = null;
             if (id != 0)
             {
-                #region формирование данных статьи для отображения в интерфейсе редактирования
+                // формирование данных статьи для отображения в интерфейсе редактирования
                 Article item = _repositoryArticle.GetArticle(id);
 
-                cegvm = new CreateEditArticleViewModel
-                {
-                    Title = item.Title,
-                    EnTitle = item.EnTitle,
-                    Description = item.Description,
-                    Link = item.Link,
-                    HashTags = item.HashTags,
-                    Category = item.Category.Title,
-                    CategoryId = item.CategoryId,
-                    Id = item.Id, 
-                    metaDescription = item.metaDescription,
-                    metaKeyWords = item.metaKeyWords
-                };
+                ceavm = ConstructCEAVM(item);
+
                 if (item.Images.Count != 0)
                 {
-                    cegvm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(item.Images.ToList()[0].Image);
+                    ceavm.MainImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(item.Images.ToList()[0].Image);
                     foreach (var rgi in item.Images)
                     {
                         //для каждого изображения составляем соответствующую модель отображения
-                        cegvm.ImageViewModels.Add(
-                            new ImageViewModel
-                            {
-                                GoodId = rgi.GoodId,
-                                Id = rgi.ImageId,
-                                goodImageIds = rgi.GoodId + "_" + rgi.ImageId,
-                                ImageMimeType = rgi.Image.ImageMimeType,
-                                ImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(rgi.Image)
-                            }
-                        );
+                        ceavm.ImageViewModels.Add(ConstructIVM(rgi));
+
                         //для каждого изображения оставляем его id в input всех id изображений товара
-                        cegvm.goodImagesIds += rgi.ImageId + "_";
+                        ceavm.goodImagesIds += rgi.ImageId + "_";
                     }
                 }
-                #endregion
-
 
             }
             else
-                cegvm = new CreateEditArticleViewModel();
+                ceavm = new CreateEditArticleViewModel();
 
-            #region формирование списка ключевиков для САЙТА
-
+            //формирование списка ключевиков в поле "ДЛЯ САЙТА"
             ViewBag.SiteKws = _repositoryKW.Kws(null).ToList();
-
-            #endregion
 
             ViewData["Title"] = _settings.ApplicationTitle +"Администрирование: Добавление/Редактирование статьи";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewBag.ActiveSubMenu = "Статьи";
-            return View(cegvm);
+
+            return View(ceavm);
         }
+
         [HttpPost]
         public IActionResult EditArticle(CreateEditArticleViewModel model)
         {
             if (ModelState.IsValid)
             {
-                //ТЕКУЩИЙ ПОЛЬЗОВАТЕЛЬ 
+                //текущ
                 var currentUser = _repositoryUser.GetCurrentUser(User.Identity.Name);
 
-                //ПОЛУЧАЕМ КОМПАНИЮ РОДИТЕЛЯ ОПРЕДЕЛЯЕМУЮ ТЕКУЩИМ ПОЛЬЗОВАТЕЛЕМ 
+                //получаем компанию родителя определяемую текущий пользователем
                 Company company = new Company();
                 if (currentUser != null)
                     company = _repositoryCompany.GetUserCompany(currentUser);
                 else
                     return RedirectToAction("Articles");
 
-                //ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ
-                List<RelGoodImage> relImages = new List<RelGoodImage>();
-                //если строка id изображений непуста тогда формируем список
-                if (model.goodImagesIds != null)
-                {
-                    string[] strImgids = model.goodImagesIds.Trim().Substring(0, model.goodImagesIds.Length - 1).Split('_');
-                    foreach (var strImageId in strImgids)
-                    {
-                        if (strImageId.Length == 0) continue;//это случай когдау товара нет изображений, но в массив все равно попадает распарсеная пустая строка
-                        relImages.Add(new RelGoodImage
-                        {
-                            GoodId = model.Id,
-                            ImageId = Convert.ToInt32(strImageId)
-                        });
-                    }
-                }
+                //формируем список изображений
+                List<RelGoodImage> relImages = ConstructImagegeListFromCEAVM(model);
 
-                //формирование разделителей
-                //model.Description = model.Description.Replace("\r\n", "[newstr]");
+                //сохранение статьи
+                SaveArticleChanges(company, model, relImages);
 
-                _repositoryArticle.SaveArticle(new Article
-                {
-                    Id = model.Id,
-                    Title = model.Title,
-                    EnTitle = model.EnTitle,
-                    Description = model.Description,
-                    Link = model.Link,
-                    HashTags = model.HashTags,
-                    CategoryId = Convert.ToInt32(model.CategoryId),
-                    Images = relImages,
-                    UpdateTime = DateTime.Now,
-                    metaDescription = model.metaDescription,
-                    metaKeyWords = model.metaKeyWords
-                },
-                company);
-                if (model.deletedImagesIds != null)
-                {
-                    int[] ids = GetIntIds.ConvertIdsToInt(model.deletedImagesIds).ToArray();
-                    _repositoryImage.DeleteImages(ids);
-                }
+                //подчищаем таблицу изображений
+                CleanDBFromDeletedImages(model);
+
             }
             return RedirectToAction("Articles");
         }
@@ -275,42 +198,11 @@ namespace BizMall.Controllers
             return RedirectToAction("Articles");
         }
 
-        //ДЛЯ ajax
-        //ДЛЯ ajax
-        /// <summary>
-        /// ajax:деактивация товаров
-        /// </summary>
-        /// <param name="checkedGoods"></param>
-        /// <returns></returns>
-        //public bool ArchieveGoods(string checkedGoods)
-        //{
-        //    _repositoryGood.ArchieveGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
-
-        //    //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.Active });
-        //    return true;
-        //}
+        #endregion
 
         /// <summary>
-        /// ajax:активация товаров
+        /// ключевики категории
         /// </summary>
-        /// <param name="checkedGoods"></param>
-        /// <returns></returns>
-        //public bool ActivateGoods(string checkedGoods)
-        //{
-        //    _repositoryGood.ActivateGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
-
-        //    return true;
-        //    //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.InActive});
-        //}
-
-        /// <summary>
-        /// ajax:добавление на лету изображения к товару
-        /// </summary>
-        /// <param name="Id">id товара</param>
-        /// <param name="newimages"></param>
-        /// <returns></returns>
-
-
         [HttpPost]
         public JsonResult CategoryKws(string CategoryId)
         {
@@ -319,13 +211,49 @@ namespace BizMall.Controllers
                 var categoryKws = _repositoryKW.Kws(CategoryId).ToList();
                 return Json(categoryKws);
             }
-            else
-            {
-                return Json(null); 
-            }
+            return Json(null);
+        }
+
+        #region активация/деактивация товаров
+
+        /// <summary>
+        /// ajax:активация/деактивация товаров
+        /// </summary>
+        //public bool ArchieveGoods(string checkedGoods)
+        //{
+        //    _repositoryGood.ArchieveGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
+        //
+        //    //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.Active });
+        //    return true;
+        //}
+        //
+        //public bool ActivateGoods(string checkedGoods)
+        //{
+        //    _repositoryGood.ActivateGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
+        //
+        //    return true;
+        //    //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.InActive});
+        //}
+
+        #endregion
+
+        #region Работа с изображниями - добавление/удалении, редактировани, "Назад"
+
+        /// <summary>
+        /// выбрать главное изображение товара
+        /// </summary>
+        public FileContentResult GetGoodMainImage(int GoodId)
+        {
+            Image image = _repositoryImage.GetGoodImage(GoodId);
+            var fcr = File(image.ImageContent, image.ImageMimeType);
+            return fcr;
         }
 
 
+
+        /// <summary>
+        /// ajax:добавление на лету изображения к товару
+        /// </summary>
         [HttpPost]
         public JsonResult AddArticleImage(int Id, ICollection<IFormFile> newimages)
         {
@@ -362,8 +290,6 @@ namespace BizMall.Controllers
         /// <summary>
         ///  ajax:используестя после успешного добавлениия изображения в бД для формирования превью
         /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
         [HttpGet]
         public JsonResult GetImageForThumb(int Id)
         {
@@ -384,8 +310,6 @@ namespace BizMall.Controllers
         /// <summary>
         /// ajax:удаление на лету изображения к товару
         /// </summary>
-        /// <param name="goodImageIds"></param>
-        /// <returns></returns>
         [HttpPost]
         public string DeleteArticleImage(string goodImageIds)
         {
@@ -405,8 +329,6 @@ namespace BizMall.Controllers
         /// <summary>
         /// ajax:восстановление/удаление фоток при "Назад"
         /// </summary>
-        /// <param name="goodImageIds"></param>
-        /// <returns></returns>
         [HttpPost]
         public string RestoreImages(string goodImageIds, string addedImagesIds, string deletedImagesIds)
         {
@@ -426,8 +348,6 @@ namespace BizMall.Controllers
         /// <summary>
         /// ajax:удаление добавленных на лету изображений товара в случае если пользователь нажал "Назад"
         /// </summary>
-        /// <param name="goodImageIds"></param>
-        /// <returns></returns>
         [HttpPost]
         public bool DeleteArticleImages(string goodImageIds)
         {
@@ -438,5 +358,104 @@ namespace BizMall.Controllers
             }
             return true;
         }
+
+        #endregion
+
+        #region PRIVATE METHODS
+
+        private ArticleViewModel ConstructAVM(Article item)
+        {
+            return new ArticleViewModel
+            {
+                Id = item.Id,
+                Title = item.Title,
+                EnTitle = item.EnTitle,
+                Description = item.Description,
+                UpdateTime = item.UpdateTime,
+                Category = item.Category,
+                CategoryId = item.CategoryId
+            };
+        }
+
+        private CreateEditArticleViewModel ConstructCEAVM(Article item)
+        {
+            return new CreateEditArticleViewModel
+            {
+                Title = item.Title,
+                EnTitle = item.EnTitle,
+                Description = item.Description,
+                Link = item.Link,
+                HashTags = item.HashTags,
+                Category = item.Category.Title,
+                CategoryId = item.CategoryId,
+                Id = item.Id,
+                metaDescription = item.metaDescription,
+                metaKeyWords = item.metaKeyWords
+            };
+        }
+
+        private ImageViewModel ConstructIVM(RelGoodImage rgi)
+        {
+            return new ImageViewModel
+            {
+                GoodId = rgi.GoodId,
+                Id = rgi.ImageId,
+                goodImageIds = rgi.GoodId + "_" + rgi.ImageId,
+                ImageMimeType = rgi.Image.ImageMimeType,
+                ImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(rgi.Image)
+            };
+        }
+
+        private List<RelGoodImage> ConstructImagegeListFromCEAVM(CreateEditArticleViewModel model)
+        {
+            List<RelGoodImage> relImages = new List<RelGoodImage>();
+
+            if (model.goodImagesIds != null)
+            {
+                string[] strImgids = model.goodImagesIds.Trim().Substring(0, model.goodImagesIds.Length - 1).Split('_');
+                foreach (var strImageId in strImgids)
+                {
+                    if (strImageId.Length == 0) continue;//это случай когдау товара нет изображений, но в массив все равно попадает распарсеная пустая строка
+                    relImages.Add(new RelGoodImage
+                    {
+                        GoodId = model.Id,
+                        ImageId = Convert.ToInt32(strImageId)
+                    });
+                }
+            }
+
+            return relImages;
+        }
+
+        private void SaveArticleChanges(Company company, CreateEditArticleViewModel model, List<RelGoodImage> relImages)
+        {
+            _repositoryArticle.SaveArticle(new Article
+                {
+                    Id = model.Id,
+                    Title = model.Title,
+                    EnTitle = model.EnTitle,
+                    Description = model.Description,
+                    Link = model.Link,
+                    HashTags = model.HashTags,
+                    CategoryId = Convert.ToInt32(model.CategoryId),
+                    CategoryType = _repositoryCategory.GetCategoryById(Convert.ToInt32(model.CategoryId)).CategoryType,
+                    Images = relImages,
+                    UpdateTime = DateTime.Now,
+                    metaDescription = model.metaDescription,
+                    metaKeyWords = model.metaKeyWords
+                },
+                company);
+        }
+
+        private void CleanDBFromDeletedImages(CreateEditArticleViewModel model)
+        {
+            if (model.deletedImagesIds != null)
+            {
+                int[] ids = GetIntIds.ConvertIdsToInt(model.deletedImagesIds).ToArray();
+                _repositoryImage.DeleteImages(ids);
+            }
+        }
+
+        #endregion
     }
 }

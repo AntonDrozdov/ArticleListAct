@@ -37,8 +37,8 @@
                 if (topcat.CategoryId == null)
                 {
                     bool IsParent = false;
-                    @foreach (var cat in ViewBag.Categories){
-                        @if (cat.CategoryId== topcat.Id){
+                    foreach (var cat in ViewBag.Categories){
+                        if (cat.CategoryId== topcat.Id){
                             IsParent = true;
                             break;
                         }
@@ -51,7 +51,7 @@
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop">
                             @foreach (var chcat in ViewBag.Categories){
-                                @if (chcat.CategoryId == topcat.Id){
+                                if (chcat.CategoryId == topcat.Id){
                                     <li><a class="nestedcat" role="button" id="@chcat.Id">@chcat.Title</a></li>
                                 }
                             }
