@@ -24,8 +24,8 @@ namespace BizMall.ViewModels.AdminCompanyArticles
 
         [Required(ErrorMessage = "Введите название (от 3 до 3000 символов)")]
         [StringLength(3000, ErrorMessage = "Введите название (от 3 до 3000 символов)", MinimumLength = 3)]
-        public string Category { get; set; }
-        public int? CategoryId { get; set; }
+        public string ParentCategoryTitle { get; set; }
+        public int? ParentCategoryId { get; set; }
 
         public CategoryType CategoryType { get; set; }
 
