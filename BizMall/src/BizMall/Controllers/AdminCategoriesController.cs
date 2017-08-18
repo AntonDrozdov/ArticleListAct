@@ -60,8 +60,6 @@ namespace BizMall.Controllers
             else
                 cecvm = new CreateEditCategoryViewModel();
 
-
-
             ViewData["Title"] = _settings.ApplicationTitle + "Администрирование: Добавление/Редактирование категории";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
@@ -72,17 +70,14 @@ namespace BizMall.Controllers
         [HttpPost]
         public IActionResult EditCategory(Category model)
         {
-
             _repositoryCategory.SaveCategory(model);
 
             return RedirectToAction("Categories");
         }
 
         /// <summary>
-        /// удаление товара
+        /// удаление категории
         /// </summary>
-        /// <param name="goodId"></param>
-        /// <returns></returns>
         [HttpGet]
         public IActionResult DeleteCategory(int itemId)
         {
@@ -93,6 +88,9 @@ namespace BizMall.Controllers
             return RedirectToAction("Categories");
         }
 
+        /// <summary>
+        /// считаем сколько статей в категории
+        /// </summary>
         [HttpPost]
         public JsonResult CategoryArticlesCount(int catId)
         {
@@ -111,8 +109,8 @@ namespace BizMall.Controllers
             return new CreateEditCategoryViewModel
             {
                 Id =item.Id,
-                CategoryId = item.CategoryId,
-                Category = item.ParentCategory.Title,
+                ParentCategoryId = item.CategoryId,
+                ParentCategoryTitle = item.ParentCategory.Title,
                 CategoryType = item.CategoryType,
                 Title = item.Title,
                 EnTitle = item.EnTitle,
