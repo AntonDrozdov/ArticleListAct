@@ -49,16 +49,9 @@ namespace BizMall.Controllers
         [HttpGet]
         public IActionResult EditCategory(int id)
         {
-            CreateEditCategoryViewModel cecvm = null;
-
-            if (id != 0)
-            {
-                Category category = _repositoryCategory.GetCategoryById(id);
-
-                cecvm = ConstructCECVM(category);
-            }
-            else
-                cecvm = new CreateEditCategoryViewModel();
+            CreateEditCategoryViewModel cecvm = (id != 0) ? 
+                ConstructCECVM(_repositoryCategory.GetCategoryById(id)) : 
+                new CreateEditCategoryViewModel(); 
 
             ViewData["Title"] = _settings.ApplicationTitle + "Администрирование: Добавление/Редактирование категории";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
@@ -68,9 +61,9 @@ namespace BizMall.Controllers
             return View(cecvm);
         }
         [HttpPost]
-        public IActionResult EditCategory(Category model)
+        public IActionResult EditCategory(CreateEditCategoryViewModel model)
         {
-            _repositoryCategory.SaveCategory(model);
+            SaveCategoryChanges(model);
 
             return RedirectToAction("Categories");
         }
@@ -109,15 +102,30 @@ namespace BizMall.Controllers
             return new CreateEditCategoryViewModel
             {
                 Id =item.Id,
-                ParentCategoryId = item.CategoryId,
-                ParentCategoryTitle = item.ParentCategory.Title,
-                CategoryType = item.CategoryType,
                 Title = item.Title,
                 EnTitle = item.EnTitle,
+                CategoryType = item.CategoryType,
+                ParentCategoryId = item.CategoryId,
+                ParentCategoryTitle = item.ParentCategory.Title,                
                 metaDescription = item.metaDescription,
                 metaKeyWords = item.metaKeyWords
             };
         }
+
+        public void SaveCategoryChanges(CreateEditCategoryViewModel model)
+        {
+            _repositoryCategory.SaveCategory(new Category
+            {
+                Id = model.Id,
+                Title = model.Title,
+                EnTitle = model.EnTitle,
+                CategoryType = model.CategoryType,
+                CategoryId = model.ParentCategoryId,
+                metaDescription = model.metaDescription,
+                metaKeyWords = model.metaKeyWords
+            });
+        }
+        
 
         #endregion
     }
