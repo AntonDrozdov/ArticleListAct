@@ -82,48 +82,26 @@ namespace BizMall.Data.Repositories.Concrete
 
         public Category SaveCategory(Category model)
         {
-            //Редактирование СУЩЕСТВУЮЩЕЙ позиции (дата UpdateStatus не меняется - она меняется только из списка неактивных товаров)
+            model.CategoryType = (model.CategoryType == CategoryType.Default) ? categoryType : model.CategoryType;
+
             if (model.Id != 0)
             {
-                var dbEntry = _ctx.Categories.Where(c => c.Id == model.Id).SingleOrDefault();
+                var dbEntry = _ctx.Categories.SingleOrDefault(c => c.Id == model.Id);
                 if (dbEntry != null)
                 {
-                    if (model.ParentCategory.Id!=0)
-                    {
-                        dbEntry.CategoryType = categoryType;
-                        dbEntry.Title = model.Title;
-                        dbEntry.EnTitle = model.EnTitle;
-                        dbEntry.CategoryId = model.ParentCategory.Id;
-                        dbEntry.ParentCategory = null;
-                        dbEntry.metaDescription = model.metaDescription;
-                        dbEntry.metaKeyWords = model.metaKeyWords;
-                    }
-                    else
-                    {
-                        dbEntry.CategoryType = categoryType;
-                        dbEntry.Title = model.Title;
-                        dbEntry.EnTitle = model.EnTitle;
-                        dbEntry.ParentCategory = null;
-                        dbEntry.metaDescription = model.metaDescription;
-                        dbEntry.metaKeyWords = model.metaKeyWords;
-                    }
+                    dbEntry.Title = model.Title;
+                    dbEntry.EnTitle = model.EnTitle;
+                    dbEntry.CategoryType = model.CategoryType;
+                    dbEntry.CategoryId = model.CategoryId;
+                    dbEntry.metaDescription = model.metaDescription;
+                    dbEntry.metaKeyWords = model.metaKeyWords;
+
+                    _ctx.Entry(dbEntry).State = EntityState.Modified;
+                    _ctx.SaveChanges();
                 }
-                _ctx.Entry(dbEntry).State = EntityState.Modified;
-                _ctx.SaveChanges();
             }
-            //Добавление НОВОЙ позиции (в т.ч. дата UpdateStatus выставляется на текущий день - берется из параметра - good)
             else
             {
-                if (model.ParentCategory.Id <= 0)
-                {
-                    model.ParentCategory = null;
-                }
-                else
-                {
-                    model.CategoryId = model.ParentCategory.Id;
-                    model.ParentCategory = null;
-                }
-                model.CategoryType = categoryType;
                 _ctx.Categories.Add(model);
                 _ctx.SaveChanges();
             }
