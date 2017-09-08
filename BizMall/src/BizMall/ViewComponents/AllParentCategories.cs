@@ -27,13 +27,13 @@ namespace BizMall.ViewComponents
         //    return View(cegvm);
         //}
 
-        public async Task<IViewComponentResult> InvokeAsync(CreateEditCategoryViewModel cecvm)
+        public async Task<IViewComponentResult> InvokeAsync(CategoryType ct)
 
         {
-            ViewBag.Categories = _repositoryCategory.ParentCategories().ToList();
+            ViewBag.Categories = _repositoryCategory.ParentCategories(ct).ToList();
             //string[] ws = cegvm.Category.Split('/');
             //ViewBag.FW = ws[0];
-            return View(cecvm);
+            return View(ct);
         }
     }
 }

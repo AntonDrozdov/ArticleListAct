@@ -10,6 +10,6 @@ namespace BizMall.Models.CompanyModels
 {
     public enum CategoryType
     {
-        Default = 0, BuisnessFace = 1, BuisnessDev = 2, UgleglavProm = 3, Cook = 4, Joke = 5, MusicText = 6, Congratulation = 7, ForFun=8, Congratulation2 = 9
+        News = 1, Suggestions = 2, Articles = 3
     }
 }

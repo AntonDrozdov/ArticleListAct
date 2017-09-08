@@ -30,7 +30,7 @@ namespace BizMall.Models.CompanyModels
 
         public Category()
         {
-            CategoryType = CategoryType.Default;
+            CategoryType = CategoryType.News;
             Goods = new List<Article>();
         }
 

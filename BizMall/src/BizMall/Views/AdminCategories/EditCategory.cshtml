@@ -1,9 +1,44 @@
-﻿@model BizMall.ViewModels.AdminCompanyArticles.CreateEditCategoryViewModel
+﻿@using BizMall.Models.CompanyModels
+@model BizMall.ViewModels.AdminCompanyArticles.CreateEditCategoryViewModel
 
 @{
     ViewData["Title"] = "Новая категория";
     Layout = "_AdminLayout";
 }
+
+<script type="text/javascript">
+
+    function checkCategoryType(type) {
+        $("#CategoryType").val(type);
+        $(".ParentCategories").hide();
+        $("#" + type + "ParentCategories").show();
+        $("#CurrentCatName").val('');
+        $("#CurrentCatId").val('');
+    }
+
+    $(document).ready(function () {
+        $(".nestedcat").click(function () {
+            var parent = $(this).parent().parent().prev().html();
+            var spanbeg = parent.indexOf('<');
+            //вырезаем слово родительской категории и соединяем его с названием дочерней категории
+            var tmp = parent.substring(0, spanbeg).trim() + "/" + $(this).html();
+            tmp = tmp.trim();
+
+            $("#CurrentCatName").val(tmp);
+            $("#CurrentCatId").val($(this).attr('id'));
+            return;
+        });
+    });
+
+    $(document).ready(function () {
+        $(".cat").click(function () {
+            $("#CurrentCatName").val($(this).html());
+            $("#CurrentCatId").val($(this).attr('id'));
+            return;
+        });
+
+    });
+</script>
 
 <h3>@ViewData["Title"]</h3>
 <form asp-controller="AdminCategories" asp-action="EditCategory" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
@@ -13,6 +48,7 @@
     {
         <input asp-for="Id" type="hidden" class="form-control" id="Id" readonly="readonly" Value ="@Model.Id" />
     }
+    
     <!--НАИМЕНОВАНИЕ-->
     <div class="form-group">
         <label asp-for="Title" class="col-md-2 control-label">Название</label>
@@ -22,8 +58,84 @@
         </div>
     </div>
 
-    <!--КАТЕГОРИИ-->
-    @await Component.InvokeAsync("AllParentCategories", new { cat = Model })
+    <!--CEЛЕКТОР ВЫБОРА ТИПА КАТЕГОРИИ-->
+    <div class="form-group">
+        
+        <label asp-for="Title" class="col-md-2 control-label">Тип категории</label>
+        <div class="col-md-1">
+            <input asp-for="CategoryType" type="hidden" id ="CategoryType" name="CategoryType" Value ="@Model.CategoryType"> 
+        </div>
+        
+        <div class="col-md-8"> 
+            @if (Model.CategoryType == BizMall.Models.CompanyModels.CategoryType.News)
+            {
+                <div>
+                    <input type="radio" name="type" onclick="checkCategoryType('News');" value="Новости" checked="checked"> Новости <br /><br />
+                    <input type="radio" name="type" onclick="checkCategoryType('Suggestions');" value="Предложения"> Предложения <br /><br />                    
+                    <input type="radio" name="type" onclick="checkCategoryType('Articles');" value="Статьи" > Статьи
+                </div>
+            }
+            @if (Model.CategoryType == BizMall.Models.CompanyModels.CategoryType.Suggestions)
+            {
+                <div>
+                    <input type="radio" name="type" onclick="checkCategoryType('News');"  value="Новости"> Новости <br /><br />
+                    <input type="radio" name="type" onclick="checkCategoryType('Suggestions');" value="Предложения" checked="checked" > Предложения <br /><br />
+                    <input type="radio" name="type" onclick="checkCategoryType('Articles');" value="Статьи"> Статьи
+                </div>
+            }
+            @if (Model.CategoryType == BizMall.Models.CompanyModels.CategoryType.Articles)
+            {
+                <div>
+                    <input type="radio" name="type" onclick="checkCategoryType('News');" value="Новости"> Новости <br /><br />
+                    <input type="radio" name="type" onclick="checkCategoryType('Suggestions');" value="Предложения"> Предложения <br /><br />
+                    <input type="radio" name="type" onclick="checkCategoryType('Articles');" value="Статьи" checked="checked"> Статьи
+                </div>
+            }
+                
+        </div>
+    </div>
+
+    <!--СПИСКИ РОДИТЕЛЬСКИХ КАТЕГОРИЙ КОТОРЫЕ СКРЫВАЮТСЯ ВЗАВИСИМОСТИ ОТ СЕЛЕКТОРА-->
+    @if (Model.CategoryType == BizMall.Models.CompanyModels.CategoryType.News)
+    {
+        <div id="NewsParentCategories" class="ParentCategories">@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.News})</div>
+        <div id="SuggestionsParentCategories" class="ParentCategories" style="display:none">@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.Suggestions })</div>
+        <div id="ArticlesParentCategories" class="ParentCategories" style="display:none">@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.Articles })</div>
+    }
+    @if (Model.CategoryType == BizMall.Models.CompanyModels.CategoryType.Suggestions)
+    {
+        <div id="NewsParentCategories" class="ParentCategories" style="display:none">@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.News })</div>
+        <div id="SuggestionsParentCategories" class="ParentCategories" >@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.Suggestions})</div>
+        <div id="ArticlesParentCategories" class="ParentCategories" style="display:none">@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.Articles})</div>
+    }
+    @if (Model.CategoryType == BizMall.Models.CompanyModels.CategoryType.Articles)
+    {
+        <div id="NewsParentCategories" class="ParentCategories" style="display:none">@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.News })</div>
+        <div id="SuggestionsParentCategories" class="ParentCategories" style="display:none">@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.Suggestions })</div>
+        <div id="ArticlesParentCategories" class="ParentCategories" >@await Component.InvokeAsync("AllParentCategories", new { ct = CategoryType.Articles })</div>
+    }
+    
+    <div class="form-group">
+        <div class="col-md-2">
+        </div>
+
+        @if (Model?.ParentCategoryTitle != null)
+        {
+            <div class="col-md-3 ">
+                <label style="padding-top:20px;">Текущая родительская категория:</label><br />
+                <input class="form-control" id="CurrentCatName" readonly="readonly" value="@Model.ParentCategoryTitle" />
+                <input asp-for="@Model.ParentCategoryId" type="hidden" class="form-control" id="CurrentCatId" readonly="readonly" value="@Model.ParentCategoryId" />
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3 ">
+                <label style="padding-top:20px;">Текущая родительская категория:</label><br />
+                <input class="form-control" id="CurrentCatName" readonly="readonly" />
+                <input asp-for="@Model.ParentCategoryId" type="hidden" class="form-control" id="CurrentCatId" readonly="readonly" />
+            </div>
+        }
+    </div>
     
     <!--ЛАТ НАИМЕНОВАНИЕ-->
     <div class="form-group">

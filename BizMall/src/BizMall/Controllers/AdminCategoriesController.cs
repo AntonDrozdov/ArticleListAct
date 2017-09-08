@@ -51,7 +51,7 @@ namespace BizMall.Controllers
         {
             CreateEditCategoryViewModel cecvm = (id != 0) ? 
                 ConstructCECVM(_repositoryCategory.GetCategoryById(id)) : 
-                new CreateEditCategoryViewModel(); 
+                new CreateEditCategoryViewModel {CategoryType = CategoryType.News}; 
 
             ViewData["Title"] = _settings.ApplicationTitle + "Администрирование: Добавление/Редактирование категории";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;

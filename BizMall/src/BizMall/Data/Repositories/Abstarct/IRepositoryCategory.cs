@@ -11,7 +11,7 @@ namespace BizMall.Data.Repositories.Abstract
     {
         Category GetCategoryByName(string entitlecategory);
         Category GetCategoryById(int id);
-        IQueryable<Category> ParentCategories();
+        IQueryable<Category> ParentCategories(CategoryType curCategoryType);
         IQueryable<Category> Categories();
         List<string> SitemapCategories();
         Category SaveCategory(Category model);

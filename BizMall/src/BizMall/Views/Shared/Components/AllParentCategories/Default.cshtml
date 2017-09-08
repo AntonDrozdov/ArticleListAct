@@ -1,5 +1,4 @@
-﻿@model BizMall.ViewModels.AdminCompanyArticles.CreateEditCategoryViewModel
-
+﻿
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -67,24 +66,6 @@
             </div>
     </div>
        
-    @if (Model?.ParentCategoryTitle!= null)
-    {
-        <div class="col-md-3">
-            <label style="padding-top:20px;">Текущая родительская категория:</label><br />
-            <input class="form-control" id="CurrentCatName" readonly="readonly" value="@Model.ParentCategoryTitle"/>
-            <input asp-for="@Model.ParentCategoryId" type="hidden" class="form-control" id="CurrentCatId" readonly="readonly" value="@Model.ParentCategoryId"/>
-            @*<span asp-validation-for="Category" class="text-danger"></span>*@
-        </div>
-    }
-    else
-    {
-        <div class="col-md-3">
-            <label style="padding-top:20px;">Родительская категория:</label><br />
-            <input class="form-control" id="CurrentCatName" readonly="readonly" />
-            <input asp-for="@Model.ParentCategoryId" type="hidden" class="form-control" id="CurrentCatId" readonly="readonly" />
-            @*<span asp-validation-for="Category" class="text-danger"></span>*@
-        </div>
-    }
 
 </div>
 

@@ -32,58 +32,57 @@ namespace BizMall.Data.Repositories.Concrete
             return _ctx.Categories.Where(c => c.CategoryType == categoryType); 
         }
 
-        public IQueryable<Category> ParentCategories()
+        public IQueryable<Category> ParentCategories(CategoryType curCategoryType)
         {
-            return _ctx.Categories.Where(c => c.CategoryType == categoryType&&c.ParentCategory==null);
+            var cct = curCategoryType == 0 ? categoryType : curCategoryType;
+            return _ctx.Categories.Where(c => c.CategoryType == cct && c.ParentCategory==null);
         }
 
         public List<string> SitemapCategories()
         {
             var Categories = _ctx.Categories.Where(c => c.CategoryType == categoryType);
-            List<string> SitemapCategories = new List<string>();
+            List<string> sitemapCategories = new List<string>();
 
             foreach(var topcat in Categories)
             {
                 //определяем родительская она или нет
                 if (topcat.CategoryId == null)
                 {
-                    bool IsParent = false;
+                    bool isParent = false;
 
                     foreach(var cat in Categories)
                     {
                         if(cat.CategoryId == topcat.Id)
                         {
-                            IsParent = true;
+                            isParent = true;
                             break;
                         }
                     }
 
                     //если родительская то одно если нет то другое
-                    if (IsParent == true)
+                    if (isParent)
                     {
                         foreach(var chcat in Categories)
                         {
                             if(chcat.CategoryId == topcat.Id)
                             {
-                                SitemapCategories.Add(chcat.EnTitle);
+                                sitemapCategories.Add(chcat.EnTitle);
                             }
                         }
 
                         }
-                    if (IsParent == false)
+                    if (isParent == false)
                     {
-                        SitemapCategories.Add(@topcat.EnTitle);                              
+                        sitemapCategories.Add(@topcat.EnTitle);                              
                     }
                 }
             }
 
-            return SitemapCategories;
+            return sitemapCategories;
         }
 
         public Category SaveCategory(Category model)
         {
-            model.CategoryType = (model.CategoryType == CategoryType.Default) ? categoryType : model.CategoryType;
-
             if (model.Id != 0)
             {
                 var dbEntry = _ctx.Categories.SingleOrDefault(c => c.Id == model.Id);
@@ -111,7 +110,7 @@ namespace BizMall.Data.Repositories.Concrete
 
         public Category GetCategoryById(int id)
         {
-            return _ctx.Categories.Where(c => c.Id == id).FirstOrDefault();
+            return _ctx.Categories.FirstOrDefault(c => c.Id == id);
         }
 
         public void DeleteCategory(int itemId)
