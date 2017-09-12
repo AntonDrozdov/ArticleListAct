@@ -10,6 +10,7 @@ namespace BizMall.Data.Repositories.Abstract
     public interface IRepositoryCategory
     {
         Category GetCategoryByName(string entitlecategory);
+        Category GetCategoryByName(string entitlecategory, CategoryType categoryType);
         Category GetCategoryById(int id);
         IQueryable<Category> ParentCategories(CategoryType curCategoryType);
         IQueryable<Category> Categories();

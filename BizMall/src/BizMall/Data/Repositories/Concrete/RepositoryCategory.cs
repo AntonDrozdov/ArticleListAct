@@ -27,6 +27,13 @@ namespace BizMall.Data.Repositories.Concrete
                         .FirstOrDefault();
         }
 
+        public Category GetCategoryByName(string entitlecategory, CategoryType categoryType)
+        {
+            return _ctx.Categories
+                .Where(c => c.EnTitle == entitlecategory && c.CategoryType == categoryType)
+                .FirstOrDefault();
+        }
+
         public IQueryable<Category> Categories()
         {
             return _ctx.Categories.Where(c => c.CategoryType == categoryType); 

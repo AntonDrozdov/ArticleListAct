@@ -76,6 +76,33 @@ namespace BizMall.Data.Repositories.Concrete
             return Items.AsQueryable();
         }
 
+        public IQueryable<Article> CategoryArticlesFullInformation(CategoryType ct, string Category, int page, out PagingInfo pagingInfo)
+        {
+            int totaItems = _ctx.Articles
+                .Where(g => (Category == null && g.CategoryType == ct) || (g.Category.EnTitle == Category && g.CategoryType == ct))
+                .Count();
+
+            pagingInfo = new PagingInfo
+            {
+                CategoryEnTitleForLink = Category,
+                CurrentPage = page,
+                ItemsPerPage = pageSize,
+                TotalItems = totaItems
+            };
+            List<Article> Items = new List<Article>();
+            Items = _ctx.Articles
+                .Include(g => g.Category)
+                .Include(g => g.Category.ParentCategory)
+                .Where(g => (Category == null && g.CategoryType == ct) || (g.Category.EnTitle == Category && g.CategoryType == ct))
+                .Include(g => g.Images).ThenInclude(g => g.Image)
+                .OrderByDescending(g => g.UpdateTime)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return Items.AsQueryable();
+        }
+
         public IQueryable<Article> CompanyArticlesFullInformation(int ShopId, string Category, int page, out PagingInfo pagingInfo)
         {
             //получаем список ид товаров магазина из объектов RelShopGood поля Goods, что есть связующие объекты между таблицей магазинов и таблицей товаров
