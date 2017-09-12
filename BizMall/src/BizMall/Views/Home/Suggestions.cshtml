@@ -1,0 +1,93 @@
+﻿@model ArticleList.ViewModels.AdminCompanyArticles.ArticlesViewModel
+@{
+    Layout = "_Layout";
+}
+
+<!--САМИ СТАТЬИ-->
+@if(ViewBag.Category != null)
+{
+    <h1 style="color:#b2b1b1">Категория: @ViewBag.Category</h1>
+}
+@{
+    int anum = 0;
+}
+<!--ГЛАВНАЯ СТАТЬЯ НА СТРАНИЦЕ + ОБЛАКО ТЕГОВ-->
+<div class="col-xs-12 col-sm-10">
+    <div class="row">
+        @if (ViewBag.ArticlesVM.Count > 0)
+        {
+            @await Component.InvokeAsync("MainArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
+        }
+    </div>
+
+    @{
+        int kolvoarticleinrow = 2;
+        anum = 1;//номер текущей выводимой статьи
+        int acount = ViewBag.ArticlesVM.Count-1;
+        int numOfRows = 0;
+        if (acount != 0 && acount % kolvoarticleinrow == 0)
+        {
+            numOfRows = acount / kolvoarticleinrow;
+        }
+        else
+        {
+            numOfRows = acount + 1;
+        }
+    }
+
+    <!--СТАТЬИ В РЯДОВЫХ ТАЙЛАЙХ-->
+    @for (int i = 0; i < numOfRows; i++)
+    {
+        <div class="row">
+            @{
+                int iacount = ViewBag.ArticlesVM.Count-1;
+                int ainrow = ((iacount - anum + 1) >= kolvoarticleinrow) ? kolvoarticleinrow : (iacount - anum + 1); //количество элементов в ряду
+            }
+            @for (int j = 0; j < ainrow; j++, anum++)
+            {
+                <div class="col-xs-12 col-sm-6">
+                    @await Component.InvokeAsync("ArticleTile", new { avm = ViewBag.ArticlesVM[anum] })
+                </div>
+            }
+        </div>
+    }
+
+    <!--ПАГИНАЦИЯ-->
+    @if (ViewBag.PagingInfo.CategoryEnTitleForLink != null)
+    {
+        <div class="col-xs-12 ">
+            @await Component.InvokeAsync("CategoryPagination", new { pi = ViewBag.PagingInfo })
+        </div>
+    }
+    else
+    {
+        <div class="col-xs-12 ">
+            @await Component.InvokeAsync("MainPagination", new { pi = ViewBag.PagingInfo })
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-2">
+    @await Component.InvokeAsync("TagCloud", null)
+    </br>
+    </br>
+    </br>
+    </br>
+    </br>
+    <hr />
+    <div style="text-align:center;">
+        <span style="font-size:15px; font-weight:bold; color:#808080;">Наши партнеры:</span>
+        <br />
+        <br />
+        <a class="btn btn-info" target="_blank" href="http://www.buisnessdev.ru">BuisnessDev.ru</a>
+        <hr />
+    </div>
+</div>
+
+
+
+
+
+
+
+
