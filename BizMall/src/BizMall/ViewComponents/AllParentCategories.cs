@@ -19,20 +19,10 @@ namespace BizMall.ViewComponents
             _repositoryCategory = repositoryCategory;
         }
 
-        //public IViewComponentResult Invoke(CreateEditGoodViewModel cegvm)
-        //{
-        //    ViewBag.Categories = _repositoryCategory.Categories().ToList();
-        //    //string[] ws = cegvm.Category.Split('/');
-        //    //ViewBag.FW = ws[0];
-        //    return View(cegvm);
-        //}
-
         public async Task<IViewComponentResult> InvokeAsync(CategoryType ct)
 
         {
             ViewBag.Categories = _repositoryCategory.ParentCategories(ct).ToList();
-            //string[] ws = cegvm.Category.Split('/');
-            //ViewBag.FW = ws[0];
             return View(ct);
         }
     }

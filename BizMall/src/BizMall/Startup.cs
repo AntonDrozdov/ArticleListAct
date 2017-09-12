@@ -125,44 +125,59 @@ namespace BizMall
                     new
                     {
                         controller = "Home",
-                        action = "IndexCat",
+                        action = "Main",
                         category = (string)null,
                         page = 1
                     }
                 );
 
-                routes.MapRoute(
-                    null,
-                    "Page{Page}",
-                    defaults: new { controller = "Home", action = "IndexCat", Category = (string)null },
-                    constraints: new { Page = @"\d+" }
-                );
+                //routes.MapRoute(
+                //    null,
+                //    "Page{Page}",
+                //    defaults: new { controller = "Home", action = "Articles", Category = (string)null },
+                //    constraints: new { Page = @"\d+" }
+                //);
 
                 routes.MapRoute(
                     null,
                     "ArticleDetails/{articleId}",
                     new { controller = "Home", action = "ArticleDetails" }
                 );
-                
+
+                //routes.MapRoute(null,
+                //    "Shops/{Shop}",
+                //    new { controller = "Home", action = "IndexShop" }
+                //);
+
                 routes.MapRoute(null,
-                    "Shops/{Shop}",
-                    new { controller = "Home", action = "IndexShop" }
+                    "Suggestions",
+                    new { controller = "Home", action = "Suggestions" }
                 );
 
                 routes.MapRoute(null,
-                    "Categories/{Category}",
-                    new { controller = "Home", action = "IndexCat" }
+                    "Articles",
+                    new { controller = "Home", action = "Articles" }
                 );
 
                 routes.MapRoute(null,
-                    "Categories/{Category}/Page{Page}",
-                    new { controller = "Home", action = "IndexCat"},
-                    constraints: new { page = @"\d+" }
+                    "Contacts",
+                    new { controller = "Home", action = "Contacts" }
                 );
+
+                routes.MapRoute(null,
+                    "Categories",
+                    new { controller = "Home", action = "Categories" }
+                );
+
+                //routes.MapRoute(null,
+                //    "Categories/{Category}/Page{Page}",
+                //    new { controller = "Home", action = "Categories" },
+                //    constraints: new { page = @"\d+" }
+                //);
 
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=IndexCat}/{id?}");
+                    template: "{controller}/{action}/{id?}");
 
             });
         }

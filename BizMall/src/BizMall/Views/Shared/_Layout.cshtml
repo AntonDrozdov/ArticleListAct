@@ -5,18 +5,19 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="yandex-verification" content="5ba78b1a8e408c0f" />
+        
         @if (ViewData["metaDescription"] != null)
         {
-            <meta name="Description" content="@Html.Raw(@ViewData["metaDescription"])" />
+            <meta name="Description" content="@ViewData["metaDescription"]" />
         }
 
         @if (ViewData["metaKeyWords"] != null)
         {
-            <meta name="Keywords" content="@Html.Raw(@ViewData["metaKeyWords"])" />
+            <meta name="Keywords" content="@ViewData["metaKeyWords"]" />
         }
 
         <title>
-            @Html.Raw(@ViewData["Title"])
+            @ViewData["Title"]
         </title>
 
         @*<environment names="Development">            
@@ -48,11 +49,17 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a asp-controller="Home" asp-action="IndexCat" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
+                    <a asp-controller="Home" asp-action="Main" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
                 </div>
                 <div id="navbarcollapseMain" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a asp-controller="Home" asp-action="About" style="padding-top: 15px;">О проекте</a></li>
+                        @*<li><a asp-controller="Home" asp-action="Suggestions" style="padding-top: 15px;">Предложения</a></li>
+                        <li><a asp-controller="Home" asp-action="Articles" style="padding-top: 15px;">Статьи</a></li>
+                        <li><a asp-controller="Home" asp-action="Contacts" style="padding-top: 15px;">Контакты</a></li>*@
+
+                        <li><a href="/Suggestions" style="padding-top: 15px;">Предложения</a></li>
+                        <li><a href="/Articles" style="padding-top: 15px;">Статьи</a></li>
+                        <li><a href="/Contacts" style="padding-top: 15px;">Контакты</a></li>
                     </ul>
                     @*@await Html.PartialAsync("_LoginPartial")*@
                 </div>
@@ -62,7 +69,7 @@
             <div class="row row-offcanvas row-offcanvas-right">
 <!--МЕНЮ КАТЕГОРИЙ-->
                 <div class="col-md-3">
-                    @await Component.InvokeAsync("AllCategoriesForMain", new { cegvm = Model })
+                    @await Component.InvokeAsync("AllTypeCategoriesForMain", new { ct = ViewData["CategoryType"] })
                 </div>
 
                 <div class="col-md-9">
