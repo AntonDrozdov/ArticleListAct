@@ -25,8 +25,8 @@ namespace BizMall
         public string FooterTitle { get; set; }
         public string ApplicationTitle { get; set; }
         public string CountOfSimilarArticlesOnArticlePage { get; set; }
-        public string metaDescription { get; set; }
-        public string metaKeyWords { get; set; }
+        public string MetaDescription { get; set; }
+        public string MetaKeyWords { get; set; }
 
         //размеры страниц
         public string PageSize { get; set; }
@@ -131,23 +131,11 @@ namespace BizMall
                     }
                 );
 
-                //routes.MapRoute(
-                //    null,
-                //    "Page{Page}",
-                //    defaults: new { controller = "Home", action = "Articles", Category = (string)null },
-                //    constraints: new { Page = @"\d+" }
-                //);
-
                 routes.MapRoute(
                     null,
                     "ArticleDetails/{articleId}",
                     new { controller = "Home", action = "ArticleDetails" }
                 );
-
-                //routes.MapRoute(null,
-                //    "Shops/{Shop}",
-                //    new { controller = "Home", action = "IndexShop" }
-                //);
 
                 routes.MapRoute(null,
                     "Suggestions",
@@ -168,12 +156,6 @@ namespace BizMall
                     "Categories",
                     new { controller = "Home", action = "Categories" }
                 );
-
-                //routes.MapRoute(null,
-                //    "Categories/{Category}/Page{Page}",
-                //    new { controller = "Home", action = "Categories" },
-                //    constraints: new { page = @"\d+" }
-                //);
 
                 routes.MapRoute(
                     name: "default",

@@ -1,0 +1,73 @@
+﻿@model BizMall.Models.CompanyModels.CategoryType
+
+    <nav id="navbar-sub-header" role="navigation" class="navbar navbar-default" style="margin-top:5px;">
+        <div class="navbar-header">
+            <button type="button" data-target="#navbarCollapseCat" data-toggle="collapse" class="navbar-toggle">
+                <span>Категории</span>
+            </button>
+        </div>
+        <div id="navbarCollapseCat" class="navbar-collapse collapse" style="padding-top: 10px;">
+            <ul class="nav navbar-nav">
+                <li style="text-align: center;">
+                    <a asp-controller="Home" asp-action="Categories" asp-route-categoryType=@ViewBag.CategoryType style="width:240px;text-align: center;margin: auto;">ВСЕ</a>
+                </li>
+                <li style="text-align: center;">
+                    <a asp-controller="Home" asp-action="Categories" asp-route-categoryType=@ViewBag.CategoryType asp-route-Category="obschaya_informocia" style="width:240px;text-align: center;margin: auto;">ОБЩАЯ ИНФОРМАЦИЯ</a>
+                </li>
+                @foreach (var topcat in ViewBag.Categories)
+                {
+                    if (topcat.EnTitle!= "obschaya_informocia")
+                    {
+                        if (topcat.CategoryId == null)
+                        {
+                            bool IsParent = false;
+
+                            foreach (var cat in ViewBag.Categories)
+                            {
+                                if (cat.CategoryId == topcat.Id)
+                                {
+                                    IsParent = true;
+                                    break;
+                                }
+                            }
+                            if (IsParent == true)
+                            {
+                                <li class="dropdown" style="text-align: center;">
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="@topcat.EnTitle" style="border-radius: 4px;padding-top: 5px;width: 240px; margin: auto;">@topcat.Title<b class="caret"></b></a>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop" style="border-radius: 4px;">
+                                        @foreach (var chcat in ViewBag.Categories)
+                                        {
+                                            if (chcat.CategoryId == topcat.Id)
+                                            {
+                                                <li>
+                                                    <a asp-controller="Home" asp-action="Categories" asp-route-categoryType=@ViewBag.CategoryType asp-route-Category="@chcat.EnTitle" style="text-align: center;margin: auto;"><b>@chcat.Title</b></a>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            if (IsParent == false)
+                            {
+                                <li>
+                                    <a asp-controller="Home" asp-action="Categories" asp-route-categoryType=@ViewBag.CategoryType asp-route-Category="@topcat.EnTitle" style="width:240px;text-align: center;margin: auto;">@topcat.Title</a>
+                                </li>
+                            }
+                        }
+                    }
+
+                }
+
+            </ul>
+        </div>
+    </nav>
+
+
+
+
+
+
+
+
+
+

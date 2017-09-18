@@ -73,7 +73,6 @@ namespace BizMall.Controllers
 
             return View();
         }
-
         public IActionResult Suggestions(CategoryType categoryType, string Category, int Page = 1)
         {
             if (categoryType == 0)//если переходим сюда из главной страницы
@@ -97,7 +96,6 @@ namespace BizMall.Controllers
                 ViewBag.CategoryId = category.Id;
                 ViewData["metaDescription"] = "";
                 ViewData["metaKeyWords"] = "";
-
             }
             else
             {
@@ -161,7 +159,6 @@ namespace BizMall.Controllers
 
             return View();
         }
-
         public IActionResult Categories(CategoryType categoryType, string Category, int Page = 1)
         {
             if (categoryType == 0) //если переходим сюда из главной страницы
@@ -206,14 +203,46 @@ namespace BizMall.Controllers
 
             return View();
         }
-
         public IActionResult Contacts()
         {
-            ViewData["Title"] = _settings.ApplicationTitle + "Контакты";
+            ViewData["Title"] = _settings.ApplicationTitle + " - Контакты";
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewData["metaDescription"] = "Контакты компании";
             ViewData["metaKeyWords"] = "контакты позвонить связь связаться";
+
+            return View();
+        }
+        public IActionResult ArticleDetails(string articleId)
+        {
+            int Id = Convert.ToInt32(articleId.Substring(0, articleId.IndexOf('_')));
+            var item = _repositoryArticle.GetArticle(Id);
+
+            var avm = ConstructAVM(item, false);
+
+            ViewData["Title"] = _settings.ApplicationTitle + avm.Title;
+            ViewData["HeaderTitle"] = _settings.HeaderTitle;
+            ViewData["FooterTitle"] = _settings.FooterTitle;
+            ViewData["metaDescription"] = item.metaDescription;
+            ViewData["metaKeyWords"] = item.metaKeyWords;
+
+            ViewBag.ArticleVM = avm;
+
+            //похожие статьи (для того чтобы наполнить страницу нужным количеством символов)
+            var SimilarArticlesVM = new List<ArticleViewModel>();
+            if (Convert.ToInt32(_settings.CountOfSimilarArticlesOnArticlePage) > 0)
+            {
+                var Items = _repositoryArticle.SimilarArticlesFullInformation(item.Category.EnTitle, item.Id).ToList();
+
+                foreach (var i in Items)
+                {
+                    if (i.Id != avm.Id)
+                        SimilarArticlesVM.Add(ConstructAVM(i, true));
+                }
+            }
+
+            ViewBag.Kws = _repositoryKW.KwsForTagCloud(Convert.ToInt32(item.CategoryId));
+            ViewBag.SimilarArticlesVM = SimilarArticlesVM;
 
             return View();
         }
@@ -249,7 +278,6 @@ namespace BizMall.Controllers
 
             return View();
         }
-
         public IActionResult SearchHashTag(string hashtag, int Page = 1)
         {
             PagingInfo pagingInfo;
@@ -274,7 +302,6 @@ namespace BizMall.Controllers
 
             return View();
         }
-
         public IActionResult SearchKwArticles(string kw, int Page = 1)
         {
             PagingInfo pagingInfo;
@@ -303,46 +330,11 @@ namespace BizMall.Controllers
         
         #endregion
 
-        public IActionResult ArticleDetails(string articleId)
-        {
-            int Id = Convert.ToInt32(articleId.Substring(0, articleId.IndexOf('_')));
-            var item = _repositoryArticle.GetArticle(Id);            
-
-            var avm = ConstructAVM(item, false);
-
-            ViewData["Title"] = _settings.ApplicationTitle + avm.Title;
-            ViewData["HeaderTitle"] = _settings.HeaderTitle;
-            ViewData["FooterTitle"] = _settings.FooterTitle;
-            ViewData["metaDescription"] = item.metaDescription;
-            ViewData["metaKeyWords"] = item.metaKeyWords;
-
-            ViewBag.ArticleVM = avm;
-
-            //похожие статьи (для того чтобы наполнить страницу нужным количеством символов)
-            var SimilarArticlesVM = new List<ArticleViewModel>();
-            if (Convert.ToInt32(_settings.CountOfSimilarArticlesOnArticlePage) > 0)
-            {
-                var Items = _repositoryArticle.SimilarArticlesFullInformation(item.Category.EnTitle, item.Id).ToList();
-
-                foreach (var i in Items)
-                {
-                    if (i.Id != avm.Id)
-                        SimilarArticlesVM.Add(ConstructAVM(i, true));
-                }
-            }
-
-            ViewBag.Kws = _repositoryKW.KwsForTagCloud(Convert.ToInt32(item.CategoryId));
-            ViewBag.SimilarArticlesVM = SimilarArticlesVM;           
-
-            return View();
-        }
-
 
         public IActionResult Error()
         {
             return View();
         }
-
         public IActionResult Sitemap()
         {
             List<string> SitemapCategories = _repositoryCategory.SitemapCategories();

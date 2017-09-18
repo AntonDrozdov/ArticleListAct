@@ -34,6 +34,11 @@ namespace BizMall.Data.Repositories.Concrete
                 .FirstOrDefault();
         }
 
+        public IQueryable<Category> Categories(CategoryType ct)
+        {
+            return _ctx.Categories.Where(c => c.CategoryType == ct);
+        }
+
         public IQueryable<Category> Categories()
         {
             return _ctx.Categories.Where(c => c.CategoryType == categoryType); 
