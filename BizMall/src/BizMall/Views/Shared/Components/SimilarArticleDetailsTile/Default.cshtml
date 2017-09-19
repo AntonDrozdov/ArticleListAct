@@ -2,7 +2,9 @@
 
 <div class="ArticleTile">
     <!--НАЗВАНИЕ-->
-    @{string link = @Model.Id + "_" + @Model.EnTitle;}
+    @{
+        string link = Model.Id + "_" + Model.EnTitle;
+    }
     <p>
         <h4>
             <a asp-controller="Home" asp-action="ArticleDetails" asp-route-articleId="@link">@Model.Title</a>
@@ -14,11 +16,11 @@
         <span id="TileCategory">
             @if (@Model.Category.ParentCategory != null)
             {
-                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title</a>
+                <a asp-controller="Home" asp-action="Suggestions" asp-route-Category="@Model.Category.EnTitle">@Model.Category.ParentCategory.Title<span>/</span>@Model.Category.Title</a>
             }
             else
             {
-                <a asp-controller="Home" asp-action="IndexCat" asp-route-Category="@Model.Category.EnTitle">@Model.Category.Title</a>
+                <a asp-controller="Home" asp-action="Suggestions" asp-route-Category="@Model.Category.EnTitle">@Model.Category.Title</a>
             }
         </span>
         <span id="TileDate">

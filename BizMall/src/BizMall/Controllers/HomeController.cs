@@ -91,7 +91,7 @@ namespace BizMall.Controllers
             {
                 var category = _repositoryCategory.GetCategoryByName(Category);
 
-                ViewData["Title"] = _settings.ApplicationTitle + "Статьи" + category.Title;
+                ViewData["Title"] = _settings.ApplicationTitle + " - Предложения" + category.Title;
                 ViewBag.Category = category.Title;
                 ViewBag.CategoryId = category.Id;
                 ViewData["metaDescription"] = "";
@@ -99,7 +99,7 @@ namespace BizMall.Controllers
             }
             else
             {
-                ViewData["Title"] = _settings.ApplicationTitle + "Статьи";
+                ViewData["Title"] = _settings.ApplicationTitle + " - Предложения";
                 ViewBag.CategoryId = 0;
                 ViewData["metaDescription"] = "";
                 ViewData["metaKeyWords"] = "";
@@ -115,7 +115,6 @@ namespace BizMall.Controllers
 
             return View();
         }
-
         public IActionResult Articles(CategoryType categoryType, string Category, int Page = 1)
         {
             if (categoryType == 0) //если переходим сюда из главной страницы
@@ -134,7 +133,7 @@ namespace BizMall.Controllers
             {
                 var category = _repositoryCategory.GetCategoryByName(Category);
 
-                ViewData["Title"] = _settings.ApplicationTitle + "Статьи" + category.Title;
+                ViewData["Title"] = _settings.ApplicationTitle + " - Статьи" + category.Title;
                 ViewBag.Category = category.Title;
                 ViewBag.CategoryId = category.Id;
                 ViewData["metaDescription"] = "";
@@ -143,7 +142,7 @@ namespace BizMall.Controllers
             }
             else
             {
-                ViewData["Title"] = _settings.ApplicationTitle + "Статьи";
+                ViewData["Title"] = _settings.ApplicationTitle + " - Статьи";
                 ViewBag.CategoryId = 0;
                 ViewData["metaDescription"] = "";
                 ViewData["metaKeyWords"] = "";
@@ -159,6 +158,7 @@ namespace BizMall.Controllers
 
             return View();
         }
+
         public IActionResult Categories(CategoryType categoryType, string Category, int Page = 1)
         {
             if (categoryType == 0) //если переходим сюда из главной страницы
@@ -220,7 +220,8 @@ namespace BizMall.Controllers
 
             var avm = ConstructAVM(item, false);
 
-            ViewData["Title"] = _settings.ApplicationTitle + avm.Title;
+            ViewData["Title"] = _settings.ApplicationTitle + " - " + avm.Title;
+            ViewData["CategoryType"] = item.CategoryType;
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewData["metaDescription"] = item.metaDescription;
@@ -251,10 +252,12 @@ namespace BizMall.Controllers
 
         #region SearchViews
 
-        public IActionResult Search(string searchstring, int Page = 1)
+        public IActionResult Search(string searchstring, string categoryType, int Page = 1)
         {
             if (searchstring == null)
-                return RedirectToAction("IndexCat");
+            {
+                return RedirectToAction("Main");
+            }
 
             PagingInfo pagingInfo;
             var Items = _repositoryArticle.SearchStringArticlesFullInformation(searchstring, Page, out pagingInfo).ToList();
@@ -267,6 +270,7 @@ namespace BizMall.Controllers
             }
 
             ViewData["Title"] = _settings.ApplicationTitle + "Поиск: " + searchstring;
+            ViewData["CategoryType"] = categoryType;
             ViewData["HeaderTitle"] = _settings.HeaderTitle;
             ViewData["FooterTitle"] = _settings.FooterTitle;
             ViewData["metaDescription"] = "Результаты поиска по: " + searchstring;
@@ -289,6 +293,7 @@ namespace BizMall.Controllers
                 var avm = ConstructAVM(item, true);
                 ArticlesVM.Add(avm);
             }
+
 
             ViewData["Title"] = _settings.ApplicationTitle + "Хэштег: " + hashtag;
             ViewData["HeaderTitle"] = _settings.HeaderTitle;

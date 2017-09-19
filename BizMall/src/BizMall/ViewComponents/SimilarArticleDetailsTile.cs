@@ -18,8 +18,6 @@ namespace BizMall.ViewComponents
         
         public async Task<IViewComponentResult> InvokeAsync(ArticleViewModel avm)
         {
-            //string[] ws = cegvm.Category.Split('/');
-            //ViewBag.FW = ws[0];
             return View(avm);
         }
     }

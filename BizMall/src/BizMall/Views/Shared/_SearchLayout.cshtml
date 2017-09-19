@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="yandex-verification" content="5ba78b1a8e408c0f" />
-
+        
         @if (ViewData["metaDescription"] != null)
         {
             <meta name="Description" content="@ViewData["metaDescription"]" />
@@ -15,10 +15,18 @@
         {
             <meta name="Keywords" content="@ViewData["metaKeyWords"]" />
         }
+
         <title>
             @ViewData["Title"]
         </title>
 
+        @*<environment names="Development">            
+            <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+            <link href="~/lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
+            <link href="~/lib/fancybox/jquery.fancybox.css" rel="stylesheet" />
+            <link rel="stylesheet" href="~/css/site.css" />
+            <link href="~/lib/fancybox/jquery.fancybox.css" rel="stylesheet" />
+        </environment>*@
         <environment names="Staging,Production">
             <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
                   asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
@@ -32,7 +40,6 @@
 
     </head>
     <body>
-<!--МЕНЮ ВЕРХНЕЕ-->
         <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -42,13 +49,13 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a asp-controller="Home" asp-action="Main" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
+                    <a asp-controller="Home" asp-action="Main" asp-route-categoryType= "@ViewData["CategoryType"]" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
                 </div>
                 <div id="navbarcollapseMain" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a asp-controller="Home" asp-action="Suggestions" style="padding-top: 15px;">Предложения</a></li>
-                        <li><a asp-controller="Home" asp-action="Articles" style="padding-top: 15px;">Статьи</a></li>
-                        <li><a asp-controller="Home" asp-action="Contacts" style="padding-top: 15px;">Контакты</a></li>
+                        <li><a href="/Suggestions" style="padding-top: 15px;">Предложения</a></li>
+                        <li><a href="/Articles" style="padding-top: 15px;">Статьи</a></li>
+                        <li><a href="/Contacts" style="padding-top: 15px;">Контакты</a></li>
                     </ul>
                     @*@await Html.PartialAsync("_LoginPartial")*@
                 </div>
@@ -57,7 +64,7 @@
         <div class="container body-content">
             <div class="row row-offcanvas row-offcanvas-right">
                 <div class="col-md-12">
-                    <!--СТРОКА ПОИСКА-->
+<!--СТРОКА ПОИСКА-->
                     <div class="row">
                         <div class="col-xs-12 ">
                             <form asp-controller="Home" asp-action="Search" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
@@ -70,18 +77,21 @@
                             </form>
                         </div>
                     </div>
+<!--ЛАЙКИ-->
 
-                    <!--ТУТ ЛЕНДИНГ-->
+                    <div data-background-alpha="0.0" data-buttons-color="#FFFFFF" data-counter-background-color="#ffffff" data-share-counter-size="12" data-top-button="false" data-share-counter-type="disable" data-share-style="1" data-mode="share" data-like-text-enable="false" data-mobile-view="true" data-icon-color="#ffffff" data-orientation="fixed-right" data-text-color="#000000" data-share-shape="round-rectangle" data-sn-ids="fb.vk.tw.ok." data-share-size="30" data-background-color="#ffffff" data-preview-mobile="false" data-mobile-sn-ids="fb.vk.tw.wh.ok.vb." data-pid="1643212" data-counter-background-alpha="1.0" data-following-enable="false" data-exclude-show-more="false" data-selection-enable="true" class="uptolike-buttons"></div>
+
+<!--ВЫВОД СТАТЕЙ-->
                     @RenderBody()
-
                 </div>
             </div>
             
             <hr />
             <footer>
-                <p>&copy; 2016 - @DateTime.Now.Year @ViewData["FooterTitle"]</p>
+                <p>&copy;2016 - @DateTime.Now.Year @ViewData["FooterTitle"]</p>
             </footer>
         </div>
+
         <environment names="Staging,Production">
             <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
                     asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
@@ -94,11 +104,44 @@
             <script src="~/js/site.min.js" asp-append-version="true"></script>
             <script src="~/lib/fancybox/jquery.fancybox.pack.js"></script>
             <script type="text/javascript">
-              $(document).ready(function() {
-                $("a.fancyimage").fancybox();
-              });
+                $(document).ready(function() {
+                    $("a.fancyimage").fancybox();
+                });
 
-              function SearchArticle() {
+                function randomInteger(min, max) {
+                    var rand = min - 0.5 + Math.random() * (max - min + 1)
+                    rand = Math.round(rand);
+                    return rand;
+                }
+            
+                @*$(document).ready(function () {
+                        var formData = new FormData();
+                        formData.append('CategoryId', '@ViewBag.CategoryId');
+                        $.ajax({
+                        url: "/Home/KwsForTagCloud/",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (categoryKws) {
+                        var strKws = "";
+                        categoryKws.forEach(function (item, i, categoryKws) {
+
+                        var kw = item.kw;
+                        var linkkw = kw.replace(/\s+/g, '');
+                        var fontsize = randomInteger(14, 20);
+
+                        strKws += "<a href='/Home/SearchKwArticles?kw=" + linkkw + "' style='font-size:" + fontsize + "px;'>" + kw + "</a> ";
+                        });
+
+                        strKws = strKws;
+
+                        $("#kwsForTagCloud").html(strKws);
+                        }
+                    });
+                });*@            
+
+                function SearchArticle() {
                   var formData = new FormData();
                   formData.append('searchstring', $("#searchstring").val());
                   $.ajax({
@@ -112,6 +155,15 @@
                   });
               };
 
+                (function(w,doc) {
+                if (!w.__utlWdgt ) {
+                    w.__utlWdgt = true;
+                    var d = doc, s = d.createElement('script'), g = 'getElementsByTagName';
+                    s.type = 'text/javascript'; s.charset='UTF-8'; s.async = true;
+                    s.src = ('https:' == w.location.protocol ? 'https' : 'http')  + '://w.uptolike.com/widgets/v1/uptolike.js';
+                    var h=d[g]('body')[0];
+                    h.appendChild(s);
+                }})(window,document);
             </script>
         </environment>
 

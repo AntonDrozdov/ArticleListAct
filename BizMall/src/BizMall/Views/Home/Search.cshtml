@@ -1,4 +1,9 @@
-﻿@{
+﻿@model ArticleList.ViewModels.AdminCompanyArticles.ArticlesViewModel
+@{
+    Layout = "_SearchLayout";
+}
+
+@{
     int acount = ViewBag.ArticlesVM.Count;
     double tmp = acount / 3;
     int tmp2 = (int)Math.Floor(tmp);
@@ -10,14 +15,29 @@
     <!--ЗАГОЛОВОК-->
     @if (ViewBag.PageTitle != null)
     {
-        <h1 style="color:#b2b1b1">@Html.Raw(@ViewBag.PageTitle)</h1>
+        <h1 style="color:#b2b1b1">@Html.Raw(ViewBag.PageTitle)</h1>
     }
 
-    <!--САМИ СТАТЬИ-->
+    <!--САМИ СТАТЬИ - здесь тупая реализация вывода сначала найденый статей а потом товаров или наоборот взависимости от того с какой страницы произведен поиск--> 
+    @if (ViewData?[$"CategoryType"] == "Articles")
+    {
+        for (int j = 0; j < acount; j++)
+        {
+            if (ViewBag.ArticlesVM[j].Category.CategoryType == 3)
+                @await Component.InvokeAsync("ArticleTile", new {avm = ViewBag.ArticlesVM[j]})
+        }
+    }
     @for (int j = 0; j < acount; j++)
     {
-        @await Component.InvokeAsync("ArticleTile", new { avm = ViewBag.ArticlesVM[j] })
+        if (ViewBag.ArticlesVM[j].Category.CategoryType == 2)
+            @await Component.InvokeAsync("ArticleTile", new { avm = ViewBag.ArticlesVM[j] })
     }
+    @for (int j = 0; j < acount; j++)
+    {
+        if (ViewBag.ArticlesVM[j].Category.CategoryType == 2)
+            @await Component.InvokeAsync("ArticleTile", new { avm = ViewBag.ArticlesVM[j] })
+    }
+    
 </div>
 
 <!--ОБЛАКО ТЕГОВ-->

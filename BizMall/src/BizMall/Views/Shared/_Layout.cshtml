@@ -49,7 +49,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a asp-controller="Home" asp-action="Main" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
+                    <a asp-controller="Home" asp-action="Main" asp-route-categoryType= "@ViewData["CategoryType"]" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
                 </div>
                 <div id="navbarcollapseMain" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
