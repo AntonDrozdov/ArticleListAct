@@ -138,7 +138,6 @@ namespace BizMall.Controllers
                 ViewBag.CategoryId = category.Id;
                 ViewData["metaDescription"] = "";
                 ViewData["metaKeyWords"] = "";
-
             }
             else
             {

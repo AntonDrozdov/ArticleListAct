@@ -4,63 +4,64 @@
 
 <br />
 
-<!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
-<div>
-    <div style="margin-right:10px;margin-bottom:5px;">
-        <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminCategories" asp-action="EditCategory">Новая категория</a>
+<div class="col-xs-12 col-sm-12">
+    <!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
+    <div>
+        <div style="margin-right:10px;margin-bottom:5px;">
+            <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminCategories" asp-action="EditCategory">Новая категория</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Название категории</th>
+                    <th>Название категории(лат.)</th>
+                    <th>Родительская категория</th>
+                    <th>Кол-во статей</th>
+                    <th>Опции</th>
+                </tr>
+            </thead>
+            @foreach (var cat in ViewBag.CategoriesVM)
+            {
+                <tr>
+                    <!--CATEGORY TITLE-->
+                    <td>
+                        <a asp-controller="AdminCategories" asp-action="EditCategory" asp-route-id="@cat.Id">@cat.Title</a>
+                    </td>
+                    <!--CATEGORY ENTITLE-->
+                    <td>
+                        @cat.EnTitle
+                    </td>
+                    <!--PARENT CATEGORY TITLE-->
+                    @if (cat.ParentCategory != null)
+                    {
+                        <td>@cat.ParentCategory.Title</td>
+                    }
+                    else
+                    {
+                        <td> -</td>
+                    }
+                    <!--ARTICLES COUNT-->
+                    @{
+                        string idac = cat.Id.ToString() + "articlescount";
+                    }
+                    <td style="width: 15%; text-align: center;">
+                        <a class="articlesCount" onclick='CategoryArticlesCount(@cat.Id);'></a>
+                        @*<a class="btn btn-primary articlesCount" role="button" onclick='CategoryArticlesCount(@cat.Id);'>статей...?</a>*@
+                        <span id="@idac"></span>
+                    </td>
+                    <!--OPTIONS-->
+                    <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminCategories" asp-action="DeleteCategory" asp-route-itemId="@cat.Id">Удалить</a></td>
+                </tr>
+            }
+        </table>
     </div>
 </div>
 
-<div class="table-responsive">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Название категории</th>
-            <th>Название категории(лат.)</th>
-            <th>Родительская категория</th>
-            <th>Кол-во статей</th>
-            <th>Опции</th>
-        </tr>
-        </thead>
-        @foreach (var cat in ViewBag.CategoriesVM)
-        {
-            <tr>
-                <!--CATEGORY TITLE-->
-                <td>
-                    <a asp-controller="AdminCategories" asp-action="EditCategory" asp-route-id="@cat.Id">@cat.Title</a>
-                </td>
-                <!--CATEGORY ENTITLE-->
-                <td>
-                    @cat.EnTitle
-                </td>
-                <!--PARENT CATEGORY TITLE-->
-                @if (@cat.ParentCategory != null)
-                    {<td>@cat.ParentCategory.Title</td>}
-                else
-                    {<td> -</td >}
-
-
-                <!--ARTICLES COUNT-->
-                @{
-                    string idac = cat.Id.ToString() + "articlescount";
-                }
-
-                <td style="width:15%;text-align:center;">
-                    
-                        <a class="articlesCount"  onclick='CategoryArticlesCount(@cat.Id);'></a>
-                        @*<a class="btn btn-primary articlesCount" role="button" onclick='CategoryArticlesCount(@cat.Id);'>статей...?</a>*@
-                        <span id="@idac" ></span>
-                    
-                </td>
-                <!--OPTIONS-->
-                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminCategories" asp-action="DeleteCategory" asp-route-itemId="@cat.Id">Удалить</a></td>
-            </tr>
-        }
-    </table>
-</div>
-
 <script type="text/javascript">
-    //показываем сколько статей 
+    //показываем сколько статей
     $(document).ready(function () {
         $(".articlesCount").click();
     });
@@ -78,7 +79,7 @@
             contentType: false,
             success: function (articlescount) {
                 var spanid = catId + "articlescount";
-                $("#"+spanid).html(articlescount);
+                $("#" + spanid).html(articlescount);
             }
         });
     }

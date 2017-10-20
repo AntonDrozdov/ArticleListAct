@@ -14,7 +14,7 @@
 input,
 select,
 textarea {
-    max-width: 1000px;
+    /*max-width: 1000px;*/
 }
 
 #desc > p:first-letter {
@@ -53,6 +53,7 @@ float: left;
     font-size: smaller;
     color: #5bc0de;
 }
+
 
 /*отображение таблицы изображении в диалоге добавления/редактирования товара*/
 .imagetable {

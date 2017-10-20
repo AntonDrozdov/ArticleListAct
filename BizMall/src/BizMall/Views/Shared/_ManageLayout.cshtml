@@ -1,24 +1,71 @@
-﻿<!DOCTYPE html>
+﻿@model ArticleList.Models.CommonModels.SearchArticleModel
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="yandex-verification" content="5ba78b1a8e408c0f" />
+    @if (ViewData["metaDescription"] != null)
+    {
+        <meta name="Description" content="@ViewData["metaDescription"]" />
+    }
+    @if (ViewData["metaKeyWords"] != null)
+    {
+        <meta name="Keywords" content="@ViewData["metaKeyWords"]" />
+    }
     <title>
         @ViewData["Title"]
     </title>
-
-    <environment names="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link href="~/lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link href="~/lib/fancybox/jquery.fancybox.css" rel="stylesheet" />
+    </environment>
+</head>
+<body>
+    <!--МЕНЮ ВЕРХНЕЕ-->
+    <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" data-target="#navbarcollapseMain" data-toggle="collapse" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-controller="Home" asp-action="Main" asp-route-categoryType="@ViewData["CategoryType"]" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
+            </div>
+            <div id="navbarcollapseMain" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-controller="Home" asp-action="Suggestions" style="padding-top: 15px;">Предложения</a></li>
+                    <li><a asp-controller="Home" asp-action="Articles" style="padding-top: 15px;">Статьи</a></li>
+                    <li><a asp-controller="Home" asp-action="Contacts" style="padding-top: 15px;">Контакты</a></li>
+                </ul>
+                @*@await Html.PartialAsync("_LoginPartial")*@
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <div class="row">
+            <!--ОСНОВНОЙ КОНТЕНТ-->
+            <div class="col-md-12">
+                <!--ВЫВОД СТАТЕЙ-->
+                <div class="row">
+                    <div class="col-md-12">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <footer>
+            <p>&copy; 2016 - @DateTime.Now.Year @ViewData["FooterTitle"]</p>
+        </footer>
+    </div>
+    <environment names="Staging,Production">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">
@@ -28,47 +75,27 @@
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
-    @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
+        <script src="~/lib/fancybox/jquery.fancybox.pack.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("a.fancyimage").fancybox();
+            });
 
-</head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-controller="Home" asp-action="IndexCat" class="navbar-brand mainAppIcon">@ViewData["HeaderTitle"]</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    @*@if (ViewBag.ActiveSubMenu == "Профиль")
-                    {
-                        <li  ><a style ="color: white;" asp-controller="AdminCompanyProfile" asp-action="Profile">Профиль</a></li>
-                        <li><a asp-controller="AdminCompanyGoods" asp-action="Goods">Товары/Услуги</a></li>
+            function SearchArticle() {
+                var formData = new FormData();
+                formData.append('searchstring', $("#searchstring").val());
+                $.ajax({
+                    url: "/Home/Search/",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function () {
                     }
-                    @if (ViewBag.ActiveSubMenu == "Товары/Услуги")
-                    {
-                        <li style="color: white;"><a asp-controller="AdminCompanyProfile" asp-action="EditProfile">Профиль</a></li>*@
-                        @*<li><a style ="color: white;padding-top: 15px;" asp-controller="AdminArticles" asp-action="Articles" >Статьи</a></li>*@
-                    @*}*@
-                </ul>
-                @*@await Html.PartialAsync("_LoginPartial")*@
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year  - @ViewData["FooterTitle"]</p>
-        </footer>
-    </div>
-
+                });
+            };
+        </script>
+    </environment>
     @RenderSection("scripts", required: false)
 </body>
 </html>

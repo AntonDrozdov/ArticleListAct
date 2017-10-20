@@ -264,23 +264,20 @@ namespace BizMall.Data.Repositories.Concrete
             {
                 case 1:
                     SearchedArticlesIds = _ctx.Articles
-                        .Where(g => (g.HashTags.Contains(tosearch[0]) || g.Description.Contains(tosearch[0]))
-                                        && g.CategoryType == categoryType)
+                        .Where(g => (g.HashTags.Contains(tosearch[0]) || g.Description.Contains(tosearch[0])))
                         .Select(g => g.Id)
                         .ToList();
                         
                     break;
                 case 2:
                     SearchedArticlesIds = _ctx.Articles
-                        .Where(g => (g.HashTags.Contains(tosearch[0])||g.Description.Contains(tosearch[0])||g.HashTags.Contains(tosearch[1]) ||g.Description.Contains(tosearch[1]))
-                                        && g.CategoryType == categoryType)
+                        .Where(g => (g.HashTags.Contains(tosearch[0])||g.Description.Contains(tosearch[0])||g.HashTags.Contains(tosearch[1]) ||g.Description.Contains(tosearch[1])))
                         .Select(g => g.Id)
                         .ToList();
                     break;
                 case 3:
                     SearchedArticlesIds = _ctx.Articles
-                        .Where(g => (g.HashTags.Contains(tosearch[0])||g.Description.Contains(tosearch[0])||g.HashTags.Contains(tosearch[1])||g.Description.Contains(tosearch[1])||g.HashTags.Contains(tosearch[2])||g.Description.Contains(tosearch[2]))
-                                         && g.CategoryType == categoryType)
+                        .Where(g => (g.HashTags.Contains(tosearch[0])||g.Description.Contains(tosearch[0])||g.HashTags.Contains(tosearch[1])||g.Description.Contains(tosearch[1])||g.HashTags.Contains(tosearch[2])||g.Description.Contains(tosearch[2])))
                         .Select(g => g.Id)
                         .ToList();
                     break;
