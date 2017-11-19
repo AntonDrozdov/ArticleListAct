@@ -36,7 +36,7 @@ namespace BizMall.Data.Repositories.Concrete
 
         public Article GetArticle(int goodId) {
             return _ctx.Articles
-                .Where(g => g.Id == goodId)
+                .Where(g => g.Id == goodId&&g.CategoryType==categoryType)
                 .Include(g => g.Category)
                 .Include(g => g.Category.ParentCategory)
                 .Include(g => g.Images).ThenInclude(i=>i.Image)
@@ -66,7 +66,7 @@ namespace BizMall.Data.Repositories.Concrete
             //выбираем из таблицы товаров все, ид которых, содержаться в вышеопределенной коллекции необходимых ид
             List<Article> Items = new List<Article>();
             Items = _ctx.Articles
-                            .Where(g => ShopGoodsIds.Contains(g.Id))
+                            .Where(g => ShopGoodsIds.Contains(g.Id) && g.CategoryType == categoryType)
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
                             .Include(g => g.Images).ThenInclude(g => g.Image)
@@ -212,7 +212,8 @@ namespace BizMall.Data.Repositories.Concrete
         public IQueryable<Article> CategoryArticlesFullInformation(string Category, int page, out PagingInfo pagingInfo)
         {
             int totaItems = _ctx.Articles
-                            .Where(g => (Category == null && g.CategoryType == categoryType) || (g.Category.EnTitle == Category && g.CategoryType == categoryType))
+                            .Where(g => Category == null && g.CategoryType == categoryType
+                                    || g.Category.EnTitle == Category && g.CategoryType == categoryType)
                             .Count();
 
             pagingInfo = new PagingInfo
@@ -226,7 +227,10 @@ namespace BizMall.Data.Repositories.Concrete
             Items = _ctx.Articles
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
-                            .Where(g => (Category == null && g.CategoryType == categoryType) || (g.Category.EnTitle == Category && g.CategoryType == categoryType))
+                            .Where(g => Category == null 
+                                    && g.CategoryType == categoryType 
+                                    || g.Category.EnTitle == Category 
+                                    && g.CategoryType == categoryType)
                             .Include(g => g.Images).ThenInclude(g => g.Image)
                             .OrderByDescending(g => g.UpdateTime)
                             .Skip((page - 1) * pageSize)
@@ -240,11 +244,13 @@ namespace BizMall.Data.Repositories.Concrete
         {
             List<Article> Items = new List<Article>();
             Items = _ctx.Articles
+                            .Where(g => (Category == null 
+                                        && g.CategoryType == categoryType
+                                        || g.Category.EnTitle == Category 
+                                        && g.CategoryType == categoryType)
+                                        && g.Id!= ArticleId)
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
-                            .Where(g => ((Category == null && g.CategoryType == categoryType) 
-                                        || (g.Category.EnTitle == Category && g.CategoryType == categoryType))
-                                        && g.Id!= ArticleId)
                             .Include(g => g.Images).ThenInclude(g => g.Image)
                             .OrderByDescending(g => g.UpdateTime)
                             .Take(countOfSimilarArticlesOnArticlePage)
@@ -296,9 +302,10 @@ namespace BizMall.Data.Repositories.Concrete
 
             List<Article> Items = new List<Article>();
             Items = _ctx.Articles
+                            .Where(g => SearchedArticlesIds.Contains(g.Id) 
+                                    && g.CategoryType == categoryType)
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
-                            .Where(g => SearchedArticlesIds.Contains(g.Id))
                             .Include(g => g.Images).ThenInclude(g => g.Image)
                             .OrderByDescending(g => g.UpdateTime)
                             .Skip((page - 1) * pageSearchSize)
@@ -379,9 +386,10 @@ namespace BizMall.Data.Repositories.Concrete
             };
             List<Article> Items = new List<Article>();
             Items = _ctx.Articles
+                            .Where(g=>g.HashTags.Contains(hashtag) 
+                                    && g.CategoryType == categoryType)
                             .Include(g => g.Category)
                             .Include(g => g.Category.ParentCategory)
-                            .Where(g=>g.HashTags.Contains(hashtag))
                             .Include(g => g.Images).ThenInclude(g => g.Image)
                             .OrderByDescending(g => g.UpdateTime)
                             .Skip((page - 1) * pageSearchSize)
