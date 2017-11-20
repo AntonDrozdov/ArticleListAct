@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -185,11 +186,13 @@ namespace BizMall.Controllers
             return View();
         }
 
-
         public IActionResult ArticleDetails(string articleId)
         {
             int Id = Convert.ToInt32(articleId.Substring(0, articleId.IndexOf('_')));
-            var item = _repositoryArticle.GetArticle(Id);            
+            var item = _repositoryArticle.GetArticle(Id);
+
+            if (item == null)
+                return Error();
 
             var avm = ConstructAVM(item, false);
 
