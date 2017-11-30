@@ -241,14 +241,48 @@ namespace BizMall.Controllers
 
         public IActionResult Sitemap()
         {
-            List<string> SitemapCategories = _repositoryCategory.SitemapCategories();
-
             List<SitemapNode> nodes = new List<SitemapNode>();
-            foreach (var sitemapcat in SitemapCategories)
+
+            //main pages + articlepages
+            nodes.Add(GetSitemapNode(null, DateTime.Now));
+
+            PagingInfo pagingInfo;
+
+            var Items = _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo).ToList();
+
+            for (int i = 0; i < pagingInfo.TotalPages; i++)
             {
-                nodes.Add(new SitemapNode("/Categories/" + sitemapcat));
+                nodes.Add(GetSitemapNode(string.Format("/Page{0}", i + 1), DateTime.Now));
+
+                Items = _repositoryArticle.CategoryArticlesFullInformation(null, i+1, out pagingInfo).ToList();
+
+                foreach (var article in Items)
+                {
+                    nodes.Add(GetSitemapNode("/ArticleDetails/"+ article.Id + "_" + article.EnTitle, DateTime.Now));
+                }
             }
 
+            //categorypages
+            var Categories = _repositoryCategory.Categories();
+            foreach (var catogory in Categories)
+            {
+                nodes.Add(GetSitemapNode("/Categories/" + catogory.EnTitle, DateTime.Now));
+
+                List<Article> list = new List<Article>();
+                foreach (var article in _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo))
+                    list.Add(article);
+         
+                for (var i = 0; i < pagingInfo.TotalPages; i++)
+                {
+                    nodes.Add(GetSitemapNode(string.Format("/Categories/" + catogory.EnTitle + "?page={0}", i+1), DateTime.Now));
+                }
+            }
+
+            //hashtagpager
+
+            //kwpages
+
+            var nodecount = nodes.Count;
             return new SitemapProvider().CreateSitemap(new SitemapModel(nodes));
         }
 
@@ -260,6 +294,12 @@ namespace BizMall.Controllers
         }
 
 
+        private SitemapNode GetSitemapNode(string url, DateTime lastModified)
+        {
+            var currentSitemapNode = new SitemapNode(url);
+            currentSitemapNode.LastModificationDate = lastModified;
 
+            return currentSitemapNode;
+        }
     }
 }
