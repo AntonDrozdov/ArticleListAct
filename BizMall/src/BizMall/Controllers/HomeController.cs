@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using BizMall.Data.Repositories.Abstract;
 using BizMall.ViewModels.AdminCompanyArticles;
@@ -12,7 +15,9 @@ using SimpleMvcSitemap;
 using BizMall.Models.CompanyModels;
 using ArticleList.Models.CommonModels;
 using ArticleList.ViewModels.AdminCompanyArticles;
+using BizMall.Utils.SitemapBuilder;
 using Microsoft.Extensions.Options;
+using SimpleMvcSitemap.Routing;
 
 namespace BizMall.Controllers
 {
@@ -242,48 +247,200 @@ namespace BizMall.Controllers
         public IActionResult Sitemap()
         {
             List<SitemapNode> nodes = new List<SitemapNode>();
+            List<string> hashtags = new List<string>();
 
             //main pages + articlepages
-            nodes.Add(GetSitemapNode(null, DateTime.Now));
+            nodes.Add(GetSitemapNode(null, DateTime.Now, ChangeFrequency.Daily, Convert.ToDecimal(1)));
 
             PagingInfo pagingInfo;
 
-            var Items = _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo).ToList();
+            //var Items = _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo).ToList();
 
-            for (int i = 0; i < pagingInfo.TotalPages; i++)
+            //for (int i = 0; i < pagingInfo.TotalPages; i++)
+            //{
+            //    nodes.Add(GetSitemapNode(string.Format("/Page{0}", i + 1), DateTime.Now));
+
+            //    Items = _repositoryArticle.CategoryArticlesFullInformation(null, i+1, out pagingInfo).ToList();
+
+            //    foreach (var article in Items)
+            //    {
+            //        List <string> articleHashTags = article.HashTags.Split(' ').ToList();
+            //        hashtags.AddRange(articleHashTags);
+            //        nodes.Add(GetSitemapNode("/ArticleDetails/"+ article.Id + "_" + article.EnTitle, DateTime.Now));
+            //    }
+            //}
+
+            ////categorypages
+            //var Categories = _repositoryCategory.Categories();
+            //foreach (var category in Categories)
+            //{
+            //    List<Article> categorypageslist = _repositoryArticle.CategoryArticlesFullInformation(category.EnTitle, 1, out pagingInfo).ToList();
+            //    if (pagingInfo.TotalPages != 0)
+            //    {
+            //        nodes.Add(GetSitemapNode("/Categories/" + category.EnTitle, DateTime.Now));
+            //        for (var i = 0; i < pagingInfo.TotalPages; i++)
+            //        {
+            //            nodes.Add(GetSitemapNode(string.Format("/Categories/" + category.EnTitle + "?page={0}", i + 1), DateTime.Now));
+            //        }
+            //    }
+            //}
+
+            ////hashtagpager
+            //hashtags = hashtags.Distinct().ToList();
+            //foreach (var hashtag in hashtags)
+            //{
+            //    _repositoryArticle.SearchHashTagArticlesFullInformation(hashtag, 1, out pagingInfo).ToList();
+            //    if (pagingInfo.TotalPages != 0)
+            //    {
+            //        nodes.Add(GetSitemapNode(string.Format("/Home/SearchHashTag?hashtag=" + hashtag), DateTime.Now));
+            //        for (var i = 0; i < pagingInfo.TotalPages; i++)
+            //        {
+            //            nodes.Add(GetSitemapNode(string.Format("/Home/SearchHashTag?hashtag=" + hashtag + "&Page={0}", i + 1), DateTime.Now));
+            //        }
+            //    }
+            //}
+
+            ////kwpages
+            var kws = _repositoryKW.KwsForSitemap().Select(kw => kw.kw).ToList();
+            kws = kws.Distinct().ToList();
+            foreach (var kw in kws)
             {
-                nodes.Add(GetSitemapNode(string.Format("/Page{0}", i + 1), DateTime.Now));
-
-                Items = _repositoryArticle.CategoryArticlesFullInformation(null, i+1, out pagingInfo).ToList();
-
-                foreach (var article in Items)
+                var searchkw = kw.Replace(" ", "");
+                _repositoryArticle.SearchHashTagArticlesFullInformation(searchkw, 1, out pagingInfo);
+                if (pagingInfo.TotalPages != 0)
                 {
-                    nodes.Add(GetSitemapNode("/ArticleDetails/"+ article.Id + "_" + article.EnTitle, DateTime.Now));
+                    nodes.Add(GetSitemapNode(string.Format("/Home/SearchKwArticles?kw=" + kw), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
+                    for (var i = 0; i < pagingInfo.TotalPages; i++)
+                    {
+                        nodes.Add(GetSitemapNode(string.Format("/Home/SearchKwArticles?kw=" + kw + "&Page={0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
+                    }
                 }
             }
-
-            //categorypages
-            var Categories = _repositoryCategory.Categories();
-            foreach (var catogory in Categories)
-            {
-                nodes.Add(GetSitemapNode("/Categories/" + catogory.EnTitle, DateTime.Now));
-
-                List<Article> list = new List<Article>();
-                foreach (var article in _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo))
-                    list.Add(article);
-         
-                for (var i = 0; i < pagingInfo.TotalPages; i++)
-                {
-                    nodes.Add(GetSitemapNode(string.Format("/Categories/" + catogory.EnTitle + "?page={0}", i+1), DateTime.Now));
-                }
-            }
-
-            //hashtagpager
-
-            //kwpages
 
             var nodecount = nodes.Count;
-            return new SitemapProvider().CreateSitemap(new SitemapModel(nodes));
+            var baseurlprovider = new BaseUrlProvider(){BaseUrl = new Uri("http://buisnessface.ru")}; 
+            var sitemapprovider = new SitemapProvider(baseurlprovider);
+            return sitemapprovider.CreateSitemap(new SitemapModel(nodes));
+        }
+
+        public IActionResult Sitemap2()
+        {
+            List<SitemapNode> nodes = new List<SitemapNode>();
+            List<SitemapNode> statistcsNodes = new List<SitemapNode>();
+            List<string> hashtags = new List<string>();
+            PagingInfo pagingInfo;
+
+            //main pages  
+            nodes.Add(GetSitemapNode(null, DateTime.Now, ChangeFrequency.Daily, Convert.ToDecimal(1)));
+
+            //#region articlepages
+            //var Items = _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo).ToList();
+
+            //for (int i = 0; i < pagingInfo.TotalPages; i++)
+            //{
+            //    nodes.Add(GetSitemapNode(string.Format("/Page{0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
+
+            //    Items = _repositoryArticle.CategoryArticlesFullInformation(null, i + 1, out pagingInfo).ToList();
+            //    statistcsNodes.Add(GetStatisticsSitemapNode("ArticleCount: " + Items.Count));
+            //    foreach (var article in Items)
+            //    {
+            //        List<string> articleHashTags = article.HashTags.Split(' ').ToList();
+            //        hashtags.AddRange(articleHashTags);
+            //        nodes.Add(GetSitemapNode("/ArticleDetails/" + article.Id + "_" + article.EnTitle, DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
+            //    }
+            //}
+            //#endregion
+
+            //#region categorypages
+            //var Categories = _repositoryCategory.Categories().ToList();
+            //statistcsNodes.Add(GetStatisticsSitemapNode("CategoriesCount: " + Categories.Count));
+            //foreach (var category in Categories)
+            //{
+            //    List<Article> categorypageslist = _repositoryArticle.CategoryArticlesFullInformation(category.EnTitle, 1, out pagingInfo).ToList();
+            //    statistcsNodes.Add(GetStatisticsSitemapNode("Categories: " + category + "ArticleCount: " + categorypageslist.Count));
+            //    if (pagingInfo.TotalPages != 0)
+            //    {
+            //        nodes.Add(GetSitemapNode("/Categories/" + category.EnTitle, DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.8)));
+            //        for (var i = 0; i < pagingInfo.TotalPages; i++)
+            //        {
+            //            nodes.Add(GetSitemapNode(string.Format("/Categories/" + category.EnTitle + "?page={0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.8)));
+            //        }
+            //    }
+            //}
+            //#endregion
+
+            //#region hashtagpager
+            //hashtags = hashtags.Distinct().ToList();
+            //statistcsNodes.Add(GetStatisticsSitemapNode("HashTags: " + hashtags.Count));
+            //foreach (var hashtag in hashtags)
+            //{
+            //    _repositoryArticle.SearchHashTagArticlesFullInformation(hashtag, 1, out pagingInfo).ToList();
+            //    if (pagingInfo.TotalPages != 0)
+            //    {
+            //        nodes.Add(GetSitemapNode(string.Format("/Home/SearchHashTag?hashtag=" + hashtag), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.7)));
+            //        for (var i = 0; i < pagingInfo.TotalPages; i++)
+            //        {
+            //            nodes.Add(GetSitemapNode(string.Format("/Home/SearchHashTag?hashtag=" + hashtag + "&Page={0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.7)));
+            //        }
+            //    }
+            //}
+            //#endregion
+
+            #region kwpages
+            var kws = _repositoryKW.KwsForSitemap().Select(kw => kw.kw).ToList();
+            kws = kws.Distinct().ToList();
+            statistcsNodes.Add(GetStatisticsSitemapNode("KWS: " + kws.Count));
+            foreach (var kw in kws)
+            {
+                var searchkw = kw.Replace(" ", "");
+                _repositoryArticle.SearchHashTagArticlesFullInformation(searchkw, 1, out pagingInfo);
+                if (pagingInfo.TotalPages != 0)
+                {
+                    nodes.Add(GetSitemapNode(string.Format("/Home/SearchKwArticles?kw=" + kw), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.7)));
+                    for (var i = 0; i < pagingInfo.TotalPages; i++)
+                    {
+                        nodes.Add(GetSitemapNode(string.Format("/Home/SearchKwArticles?kw=" + kw + "&Page={0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.7)));
+                    }
+                }
+            }
+            #endregion
+
+            string baseUrl = _settings.DomainName;
+            var siteMapBuilder = new SitemapBuilder();
+
+            //add statistics data to sitemap
+            foreach (var statisticNode in statistcsNodes)
+            {
+                siteMapBuilder.AddUrl(baseUrl + statisticNode.Url, statisticNode.LastModificationDate, statisticNode.ChangeFrequency, statisticNode.Priority);
+            }
+
+            // add sitepages to the sitemap
+            foreach (var node in nodes)
+            {
+                siteMapBuilder.AddUrl(baseUrl + node.Url, node.LastModificationDate, node.ChangeFrequency , node.Priority);
+            }
+
+            // generate the sitemap xml
+
+
+            var path = "./wwwroot/sitemap.xml";
+            XDocument xdoc = siteMapBuilder.GetSitemap();
+
+            FileStream fileStream = new FileStream(path, FileMode.Create);
+            XmlWriterSettings settings = new XmlWriterSettings() { Indent = true };
+            XmlWriter writer = XmlWriter.Create(fileStream, settings);
+
+            xdoc.Save(writer);
+            writer.Flush();
+            fileStream.Flush();
+
+
+            byte[] fileBytes = System.Text.Encoding.Unicode.GetBytes(xdoc.ToString());
+
+            //byte[] fileBytes = xdoc.ToString(). System.IO.File.ReadAllBytes(path);
+            return File(fileBytes, "application/x-msdownload", _settings.DomainName + "_sitemap.xml");
+            //string xml = siteMapBuilder.ToString();
+            //return Content(xml, "text/xml");
         }
 
         [HttpPost]
@@ -294,12 +451,24 @@ namespace BizMall.Controllers
         }
 
 
-        private SitemapNode GetSitemapNode(string url, DateTime lastModified)
+        private SitemapNode GetSitemapNode(string url, DateTime lastModified, ChangeFrequency changeFrequency, decimal priority)
         {
             var currentSitemapNode = new SitemapNode(url);
             currentSitemapNode.LastModificationDate = lastModified;
+            currentSitemapNode.ChangeFrequency = changeFrequency;
+            currentSitemapNode.Priority = priority;
 
             return currentSitemapNode;
         }
+
+        private SitemapNode GetStatisticsSitemapNode(string data)
+        {
+            return new SitemapNode(data);
+        }
+    }
+
+    public class BaseUrlProvider:IBaseUrlProvider
+    {
+        public Uri BaseUrl { get; set; }
     }
 }

@@ -32,6 +32,7 @@ namespace BizMall
         public string PageSize { get; set; }
         public string PageAdminSize { get; set; }
         public string PageSearchSize { get; set; }
+        public string DomainName { get; set; }
     }
 
     public class Startup

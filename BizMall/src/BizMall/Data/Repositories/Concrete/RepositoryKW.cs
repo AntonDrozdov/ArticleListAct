@@ -30,6 +30,12 @@ namespace BizMall.Data.Repositories.Concrete
             pageSearchSize = Convert.ToInt32(settings.Value.PageSearchSize);
         }
 
+        public IQueryable<KW> KwsForSitemap()
+        {
+            return _ctx.KWs.Where(kw => kw.CategoryType == categoryType)
+                .OrderBy(kw => kw.kw);
+        }
+
         public IQueryable<KW> Kws(string CategoryId)
         {
             if (CategoryId == null)
@@ -37,8 +43,7 @@ namespace BizMall.Data.Repositories.Concrete
                             .Include(kw => kw.Category)
                             .Include(kw => kw.Category.ParentCategory)
                             .OrderBy(kw => kw.kw);
-            else
-                return _ctx.KWs.Where(kw => kw.Category.Id == Convert.ToInt32(CategoryId))
+            return _ctx.KWs.Where(kw => kw.Category.Id == Convert.ToInt32(CategoryId))
                                 .Include(kw => kw.Category)
                                 .Include(kw => kw.Category.ParentCategory)
                                 .OrderBy(kw => kw.kw);

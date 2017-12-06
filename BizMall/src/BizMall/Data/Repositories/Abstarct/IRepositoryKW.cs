@@ -10,6 +10,7 @@ namespace BizMall.Data.Repositories.Abstract
 {
     public interface IRepositoryKW
     {
+        IQueryable<KW> KwsForSitemap();
         IQueryable<KW> Kws(string Category);
         IQueryable<KW> Kws(string Category, int page, out PagingInfo pagingInfo);
         IQueryable<KW> SearchStringKws(string searchstring, int page, out PagingInfo pagingInfo);
