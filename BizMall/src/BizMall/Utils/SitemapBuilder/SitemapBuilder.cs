@@ -28,19 +28,33 @@ namespace BizMall.Utils.SitemapBuilder
             });
         }
 
+        public void AddStatisticNode(string data)
+        {
+            _urls.Add( new SitemapNode(data));
+        }
+
         public XDocument GetSitemap()
         {
             var sitemap = new XDocument(
                 new XDeclaration("1.0", "utf-8", "yes"),
-                new XElement(NS + "urlset",
+                    new XElement("statistics", 
+                    from item in _urls where item.Url.Contains("stcs_")
+                    select CreateStatisticsNodeElement(item)),
+                    new XElement(NS + "urlset",
                     from item in _urls
-                    select CreateItemElement(item)
-                ));
+                    select CreateSitemapNodeElement(item)
+                )
+                );
 
             return sitemap;
         }
 
-        private XElement CreateItemElement(SitemapNode url)
+        private XElement CreateStatisticsNodeElement(SitemapNode url)
+        {
+            return new XElement(NS + "data", url.Url);
+        }
+
+        private XElement CreateSitemapNodeElement(SitemapNode url)
         {
             XElement itemElement = new XElement(NS + "url", new XElement(NS + "loc", url.Url));
 

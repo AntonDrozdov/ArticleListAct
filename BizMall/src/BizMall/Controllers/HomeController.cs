@@ -333,58 +333,56 @@ namespace BizMall.Controllers
             //main pages  
             nodes.Add(GetSitemapNode(null, DateTime.Now, ChangeFrequency.Daily, Convert.ToDecimal(1)));
 
-            //#region articlepages
-            //var Items = _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo).ToList();
+            #region articlepages
+            var Items = _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo).ToList();
+            statistcsNodes.Add(GetStatisticsSitemapNode("ArticleCount: " + Items.Count));
+            for (int i = 0; i < pagingInfo.TotalPages; i++)
+            {
+                nodes.Add(GetSitemapNode(string.Format("/Page{0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
+                Items = _repositoryArticle.CategoryArticlesFullInformation(null, i + 1, out pagingInfo).ToList();
+                foreach (var article in Items)
+                {
+                    List<string> articleHashTags = article.HashTags.Split(' ').ToList();
+                    hashtags.AddRange(articleHashTags);
+                    nodes.Add(GetSitemapNode("/ArticleDetails/" + article.Id + "_" + article.EnTitle, DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
+                }
+            }
+            #endregion
 
-            //for (int i = 0; i < pagingInfo.TotalPages; i++)
-            //{
-            //    nodes.Add(GetSitemapNode(string.Format("/Page{0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
+            #region categorypages
+            var Categories = _repositoryCategory.Categories().ToList();
+            statistcsNodes.Add(GetStatisticsSitemapNode("CategoriesCount: " + Categories.Count));
+            foreach (var category in Categories)
+            {
+                List<Article> categorypageslist = _repositoryArticle.CategoryArticlesFullInformation(category.EnTitle, 1, out pagingInfo).ToList();
+                statistcsNodes.Add(GetStatisticsSitemapNode("Category: " + category.EnTitle + " (" + categorypageslist.Count+")"));
+                if (pagingInfo.TotalPages != 0)
+                {
+                    nodes.Add(GetSitemapNode("/Categories/" + category.EnTitle, DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.8)));
+                    for (var i = 0; i < pagingInfo.TotalPages; i++)
+                    {
+                        nodes.Add(GetSitemapNode(string.Format("/Categories/" + category.EnTitle + "?page={0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.8)));
+                    }
+                }
+            }
+            #endregion
 
-            //    Items = _repositoryArticle.CategoryArticlesFullInformation(null, i + 1, out pagingInfo).ToList();
-            //    statistcsNodes.Add(GetStatisticsSitemapNode("ArticleCount: " + Items.Count));
-            //    foreach (var article in Items)
-            //    {
-            //        List<string> articleHashTags = article.HashTags.Split(' ').ToList();
-            //        hashtags.AddRange(articleHashTags);
-            //        nodes.Add(GetSitemapNode("/ArticleDetails/" + article.Id + "_" + article.EnTitle, DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
-            //    }
-            //}
-            //#endregion
-
-            //#region categorypages
-            //var Categories = _repositoryCategory.Categories().ToList();
-            //statistcsNodes.Add(GetStatisticsSitemapNode("CategoriesCount: " + Categories.Count));
-            //foreach (var category in Categories)
-            //{
-            //    List<Article> categorypageslist = _repositoryArticle.CategoryArticlesFullInformation(category.EnTitle, 1, out pagingInfo).ToList();
-            //    statistcsNodes.Add(GetStatisticsSitemapNode("Categories: " + category + "ArticleCount: " + categorypageslist.Count));
-            //    if (pagingInfo.TotalPages != 0)
-            //    {
-            //        nodes.Add(GetSitemapNode("/Categories/" + category.EnTitle, DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.8)));
-            //        for (var i = 0; i < pagingInfo.TotalPages; i++)
-            //        {
-            //            nodes.Add(GetSitemapNode(string.Format("/Categories/" + category.EnTitle + "?page={0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.8)));
-            //        }
-            //    }
-            //}
-            //#endregion
-
-            //#region hashtagpager
-            //hashtags = hashtags.Distinct().ToList();
-            //statistcsNodes.Add(GetStatisticsSitemapNode("HashTags: " + hashtags.Count));
-            //foreach (var hashtag in hashtags)
-            //{
-            //    _repositoryArticle.SearchHashTagArticlesFullInformation(hashtag, 1, out pagingInfo).ToList();
-            //    if (pagingInfo.TotalPages != 0)
-            //    {
-            //        nodes.Add(GetSitemapNode(string.Format("/Home/SearchHashTag?hashtag=" + hashtag), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.7)));
-            //        for (var i = 0; i < pagingInfo.TotalPages; i++)
-            //        {
-            //            nodes.Add(GetSitemapNode(string.Format("/Home/SearchHashTag?hashtag=" + hashtag + "&Page={0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.7)));
-            //        }
-            //    }
-            //}
-            //#endregion
+            #region hashtagpager
+            hashtags = hashtags.Distinct().ToList();
+            statistcsNodes.Add(GetStatisticsSitemapNode("HashTags: " + hashtags.Count));
+            foreach (var hashtag in hashtags)
+            {
+                _repositoryArticle.SearchHashTagArticlesFullInformation(hashtag, 1, out pagingInfo).ToList();
+                if (pagingInfo.TotalPages != 0)
+                {
+                    nodes.Add(GetSitemapNode(string.Format("/Home/SearchHashTag?hashtag=" + hashtag), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.7)));
+                    for (var i = 0; i < pagingInfo.TotalPages; i++)
+                    {
+                        nodes.Add(GetSitemapNode(string.Format("/Home/SearchHashTag?hashtag=" + hashtag + "&Page={0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.7)));
+                    }
+                }
+            }
+            #endregion
 
             #region kwpages
             var kws = _repositoryKW.KwsForSitemap().Select(kw => kw.kw).ToList();
@@ -411,7 +409,7 @@ namespace BizMall.Controllers
             //add statistics data to sitemap
             foreach (var statisticNode in statistcsNodes)
             {
-                siteMapBuilder.AddUrl(baseUrl + statisticNode.Url, statisticNode.LastModificationDate, statisticNode.ChangeFrequency, statisticNode.Priority);
+                siteMapBuilder.AddStatisticNode(statisticNode.Url);
             }
 
             // add sitepages to the sitemap
@@ -420,25 +418,12 @@ namespace BizMall.Controllers
                 siteMapBuilder.AddUrl(baseUrl + node.Url, node.LastModificationDate, node.ChangeFrequency , node.Priority);
             }
 
-            // generate the sitemap xml
-
-
-            var path = "./wwwroot/sitemap.xml";
+            // generate the sitemap xml as file to download
             XDocument xdoc = siteMapBuilder.GetSitemap();
-
-            FileStream fileStream = new FileStream(path, FileMode.Create);
-            XmlWriterSettings settings = new XmlWriterSettings() { Indent = true };
-            XmlWriter writer = XmlWriter.Create(fileStream, settings);
-
-            xdoc.Save(writer);
-            writer.Flush();
-            fileStream.Flush();
-
-
             byte[] fileBytes = System.Text.Encoding.Unicode.GetBytes(xdoc.ToString());
+            return File(fileBytes, "application/x-msdownload", _settings.DomainName + "_sitemap.xml");
 
             //byte[] fileBytes = xdoc.ToString(). System.IO.File.ReadAllBytes(path);
-            return File(fileBytes, "application/x-msdownload", _settings.DomainName + "_sitemap.xml");
             //string xml = siteMapBuilder.ToString();
             //return Content(xml, "text/xml");
         }
