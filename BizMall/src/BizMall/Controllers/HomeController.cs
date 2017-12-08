@@ -335,7 +335,7 @@ namespace BizMall.Controllers
 
             #region articlepages
             var Items = _repositoryArticle.CategoryArticlesFullInformation(null, 1, out pagingInfo).ToList();
-            statistcsNodes.Add(GetStatisticsSitemapNode("ArticleCount: " + Items.Count));
+            statistcsNodes.Add(GetStatisticsSitemapNode("ArticleCount: " + pagingInfo.TotalItems));
             for (int i = 0; i < pagingInfo.TotalPages; i++)
             {
                 nodes.Add(GetSitemapNode(string.Format("/Page{0}", i + 1), DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.9)));
@@ -348,14 +348,13 @@ namespace BizMall.Controllers
                 }
             }
             #endregion
-
             #region categorypages
-            var Categories = _repositoryCategory.Categories().ToList();
-            statistcsNodes.Add(GetStatisticsSitemapNode("CategoriesCount: " + Categories.Count));
-            foreach (var category in Categories)
+            var categories = _repositoryCategory.Categories().ToList();
+            statistcsNodes.Add(GetStatisticsSitemapNode("CategoriesCount: " + categories.Count));
+            foreach (var category in categories)
             {
                 List<Article> categorypageslist = _repositoryArticle.CategoryArticlesFullInformation(category.EnTitle, 1, out pagingInfo).ToList();
-                statistcsNodes.Add(GetStatisticsSitemapNode("Category: " + category.EnTitle + " (" + categorypageslist.Count+")"));
+                statistcsNodes.Add(GetStatisticsSitemapNode("Category: " + category.EnTitle + " (" + pagingInfo.TotalPages + ")"));
                 if (pagingInfo.TotalPages != 0)
                 {
                     nodes.Add(GetSitemapNode("/Categories/" + category.EnTitle, DateTime.Now, ChangeFrequency.Weekly, Convert.ToDecimal(0.8)));
@@ -366,7 +365,6 @@ namespace BizMall.Controllers
                 }
             }
             #endregion
-
             #region hashtagpager
             hashtags = hashtags.Distinct().ToList();
             statistcsNodes.Add(GetStatisticsSitemapNode("HashTags: " + hashtags.Count));
@@ -407,6 +405,7 @@ namespace BizMall.Controllers
             var siteMapBuilder = new SitemapBuilder();
 
             //add statistics data to sitemap
+            statistcsNodes.Add(GetStatisticsSitemapNode("PagesCount: " + nodes.Count));
             foreach (var statisticNode in statistcsNodes)
             {
                 siteMapBuilder.AddStatisticNode(statisticNode.Url);

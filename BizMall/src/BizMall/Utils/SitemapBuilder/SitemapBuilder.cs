@@ -12,10 +12,12 @@ namespace BizMall.Utils.SitemapBuilder
         private readonly XNamespace NS = "http://www.sitemaps.org/schemas/sitemap/0.9";
 
         private List<SitemapNode> _urls;
+        private List<SitemapNode> _statdata;
 
         public SitemapBuilder()
         {
             _urls = new List<SitemapNode>();
+            _statdata = new List<SitemapNode>();
         }
 
         public void AddUrl(string url, DateTime? modified = null, ChangeFrequency? changeFrequency = null, decimal? priority = null)
@@ -30,28 +32,28 @@ namespace BizMall.Utils.SitemapBuilder
 
         public void AddStatisticNode(string data)
         {
-            _urls.Add( new SitemapNode(data));
+            _statdata.Add( new SitemapNode(data));
         }
 
         public XDocument GetSitemap()
         {
             var sitemap = new XDocument(
-                new XDeclaration("1.0", "utf-8", "yes"),
-                    new XElement("statistics", 
-                    from item in _urls where item.Url.Contains("stcs_")
-                    select CreateStatisticsNodeElement(item)),
-                    new XElement(NS + "urlset",
-                    from item in _urls
-                    select CreateSitemapNodeElement(item)
-                )
+                    new XDeclaration("1.0", "utf-8", "yes"),                    
+                    new XElement(
+                        NS + "urlset",
+                        from item in _statdata select CreateStatisticsNodeElement(item),
+                        from item in _urls select CreateSitemapNodeElement(item)
+                    )
                 );
+
+            //sitemap.Add(new XElement("statistics", from item in _urls where item.Url.Contains("stcs_") select CreateStatisticsNodeElement(item)));
 
             return sitemap;
         }
 
         private XElement CreateStatisticsNodeElement(SitemapNode url)
         {
-            return new XElement(NS + "data", url.Url);
+            return new XElement(NS + "statdata", url.Url);
         }
 
         private XElement CreateSitemapNodeElement(SitemapNode url)
